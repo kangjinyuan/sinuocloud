@@ -1,0 +1,871 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="css/reset.css" />
+		<link rel="stylesheet" href="css/common.css?v=73bcf67b3c" />
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="layui/layui.all.js"></script>
+		<script src="js/echarts-all-3.js"></script>
+		<script src="js/circleChart.es5.min.js"></script>
+		<script src="js/hammer.min.js"></script>
+		<script src="js/zoom-marker.min.js"></script>
+		<script src="js/jquery.mousewheel.min.js"></script>
+		<script src="js/hls.min.js"></script>
+		<script src="js/vue.min.js"></script>
+		<script src="js/postUrl.js?v=c7b6d7f106"></script>
+		<script src="js/common.js?v=62415c96de"></script>
+	</head>
+
+	<body>
+		<div class="full-box VDOM" v-cloak>
+			<div class="column-list-box column-list-width-25">
+				<div class="row-list-box row-list-height-35">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">今日报警</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="today-alert-box position-center">
+								<div class="today-alert-inner-box">
+									<div class="today-alert-title-box position-center">
+										<div class="today-alert-title-text position-left-bottom">报警总数:<span>300</span>起</div>
+									</div>
+								</div>
+								<div class="today-alert-inner-box">
+									<div class="today-alert-content-box">
+										<ul>
+											<li>
+												<div class="today-alert-text today-alert-number"><span>18</span>起</div>
+												<div class="today-alert-text">火警故障</div>
+											</li>
+											<li>
+												<div class="today-alert-text today-alert-number"><span>8</span>起</div>
+												<div class="today-alert-text">故障数量</div>
+											</li>
+											<li>
+												<div class="today-alert-text today-alert-number"><span>12</span>起</div>
+												<div class="today-alert-text">复位次数</div>
+											</li>
+										</ul>
+									</div>
+									<div class="cut-line position-center"></div>
+									<div class="today-alert-content-box">
+										<ul>
+											<li>
+												<div class="today-alert-text today-alert-number"><span class="grade-text-color0">2</span>起</div>
+												<div class="today-alert-text">Ⅰ级预警</div>
+											</li>
+											<li>
+												<div class="today-alert-text today-alert-number"><span class="grade-text-color1">4</span>起</div>
+												<div class="today-alert-text">Ⅱ级预警</div>
+											</li>
+											<li>
+												<div class="today-alert-text today-alert-number"><span class="grade-text-color2">7</span>起</div>
+												<div class="today-alert-text">Ⅲ级预警</div>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box row-list-height-35">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">实时报警</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="scroll-box">
+								<ul class="scroll-title-box">
+									<li>等级</li>
+									<li>类别</li>
+									<li>楼层</li>
+									<li>处理状态</li>
+									<li>时间</li>
+								</ul>
+								<div class="scroll-content-box">
+									<div class="scroll-content-inner-box">
+										<ul class="real-time-box position-left-top">
+											<li onclick="tabPage('1')">
+												<div class="grade-text-color1">Ⅰ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div class="state-text-color0">已处理</div>
+												<div>16:42:40</div>
+											</li>
+											<li>
+												<div class="grade-text-color1">Ⅱ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div class="state-text-color0">已处理</div>
+												<div>16:42:40</div>
+											</li>
+											<li>
+												<div class="grade-text-color1">Ⅱ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div>未处理</div>
+												<div>16:42:40</div>
+											</li>
+											<li>
+												<div class="grade-text-color0">Ⅰ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div class="state-text-color0">已处理</div>
+												<div>16:42:40</div>
+											</li>
+											<li>
+												<div class="grade-text-color2">Ⅲ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div>未处理</div>
+												<div>16:42:40</div>
+											</li>
+											<li>
+												<div class="grade-text-color0">Ⅰ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div>未处理</div>
+												<div>16:42:40</div>
+											</li>
+											<li>
+												<div class="grade-text-color2">Ⅲ级</div>
+												<div>水压表</div>
+												<div title="5号楼二单元3层">5号楼二单元3层</div>
+												<div>未处理</div>
+												<div>16:42:40</div>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box row-list-height-30">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">今日巡检任务</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="check-task-box position-center">
+								<div class="check-task-pie-box">
+									<div class="check-task-pie"></div>
+									<div class="check-task-text-box">
+										<p>56%</p>
+										<p>完成率</p>
+									</div>
+								</div>
+								<div class="check-task-bar-box"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="column-list-box column-list-width-50">
+				<div class="row-list-box row-list-height-70">
+					<div class="row-list-inner-box">
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="floor-img-box">
+								<img id="floorImage" name="floorImage" draggable="false" />
+							</div>
+							<!--<div class="scale-opera-box">
+								<div class="icon icon-opera-add" onclick="operaFloorScale(0);"></div>
+								<div class="range-box">
+									<div class="range-slider position-left">{{sliderStep*100}}%</div>
+								</div>
+								<div class="icon icon-opera-reduce" onclick="operaFloorScale(1);"></div>
+							</div>-->
+							<div class="floor-list-box">
+								<div class="icon icon-arrow-up" onclick="clickRolling('floor-inner-list',0);"></div>
+								<div class="floor-list">
+									<ul class="floor-inner-list position-left-top">
+										<li v-for="t in regionList" v-bind:class="t.isActive?'selected':''" v-on:click="tabFloor(t);">{{t.name}}</li>
+									</ul>
+								</div>
+								<div class="icon icon-arrow-down" onclick="clickRolling('floor-inner-list',1);"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box column-list-width-50 row-list-height-30">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">待办事项</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="scroll-box">
+								<ul class="scroll-title-box">
+									<li>内容</li>
+									<li>负责人</li>
+									<li>截止时间</li>
+								</ul>
+								<div class="scroll-content-box">
+									<div class="scroll-content-inner-box">
+										<ul class="need-do-box position-left-top">
+											<li>
+												<div title="5号楼三单元5层水压表报警">5号楼三单元5层水压表报警</div>
+												<div>赵晋</div>
+												<div class="grade-text-color0">2019-10-03</div>
+											</li>
+											<li>
+												<div title="5号楼三单元5层水压表报警">5号楼三单元5层水压表报警</div>
+												<div>赵晋</div>
+												<div class="grade-text-color0">2019-10-03</div>
+											</li>
+											<li>
+												<div title="5号楼三单元5层水压表报警">5号楼三单元5层水压表报警</div>
+												<div>赵晋</div>
+												<div class="grade-text-color0">2019-10-03</div>
+											</li>
+											<li>
+												<div title="5号楼三单元5层水压表报警">5号楼三单元5层水压表报警</div>
+												<div>赵晋</div>
+												<div class="grade-text-color0">2019-10-03</div>
+											</li>
+											<li>
+												<div title="5号楼三单元5层水压表报警">5号楼三单元5层水压表报警</div>
+												<div>赵晋</div>
+												<div class="grade-text-color0">2019-10-03</div>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box column-list-width-50 row-list-height-30">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">月度汇总</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="row-list-sreach-box">
+								<select name="" id="monthSummary">
+									<option value="1">1月</option>
+									<option value="3">2月</option>
+									<option value="3">3月</option>
+									<option value="4">4月</option>
+									<option value="5">5月</option>
+									<option value="6">6月</option>
+									<option value="7">7月</option>
+									<option value="8">8月</option>
+									<option value="9">9月</option>
+									<option value="10">10月</option>
+									<option value="11">11月</option>
+									<option value="12">12月</option>
+								</select>
+							</div>
+							<div class="month-summary-box">
+								<div class="month-summary-inner-box position-center">
+									<div class="month-summary-list">
+										<div class="month-summary-pie-box">
+											<div class="month-summary-pie month-summary-alert-pie"></div>
+											<div class="month-summary-pie-text-box">报警次数</div>
+										</div>
+										<div class="month-summary-number"><span>16</span>次</div>
+									</div>
+									<div class="month-summary-list">
+										<div class="month-summary-pie-box">
+											<div class="month-summary-pie month-summary-fault-pie"></div>
+											<div class="month-summary-pie-text-box">故障次数</div>
+										</div>
+										<div class="month-summary-number"><span>17</span>次</div>
+									</div>
+									<div class="month-summary-list">
+										<div class="month-summary-pie-box">
+											<div class="month-summary-pie month-summary-low-pressure-pie"></div>
+											<div class="month-summary-pie-text-box">低压报警</div>
+										</div>
+										<div class="month-summary-number"><span>6</span>次</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="column-list-box column-list-width-25">
+				<div class="row-list-box row-list-height-35">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">安全指数</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="security-index-box position-center">
+								<div class="security-index-ranking-box">
+									<div class="security-index-ranking-inner-box">
+										<div class="security-index-title-box">
+											<div class="security-index-title-line position-left"></div>
+											<div class="security-index-title-shield"></div>
+											<div class="security-index-title-line position-right"></div>
+										</div>
+										<div class="security-index-content">
+											<p>第<span>05</span>名</p>
+											<p>在郑州市排名</p>
+										</div>
+									</div>
+								</div>
+								<div class="security-index-pie-box">
+									<div class="security-index-pie-inner-box position-bottom">
+										<div class="security-index-pie-bg-box position-center"></div>
+										<div class="security-index-pie"></div>
+										<div class="security-index-pie-text-box">
+											<p>今日得分</p>
+											<p>42分</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box row-list-height-35">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">车流量</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="full-box car-access-box"></div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box row-list-height-30">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">客流量</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="full-box visitor-access-box"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.buildIndex = 0;
+		param.regionList = [];
+		param.floorList = [];
+		param.cameraList = [];
+		loadVue(param);
+		var date = new Date();
+		var realTimer = null;
+		var needDoTimer = null;
+		var checkTaskBar = echarts.init($(".check-task-bar-box").get(0));
+		var carAccess = echarts.init($(".car-access-box").get(0));
+		var visitorAccess = echarts.init($(".visitor-access-box").get(0));
+		$(function() {
+			$("#monthSummary").val(date.getMonth() + 1);
+			$(".check-task-pie").circleChart({
+				color: "#07a6ff",
+				startAngle: 0,
+				widthRatio: 0.16,
+				animation: "easeInOutCubic",
+				background: false,
+				value: 56,
+				size: 72,
+				lineCap: "round"
+			});
+			$(".month-summary-alert-pie").circleChart({
+				color: "#ffd34e",
+				startAngle: 0,
+				animation: "easeInOutCubic",
+				background: false,
+				value: 16,
+				size: 64,
+				lineCap: "round"
+			});
+			$(".month-summary-fault-pie").circleChart({
+				color: "#e96623",
+				startAngle: 0,
+				animation: "easeInOutCubic",
+				background: false,
+				value: 17,
+				size: 64,
+				lineCap: "round"
+			});
+			$(".month-summary-low-pressure-pie").circleChart({
+				color: "#ff414a",
+				startAngle: 0,
+				animation: "easeInOutCubic",
+				background: false,
+				value: 7,
+				size: 64,
+				lineCap: "round"
+			});
+			$(".security-index-pie").circleChart({
+				color: "#07a6ff",
+				startAngle: 0,
+				widthRatio: 0.06,
+				animation: "easeInOutCubic",
+				background: false,
+				value: 42,
+				size: 110,
+				lineCap: "round"
+			});
+		})
+
+		function tabPage(id) {
+			parent.setPath(id);
+		}
+
+		function resetChartSize() {
+			bindWindowChange(function() {
+				checkTaskBar.resize();
+				carAccess.resize();
+				visitorAccess.resize();
+			})
+		}
+
+		function loadFloorImage() {
+			$("#floorImage").zoomMarker({
+				src: "img/floorImage/0-0.png",
+				rate: 0.1,
+				width: 300,
+				min: 100,
+				max: 1000,
+				marker_size: 40,
+				zoom_lock: true,
+				markers: []
+			});
+		}
+
+		function setRealTimer() {
+			realTimer = setInterval(function() {
+				seamlessRolling($(".real-time-box"));
+			}, 5000);
+		}
+
+		function setNeedDoTimer() {
+			needDoTimer = setInterval(function() {
+				seamlessRolling($(".need-do-box"));
+			}, 5000);
+		}
+
+		function getCheckTask() {
+			totalNumber = [9, 19];
+			checkTaskBar.setOption({
+				tooltip: {
+					show: false
+				},
+				grid: {
+					left: "0",
+					right: "0",
+					bottom: "10",
+					top: "20"
+				},
+				xAxis: [{
+					type: 'value',
+					show: false
+				}],
+				yAxis: [{
+					type: 'category',
+					show: false,
+					data: ["今日完成情况", "今日巡检任务总数"]
+				}],
+				series: [{
+					type: 'bar',
+					barWidth: 5,
+					label: {
+						normal: {
+							show: true,
+							distance: 6,
+							position: "insideBottomLeft",
+							textStyle: {
+								color: "#fff",
+								fontSize: 10,
+
+							},
+							formatter: "{b} {c}个任务"
+						},
+					},
+					itemStyle: {
+						normal: {
+							color: new echarts.graphic.LinearGradient(
+								0, 0, 1, 0, [{
+										offset: 0,
+										color: '#07a6ff'
+									},
+									{
+										offset: 1,
+										color: '#33d9fb'
+									}
+								]
+							)
+						}
+					},
+					data: totalNumber
+				}]
+			}, true);
+		}
+
+		function getCarAccess() {
+			var dateArray = ["5", "10", "15", "20", "25", "30"];
+			var totalCar = ["20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "23"];
+			var inPark = ["20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "20", "12", "30", "12", "34", "23"];
+			var outPark = ["16", "28", "40", "2", "24", "26", "22", "10", "16", "14", "14", "10", "35", "11", "24", "24", "18", "20", "18", "24", "22", "22", "32", "18", "33", "30", "14", "20", "13", "14", "28"];
+			carAccess.setOption({
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross'
+					}
+				},
+				legend: {
+					bottom: '0',
+					itemWidth: 8,
+					itemHeight: 8,
+					data: ['场内车辆总数', '入场车辆数', '出场车辆数'],
+					textStyle: {
+						color: "#fff",
+						fontSize: 8,
+						lineHeight: 8
+					}
+				},
+				grid: {
+					left: "30",
+					right: "10",
+					top: "40",
+					bottom: "40"
+				},
+				xAxis: [{
+					type: 'category',
+					data: dateArray,
+					axisLabel: {
+						interval: 0,
+						textStyle: {
+							color: "#fff"
+						}
+					},
+					splitLine: {
+						show: false,
+					},
+					axisLine: {
+						show: true,
+						lineStyle: {
+							color: ["#1e95ff"]
+						}
+					}
+				}],
+				yAxis: [{
+					name: "车数量(辆)",
+					nameTextStyle: {
+						color: "#fff",
+						fontSize: 10
+					},
+					type: 'value',
+					axisLabel: {
+						interval: 0,
+						textStyle: {
+							color: "#fff"
+						}
+					},
+					splitLine: {
+						show: false,
+					},
+					axisLine: {
+						show: true,
+						lineStyle: {
+							color: ["#1e95ff"]
+						}
+					}
+				}],
+				series: [{
+					name: '场内车辆总数',
+					type: 'bar',
+					barWidth: 8,
+					itemStyle: {
+						normal: {
+							color: new echarts.graphic.LinearGradient(
+								0, 0, 0, 1, [{
+										offset: 0,
+										color: '#1bfde4'
+									},
+									{
+										offset: 1,
+										color: '#41a0f2'
+									}
+								]
+							)
+						}
+					},
+					data: totalCar
+				}, {
+					name: '入场车辆数',
+					type: 'line',
+					symbol: "circle",
+					symbolSize: 5,
+					hoverAnimation: true,
+					itemStyle: {
+						normal: {
+							color: '#fd7270'
+						}
+					},
+					lineStyle: {
+						normal: {
+							color: '#fd7270',
+							width: 1
+						}
+					},
+					data: inPark
+				}, {
+					name: '出场车辆数',
+					type: 'line',
+					symbol: "circle",
+					symbolSize: 5,
+					hoverAnimation: true,
+					itemStyle: {
+						normal: {
+							color: '#fcb609'
+						}
+					},
+					lineStyle: {
+						normal: {
+							color: '#fcb609',
+							width: 1
+						}
+					},
+					data: outPark
+				}]
+			}, true);
+		}
+
+		function getVisitorAccess() {
+			totalNumber = ["23", "12", "33", "44", "55", "22"];
+			visitorAccess.setOption({
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross'
+					}
+				},
+				grid: {
+					left: "90",
+					right: "10",
+					bottom: "10",
+					top: "10"
+				},
+				xAxis: [{
+					type: 'value',
+					show: false
+				}],
+				yAxis: [{
+					type: 'category',
+					show: true,
+					data: ["20:00-24:00", "16:00-20:00", "12:00-16:00", "08:00-12:00", "04:00-08:00", "00:00-04:00"],
+					axisLabel: {
+						interval: 0,
+						textStyle: {
+							color: "#fff"
+						}
+					},
+					axisLine: {
+						show: true,
+						lineStyle: {
+							color: ["#1e95ff"]
+						}
+					}
+				}],
+				series: [{
+					name: '已完成',
+					type: 'bar',
+					barWidth: 8,
+					stack: '总量',
+					hoverAnimation: true,
+					label: {
+						normal: {
+							show: true,
+							position: 'right',
+							textStyle: {
+								color: "#fff"
+							}
+						}
+					},
+					itemStyle: {
+						normal: {
+							color: new echarts.graphic.LinearGradient(
+								0, 0, 1, 0, [{
+										offset: 0,
+										color: '#07a6ff'
+									},
+									{
+										offset: 1,
+										color: '#33d9fb'
+									}
+								]
+							)
+						}
+					},
+					data: totalNumber
+				}]
+			}, true);
+		}
+
+		function loadRegion() {
+			var timestamp = new Date().getTime();
+			$.getJSON('json/floor.json?timestamp=' + timestamp, function(res) {
+				setData.floorList = res;
+				var param = {
+					path: "/api/resource/v1/regions/root",
+					showLoading: false,
+					param: {}
+				}
+				hikRequest(param, function(res) {
+					var indexCode = res.data.indexCode;
+					var param = {
+						path: "/api/irds/v2/region/nodesByParams",
+						showLoading: false,
+						param: {
+							"resourceType": "region",
+							"parentIndexCodes": [
+								indexCode
+							],
+							"isSubRegion": false,
+							"pageNo": 1,
+							"pageSize": 100
+						}
+					}
+					hikRequest(param, function(res) {
+						var regionList = res.data.list;
+						var buildIndex = setData.buildIndex;
+						for(var i = 0; i < regionList.length; i++) {
+							regionList[i].isActive = false;
+							regionList[i].floorId = buildIndex + "-" + i;
+						}
+						setData.regionList = regionList;
+						tabFloor(regionList[0]);
+					})
+				})
+			});
+		}
+
+		function tabFloor(obj) {
+			var regionList = setData.regionList;
+			for(var i = 0; i < regionList.length; i++) {
+				regionList[i].isActive = false;
+			}
+			obj.isActive = true;
+			loadCamera(obj)
+		}
+
+		function loadCamera(obj) {
+			var param = {
+				path: "/api/resource/v1/regions/regionIndexCode/cameras",
+				showLoading: false,
+				param: {
+					"regionIndexCode": obj.indexCode,
+					"pageNo": 1,
+					"pageSize": 1000
+				}
+			}
+			hikRequest(param, function(res) {
+				setData.cameraList = res.data.list;
+				var floorList = setData.floorList;
+				var floorId = obj.floorId;
+				for(var i = 0; i < floorList.length; i++) {
+					if(floorId == floorList[i].id) {
+						var markers = floorList[i].csub;
+						var floorImage = "img/floorImage/" + floorId + ".png";
+						$("#floorImage").zoomMarker_CleanMarker();
+						$("#floorImage").zoomMarker_LoadImage(floorImage);
+						for(var j = 0; j < markers.length; j++) {
+							var dom = "<div class='floor-video-box'><div class='video-circle-box'></div><div class='video-box'><video controls='controls' src='' autoplay='autoplay' controls='controls'></video><div class='decorate-list common-left-top-decorate position-left-top'></div><div class='decorate-list common-left-bottom-decorate position-left-bottom'></div><div class='decorate-list common-right-top-decorate position-right-top'></div><div class='decorate-list common-right-bottom-decorate position-right-bottom'></div></div></div>"
+							$('#floorImage').zoomMarker_AddMarker({
+								src: markers[j].src,
+								x: markers[j].x,
+								y: markers[j].y,
+								size: 40,
+								hint: {
+									value: dom
+								},
+								click: function(e) {
+									showVideo(e);
+								}
+							});
+							getPreviewUrl(j);
+						}
+					}
+				}
+			})
+		}
+
+		function getPreviewUrl(i) {
+			var zoomMarker = $(".zoom-marker");
+			var cameraList = setData.cameraList;
+			var cameraIndexCode = cameraList[i].cameraIndexCode;
+			var param = {
+				path: "/api/video/v1/cameras/previewURLs",
+				showLoading: false,
+				param: {
+					"cameraIndexCode": cameraIndexCode,
+					"protocol": "hls"
+				}
+			}
+			hikRequest(param, function(res) {
+				var videoUrl = res.data.url;
+				if(Hls.isSupported()) {
+					var video = zoomMarker.eq(i).find("video").get(0);
+					var hls = new Hls();
+					hls.loadSource(videoUrl);
+					hls.attachMedia(video);
+				}
+			})
+		}
+
+		function showVideo(e) {
+			var size = e.param.size;
+			var marker = e.marker;
+			marker.find("video").get(0).play();
+			marker.siblings().find(".floor-video-box").hide();
+			marker.find(".floor-video-box").css({
+				"top": size / 2,
+				"left": size
+			}).show(500);
+		}
+
+		loadFloorImage();
+		loadRegion();
+		getCheckTask();
+		getCarAccess();
+		getVisitorAccess();
+		resetChartSize();
+		nextTick(function() {
+			setRealTimer();
+			setNeedDoTimer();
+		})
+	</script>
+
+</html>

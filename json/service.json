@@ -1,0 +1,43 @@
+[{
+	"id" : "0",
+	"name" : "首页",
+	"path":"index",
+	"sort":"999",
+	"csub" : []
+},{
+	"id" : "1",
+	"name" : "报警记录",
+	"path":"pages/eventRecord",
+	"sort":"998",
+	"csub" : []
+},{
+	"id" : "2",
+	"name" : "安防巡查",
+	"path":"pages/checkCenter",
+	"sort":"997",
+	"csub" : []
+},{
+	"id" : "3",
+	"name" : "我的设备",
+	"path":"pages/equipment",
+	"sort":"996",
+	"csub" : []
+},{
+	"id" : "4",
+	"name" : "事件中心",
+	"path":"pages/eventCenter",
+	"sort":"995",
+	"csub" : []
+},{
+	"id" : "5",
+	"name" : "视频监控",
+	"path":"pages/videoSurveillance",
+	"sort":"994",
+	"csub" : []
+},{
+	"id" : "6",
+	"name" : "用户中心",
+	"path":"pages/userCenter",
+	"sort":"993",
+	"csub" : []
+}]

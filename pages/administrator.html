@@ -1,0 +1,138 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=62b1256164"></script>
+		<script src="../js/common.js?v=fab245d574"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+			<div class="search-box">
+				<div class="search-list-box">
+					<div class="search-list">
+						<div class="search-name">角色名称：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="name" placeholder="输入角色名称" />
+						</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">角色账号：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="account" placeholder="输入角色账号" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="sreach();">查询</div>
+					<div class="btn" onclick="showAdministrator(0,'','新建角色')">新建角色</div>
+					<div class="btn" onclick="reloadPage();">重置</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="icon icon-no-data"></div>
+						<div class="no-data-text">暂时没有角色记录哦</div>
+					</div>
+				</div>
+				<div class="kjy-table" v-else>
+					<table>
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>角色名称</th>
+								<th>角色账号</th>
+								<th>更新时间</th>
+								<th>创建时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbody">
+							<tr v-for="(t,i) in dataList">
+								<td>{{((currentPage-1)*20)+(i+1)}}</td>
+								<td>{{t.name}}</td>
+								<td>{{t.account}}</td>
+								<td>{{t.updateTime}}</td>
+								<td>{{t.createTime}}</td>
+								<td>
+									<div class="btn" v-on:click="del(t.id)">删除</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="page-box">
+				<div class="page-inner-box">
+					<div class="icon icon-first-page" onclick="firstPage()">首页</div>
+					<div class="icon icon-before-page" onclick="beforePage();">上一页</div>
+					<div class="icon icon-next-page" onclick="nextPage();">下一页</div>
+					<div class="icon icon-last-page" onclick="lastPage();">末页</div>
+					<div class="default page-input">第<input type="text" name="" v-bind:value="currentPage" />页</div>
+					<div class="icon icon-next-page" onclick="jumpPage();">跳转</div>
+					<div class="default">共<span>{{totalPage}}</span>页</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(param)
+
+		//新建或编辑
+		function showAdministrator(flag, obj, title) {
+			openMask("", "../part/administrator", title, "340px", "216px", function(layerDom, layerIframe) {
+				judeEdit(flag, layerDom);
+			})
+		}
+
+		//删除数据
+		function del(id) {
+			delOneData(id, "确定删除该角色？", function(param) {
+				request('POST', '/account/administrator/delete.do', param, true, function(res) {
+					loadData();
+					layer.closeAll('dialog');
+				}, function(res) {
+					layer.msg("非管理员账号不能删除");
+				})
+			})
+		}
+
+		//		加载数据
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				name: $("#name").val(),
+				account: $("#account").val()
+			};
+			request('POST', '/account/administrator/queryList.do', param, true, function(res) {
+				var dataList = res.data;
+				for(var i = 0; i < dataList.length; i++) {
+					dataList[i].isActive = false;
+				}
+				setData.dataList = dataList;
+				setData.allIsActive = false;
+			}, function(res) {
+				layer.msg("角色加载失败");
+			})
+		}
+		//		loadData();
+	</script>
+
+</html>

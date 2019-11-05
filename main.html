@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="css/reset.css" />
+		<link rel="stylesheet" href="css/common.css?v=73bcf67b3c" />
+		<link rel="stylesheet" href="css/main.css?v=45d701aa04" />
+		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/vue.min.js"></script>
+		<script src="layui/layui.all.js"></script>
+		<script src="js/postUrl.js?v=c7b6d7f106"></script>
+		<script src="js/common.js?v=62415c96de"></script>
+		<script src="js/init.js?v=8818286788"></script>
+
+	</head>
+
+	<body>
+		<div class="kjy VDOM" v-cloak>
+			<div class="kjy-inner-box">
+				<div class="header-box">
+					<div class="opera-box f_l">
+						<div class="header-animate header-animate1"></div>
+						<div class="header-animate header-animate2"></div>
+						<div class="logo-wapper-box">
+							<div class="logo-box position-center"></div>
+						</div>
+						<div class="title-box">思诺科技消安一体化平台</div>
+						<ul class="nav-box position-left">
+							<li v-for="t in menuList">
+								<div v-bind:class="selected == t.id?'selected':''" v-on:click="setPath(t.id);">
+									{{t.name}}
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="user-info-box f_r">
+						<div class="header-animate header-animate3-bg">
+							<div class="header-animate header-animate3 position-bottom"></div>
+						</div>
+						<div class="user-info-inner-box">
+							<span>{{currentTime}}</span>您好，{{accountName}}
+							<div class="quit position-right" onclick="quit();"></div>
+						</div>
+					</div>
+				</div>
+				<div class="main-box">
+					<iframe v-bind:src="path" frameborder='0' marginheight='0' marginwidth='0' scrolling='yes'></iframe>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

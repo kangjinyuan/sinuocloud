@@ -1,0 +1,212 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/common.css?v=a1737cc854" />
+		<link rel="stylesheet" href="../layui/css/layui.css" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.js"></script>
+		<script src="../layui/lay/modules/layer.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/hls.min.js"></script>
+		<script src="../js/postUrl.js?v=eb33ce4333"></script>
+		<script src="../js/common.js?v=889bbfc9d1"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+			<div class="opera-list-box">
+				<div class="opera-list opera-left-box">
+					<div class="opera-list-inner-box">
+						<div class="search-box">
+							<div class="search-full-width-box">
+								<input type="text" name="" value="" placeholder="请输入关键词" id="cameraName" oninput="sreach();" />
+							</div>
+						</div>
+						<div class="full-box" v-if="dataList.length == 0">
+							<div class="no-data-box">
+								<div class="icon icon-no-data"></div>
+								<div class="no-data-text">暂时没有监控点哦</div>
+							</div>
+						</div>
+						<div class="fold-box" v-else>
+							<div class="fold-list-box" v-for="t in dataList" v-if="t.cameraList.length > 0">
+								<div class="fold-title-box" v-on:click="switchActive(t);">
+									<div class="fold-title-text-box">
+										{{t.name}}
+									</div>
+									<div v-bind:class="['icon','position-right',t.isActive?'icon-arrow-up':'icon-arrow-down']"></div>
+								</div>
+								<div class="fold-content-box" v-if="t.isActive">
+									<ul class="fold-content-list-box" v-for="t in t.cameraList">
+										<li v-bind:class="cameraInfo.cameraIndexCode == t.cameraIndexCode?'selected':''" v-on:click="tabCamera(t);">{{t.cameraName}}</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="opera-list opera-right-box">
+					<div class="opera-list-inner-box">
+						<div class="opera-video-box">
+							<div class="video-box">
+								<video src="" controls="controls" autoplay="autoplay" id="video"></video>
+							</div>
+							<div class="btn-box">
+								<div class="btn-inner-box">
+									<div class="btn" onclick="manualRecord();">{{manualRecordState?'暂停':'录像'}}</div>
+									<div class="btn" onclick="manualCapture();">抓图</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.manualRecordState = false;
+		param.cameraInfo = {};
+		loadVue(param);
+
+		function loadData() {
+			var param = {
+				path: "/api/resource/v1/regions/root",
+				showLoading: true,
+				param: {}
+			}
+			hikRequest(param, function(res) {
+				var indexCode = res.data.indexCode;
+				var param = {
+					path: "/api/irds/v2/region/nodesByParams",
+					showLoading: true,
+					param: {
+						"resourceType": "region",
+						"parentIndexCodes": [
+							indexCode
+						],
+						"isSubRegion": false,
+						"pageNo": 1,
+						"pageSize": 100
+					}
+				}
+				hikRequest(param, function(res) {
+					var regionList = res.data.list;
+					for(var i = 0; i < regionList.length; i++) {
+						regionList[i].isActive = true;
+						regionList[i].cameraList = [];
+					}
+					loadCamera(regionList);
+				})
+			})
+		}
+
+		function loadCamera(regionList) {
+			var param = {
+				path: "/api/resource/v1/camera/advance/cameraList",
+				showLoading: true,
+				param: {
+					"pageNo": 1,
+					"pageSize": 1000,
+					"cameraName": $("#cameraName").val(),
+					"isCascade": 0,
+					"treeCode": "0"
+				}
+			}
+			hikRequest(param, function(res) {
+				var cameraList = res.data.list;
+				for(var i = 0; i < regionList.length; i++) {
+					for(var j = 0; j < cameraList.length; j++) {
+						if(regionList[i].indexCode == cameraList[j].regionIndexCode) {
+							regionList[i].cameraList.push(cameraList[j]);
+						}
+					}
+				}
+				setData.dataList = regionList;
+				tabCamera(cameraList[0]);
+			})
+		}
+
+		function tabCamera(obj) {
+			setData.cameraInfo = obj;
+			getPreviewUrl();
+		}
+
+		function getPreviewUrl() {
+			var cameraInfo = setData.cameraInfo;
+			var param = {
+				path: "/api/video/v1/cameras/previewURLs",
+				showLoading: true,
+				param: {
+					"cameraIndexCode": cameraInfo.cameraIndexCode,
+					"protocol": "hls"
+				}
+			}
+			hikRequest(param, function(res) {
+				var videoUrl = res.data.url;
+				if(Hls.isSupported()) {
+					var video = $("#video").get(0);
+					var hls = new Hls();
+					hls.loadSource(videoUrl);
+					hls.attachMedia(video);
+				}
+			})
+		}
+
+		function manualRecord() {
+			var manualRecordState = setData.manualRecordState;
+			var cameraInfo = setData.cameraInfo;
+			if(manualRecordState) {
+				var requestUrl = "/api/video/v1/manualRecord/stop";
+				var requestParam = {
+					"cameraIndexCode": cameraInfo.cameraIndexCode,
+					"taskID": "1",
+					"type": 0
+				}
+			} else {
+				var requestUrl = "/api/video/v1/manualRecord/start";
+				var requestParam = {
+					"cameraIndexCode": cameraInfo.cameraIndexCode,
+					"recordType": 6,
+					"type": 0
+				}
+			}
+
+			var param = {
+				path: requestUrl,
+				showLoading: true,
+				param: requestParam
+			}
+			hikRequest(param, function(res) {
+				videotapeState = !videotapeState;
+			})
+		}
+
+		function manualCapture() {
+			var cameraInfo = setData.cameraInfo;
+			var param = {
+				path: "/api/video/v1/manualCapture",
+				showLoading: true,
+				param: {
+					"cameraIndexCode": cameraInfo.cameraIndexCode
+				}
+			}
+			hikRequest(param, function(res) {
+				layer.msg("抓图成功");
+			})
+		}
+
+		loadData();
+	</script>
+
+</html>

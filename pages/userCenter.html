@@ -1,0 +1,51 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/common.css?v=a1737cc854" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=eb33ce4333"></script>
+		<script src="../js/common.js?v=889bbfc9d1"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+			<div class="tab-box">
+				<div class="tab-inner-box">
+					<ul class="tab-title-box">
+						<li v-bind:class="selected == t.id?'selected':''" v-for="t in menuList" v-on:click="setPath(t.id);">{{t.name}}</li>
+					</ul>
+					<div class="tab-content-box">
+						<iframe v-bind:src="path" frameborder='0' marginheight='0' marginwidth='0' scrolling='yes'></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(param);
+
+		function loadMenu() {
+			setData.menuList = [{
+				id: "0",
+				name: "角色管理",
+				path: "administrator"
+			}]
+			setPath("0");
+		}
+		loadMenu();
+	</script>
+
+</html>

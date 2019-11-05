@@ -1,0 +1,129 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="css/reset.css" />
+		<link rel="stylesheet" href="css/common.css?v=73bcf67b3c" />
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="layui/layui.all.js"></script>
+		<script src="js/postUrl.js?v=c7b6d7f106"></script>
+		<script src="js/common.js?v=62415c96de"></script>
+		<style>
+			body {
+				width: 100%;
+				height: 100%;
+				background-color: #333;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			h2 {
+				width: 100%;
+				margin-bottom: 18px;
+				font: 40px/40px 微软雅黑;
+				text-align: center;
+				color: #07a6ff;
+				background: -webkit-linear-gradient(left, #009ff1, #00e8cf);
+				background: -moz-linear-gradient(left, #009ff1, #00e8cf);
+				background: -o-linear-gradient(left, #009ff1, #00e8cf);
+				-webkit-background-clip: text;
+				-moz-background-clip: text;
+				-o-background-clip: text;
+				text-fill-color: transparent;
+				-webkit-text-fill-color: transparent;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="kjy-box VDOM">
+			<button onclick="loadRootRegion();">根节点</button>
+			<button onclick="loadRegion();">区域列表</button>
+			<button onclick="loadFloorJson();">floorJson</button>
+			<h2 class="text-gradient">思诺云AGS管理系统-单位版</h2>
+			<video src="" autoplay="autoplay" muted="muted"></video>
+		</div>
+	</body>
+	<script>
+		function loadRootRegion() {
+			var param = {
+				path: "/api/resource/v1/regions/root",
+				param: {}
+			}
+			hikRequest(param, true, function(res) {
+				console.log(res)
+			})
+		}
+
+		function loadRegion() {
+			var param = {
+				path: "/api/irds/v2/region/nodesByParams",
+				param: {
+					"resourceType": "region",
+					"parentIndexCodes": [
+						"root000000"
+					],
+					"isSubRegion": true,
+					"pageNo": 1,
+					"pageSize": 1,
+					"authCodes": [
+						"view"
+					],
+					"regionType": 10,
+					"regionName": "区",
+					"cascadeFlag": 0
+				}
+			}
+			hikRequest(param, true, function(res) {
+				console.log(res)
+			})
+		}
+
+		function loadCamera() {
+			var param = {
+				path: "/api/resource/v1/regions/regionIndexCode/cameras",
+				param: {
+					"regionIndexCode": "083b2031c1db4f368f015fe2562e0012",
+					"pageNo": 1,
+					"pageSize": 2
+				}
+			}
+			hikRequest(param, true, function(res) {
+				console.log(res)
+			})
+		}
+
+		function loadPreviewUrl() {
+			var param = {
+				path: "/api/video/v1/cameras/previewURLs",
+				param: {
+					"cameraIndexCode": "748d84750e3a4a5bbad3cd4af9ed5101",
+					"streamType": 0,
+					"protocol": "rtsp",
+					"transmode": 1
+				}
+			}
+			hikRequest(param, true, function(res) {
+				console.log(res)
+			})
+		}
+
+		function loadFloorJson() {
+			var timestamp = new Date().getTime();
+			$.getJSON('json/floor.json?timestamp=' + timestamp, function(res) {
+				console.log(res)
+			});
+		}
+	</script>
+
+</html>

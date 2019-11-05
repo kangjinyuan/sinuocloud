@@ -1,0 +1,145 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/common.css?v=a1737cc854" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=eb33ce4333"></script>
+		<script src="../js/common.js?v=889bbfc9d1"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+			<div class="search-box">
+				<div class="search-list-box">
+					<div class="search-list">
+						<div class="search-name">报警类型：</div>
+						<div class="search-value">
+							<select name="" id="eventType">
+								<option value="">==请选择报警类型==</option>
+								<option value="0">移动侦测</option>
+								<option value="1">遮挡报警</option>
+								<option value="2">人脸侦测</option>
+								<option value="3">越界侦测</option>
+								<option value="4">区域入侵侦测</option>
+								<option value="5">徘徊侦测</option>
+								<option value="6">人员聚集</option>
+								<option value="7">停车侦测</option>
+								<option value="8">物品遗留侦测</option>
+								<option value="9">物品拿取侦测</option>
+							</select>
+						</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">是否启用：</div>
+						<div class="search-value">
+							<select name="" id="isEnable">
+								<option value="">==请选择是否启用==</option>
+								<option value="1">是</option>
+								<option value="0">否</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn">查询</div>
+					<div class="btn" onclick="pointEvent(0,'','新建事件');">新建</div>
+					<div class="btn" onclick="reloadPage();">重置</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="icon icon-no-data"></div>
+						<div class="no-data-text">暂时没有报警记录哦</div>
+					</div>
+				</div>
+				<div class="kjy-table" v-else>
+					<table>
+						<thead>
+							<tr>
+								<th class="padding20">
+									<div class="no-check"></div>
+									序号</th>
+								<th>监控名称</th>
+								<th>事件类型</th>
+								<th>报警级别</th>
+								<th>是否启用</th>
+								<th>创建时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+
+						<tbody id="tbody">
+							<tr>
+								<td class="padding20">
+									<div class="no-check"></div>1
+								</td>
+								<td>会议室1号监控</td>
+								<td>移动侦测</td>
+								<td>Ⅰ级</td>
+								<td>否</td>
+								<td>2019-10-21 11:29:14</td>
+								<td>
+									<div class="btn" onclick="changeState();">启用</div>
+									<div class="btn" onclick="pointEvent(0,'','编辑事件');">编辑</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="padding20">
+									<div class="no-check"></div>2
+								</td>
+								<td>会议室1号监控</td>
+								<td>人脸侦测</td>
+								<td>无</td>
+								<td>否</td>
+								<td>2019-10-21 11:29:14</td>
+								<td>
+									<div class="btn">启用</div>
+									<div class="btn">编辑</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="page-box">
+				<div class="page-inner-box">
+					<div class="icon icon-first-page" onclick="firstPage()">首页</div>
+					<div class="icon icon-before-page" onclick="beforePage();">上一页</div>
+					<div class="icon icon-next-page" onclick="nextPage();">下一页</div>
+					<div class="icon icon-last-page" onclick="lastPage();">末页</div>
+					<div class="default page-input">第<input type="text" name="" v-bind:value="currentPage" />页</div>
+					<div class="icon icon-next-page" onclick="jumpPage();">跳转</div>
+					<div class="default">共<span>{{totalPage}}</span>页</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(param);
+
+		function pointEvent(flag, obj, title) {
+			openMask(obj.id, "../part/pointEvent", title, "630px", "500px", function(layerDom, layerIframe) {})
+		}
+
+		function changeState() {
+			layer.msg("已启用");
+		}
+	</script>
+
+</html>

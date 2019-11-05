@@ -1,0 +1,143 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=62b1256164"></script>
+		<script src="../js/common.js?v=fab245d574"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+			<div class="search-box">
+				<div class="search-list-box">
+					<div class="search-list">
+						<div class="search-name">点位名称：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="standardName" placeholder="输入点位名称" />
+						</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">点位编码：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="standardCode" placeholder="输入点位编码" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="sreach();">查询</div>
+					<div class="btn" onclick="showCheckPoint(0,'','新建点位')">新建点位</div>
+					<div class="btn" onclick="del();">删除</div>
+					<div class="btn" onclick="reloadPage();">重置</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="icon icon-no-data"></div>
+						<div class="no-data-text">暂时没有巡查点位哦</div>
+					</div>
+				</div>
+				<div class="kjy-table" v-else>
+					<table>
+						<thead>
+							<tr>
+								<th class="padding20">
+									<div v-bind:class="['no-check',allIsActive?'checked':'']" v-on:click="selectAllData()"></div>序号</th>
+								<th>点位名称</th>
+								<th>点位编码</th>
+								<th>点位描述</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+
+						<tbody id="tbody">
+							<tr v-for="(t,i) in dataList">
+								<td class="padding20">
+									<div v-bind:class="['no-check',t.isActive?'checked':'']" v-on:click="selectOneData(t)"></div>{{((currentPage-1)*20)+(i+1)}}</td>
+								<td>{{t.standardName}}</td>
+								<td>{{t.standardCode}}</td>
+								<td>{{t.standardDescription}}</td>
+								<td>
+									<div class="btn" v-on:click="showCheckPoint(1,t,'编辑点位')">编辑</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="page-box">
+				<div class="page-inner-box">
+					<div class="icon icon-first-page" onclick="firstPage()">首页</div>
+					<div class="icon icon-before-page" onclick="beforePage();">上一页</div>
+					<div class="icon icon-next-page" onclick="nextPage();">下一页</div>
+					<div class="icon icon-last-page" onclick="lastPage();">末页</div>
+					<div class="default page-input">第<input type="text" name="" v-bind:value="currentPage" />页</div>
+					<div class="icon icon-next-page" onclick="jumpPage();">跳转</div>
+					<div class="default">共<span>{{totalPage}}</span>页</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(param);
+		//新建或编辑
+		function showCheckPoint(flag, obj, title) {
+			openMask(obj.id, "../part/checkPoint", title, "630px", "330px", function(layerDom, layerIframe) {
+				layerDom.find("#standardName").val(obj.standardName);
+				layerDom.find("#standardCode").val(obj.standardCode);
+				layerDom.find("#standardDescription").val(obj.standardDescription);
+				judeEdit(flag, layerDom);
+			})
+		}
+
+		//删除数据
+		function del() {
+			delData("确定删除所选巡查点位吗？", function(param) {
+				request('POST', '/property/checkStandard/delete.do', param, true, function(res) {
+					loadData();
+					layer.closeAll('dialog');
+				}, function(res) {
+					layer.msg("删除失败，请检查网络或重试");
+				})
+			})
+		}
+
+		//		加载数据
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				standardName: $("#standardName").val(),
+				standardCode: $("#standardCode").val()
+			};
+			request('POST', '/property/checkStandard/queryList.do', param, true, function(res) {
+				var dataList = res.data;
+				for(var i = 0; i < dataList.length; i++) {
+					dataList[i].isActive = false;
+				}
+				setData.dataList = dataList;
+				setData.allIsActive = false;
+			}, function() {
+				layer.msg("巡查点位加载失败");
+			})
+		}
+
+		loadData();
+	</script>
+
+</html>

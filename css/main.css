@@ -1,0 +1,50 @@
+.kjy{width: 100%;height: 100%;min-width: 1200px;min-height: 550px;overflow:hidden;background-image:url(http://img.guostory.com/sinuoCloud/common-bg.png);background-repeat:no-repeat;background-position:center center;background-size:auto 100%;position: absolute;top: 0px;left: 0px;}
+.kjy-inner-box{width: auto;height: auto;overflow: hidden;padding: 8px 12px 0px;}
+
+/*头部*/
+.header-box{width: auto;height: 60px;padding-bottom: 12px;overflow: hidden;}
+
+/*左侧操作区域*/
+.opera-box,.user-info-box{height: 100%;background-repeat: no-repeat;background-size: auto 100%;position: relative;}
+.opera-box{width: 70%;background-image: url(../img/common/header-opera-box-bg.png);background-position: left center;}
+.logo-wapper-box{width: 42px;height: 42px;background: url(../img/common/logo-wapper-bg.png) no-repeat;background-size: 100% 100%;position: absolute;top: 20px;left: 9px;}
+.logo-box{width: 20px;height: 18px;background:url(../img/common/logo.png) no-repeat;background-size:100% 100%;}
+.title-box{width: 220px;height: 34px;font: 18px/34px 微软雅黑;color: #34e4ff;text-align: center;background: url(../img/common/header-title-bg.png) no-repeat;background-size: 100% 100%;position: absolute;top: 16px;left: 70px;}
+.nav-box{width: calc(100% - 300px);height: 24px;left: 300px;}
+.nav-box li{height: 100%;float: left;}
+.nav-box li div{cursor:pointer;width: 82px;height: 100%;margin: 0px auto;font: 12px/24px 微软雅黑;color: #e4fdff;text-align: center;background-repeat: no-repeat;background-position: center center;background-size: 100% 100%;}
+.nav-box .selected{color: #34e4ff;background-image: url(../img/common/nav-selected.png);}
+.header-animate{background-repeat: no-repeat;background-position: center center;background-size: 100% 100%;position: absolute;}
+.header-animate1,.header-animate2{height: 5px;}
+.header-animate1{width: 188px;background-image: url(../img/common/header-animate1.gif);bottom: 0;left: 62px;}
+.header-animate2{width: 55px;background-image: url(../img/common/header-animate2.gif);top: 3px;left: 378px;}
+
+/*右侧操作区域*/
+.user-info-box{width: 30%;}
+.user-info-inner-box{width: auto;padding-right: 72px;margin-left: 61.5px;height: 100%;font: 12px/52px 微软雅黑;color: #34e4ff;text-align: right;background:url(../img/common/header-user-info-box-bg.png) right bottom no-repeat;background-size: auto 53px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
+.user-info-inner-box span{margin-right: 12px;}
+.quit{cursor: pointer;width: 20px;height: 20px;background: url(../img/common/icon-quit.png) center center no-repeat;background-size: 100% 100%;right: 18px;}
+.header-animate3-bg{width: 61.5px;height: 61.5px;background-image: url(../img/common/header-animate3-bg.png);left: 0;top: 7px;}
+.header-animate3{width: 36px;height: 36px;background-image: url(../img/common/header-animate3.png);animation: headerAnimate 3s linear 0s infinite normal;-webkit-animation: headerAnimate 3s linear 0s infinite normal;-moz-animation: headerAnimate 3s linear 0s infinite normal;-ms-animation: headerAnimate 3s linear 0s infinite normal;-o-animation: headerAnimate 3s linear 0s infinite normal;}
+
+/*旋转动画*/
+@-webkit-keyframes headerAnimate{
+	0%{-webkit-transform: rotateZ(0deg);}
+	100%{-webkit-transform: rotateZ(360deg);}
+}
+@-moz-keyframes headerAnimate{
+	0%{-moz-transform: rotateZ(0deg);}
+	100%{-moz-transform: rotateZ(360deg);}
+}
+@-o-keyframes headerAnimate{
+	0%{-o-transform: rotateZ(0deg);}
+	100%{-o-transform: rotateZ(360deg);}
+}
+@-ms-keyframes headerAnimate{
+	0%{-ms-transform: rotateZ(0deg);}
+	100%{-ms-transform: rotateZ(360deg);}
+}
+
+/*内容区域*/
+.main-box{width: 100%;overflow-y:hidden;}
+.main-box iframe{width: 100%;height: 100%;}
