@@ -12,63 +12,165 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
-		<script src="../js/postUrl.js?v=62b1256164"></script>
-		<script src="../js/common.js?v=fab245d574"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="main-mask main-mask-bottom">
-			<div class="con">
-				<div class="mask-list">
-					<div class="mask-list-name"><span>*</span><span class="text">角色名称</span>：</div>
-					<div class="mask-list-value">
-						<input type="text" name="" id="name" value="" class="required" />
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="mask-box">
+				<div class="mask-inner-box">
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">用户类型</span>：</div>
+						<div class="mask-list-value">
+							<select name="" required="required" id="roleType" class="required" v-on:change="selectRoleType();">
+								<option value="">用户类型</option>
+								<option value="admin" v-if="accountInfo.su == 1">管理员</option>
+								<option value="monitor">监控中心</option>
+								<option value="engineer">工程人员</option>
+								<option value="charger">项目负责人</option>
+							</select>
+						</div>
+					</div>
+					<div class="mask-list c_b">
+						<div class="mask-list-name"><span class="text">用户名称</span>：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="name" class="required" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">手机号</span>：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="telephone" class="phone" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">用户账号</span>：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="account" class="required" />
+						</div>
+					</div>
+					<div class="mask-list" v-if="showPassword">
+						<div class="mask-list-name"><span class="text">密码</span>：</div>
+						<div class="mask-list-value">
+							<input type="password" name="" value="" id="password" class="required password" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">平台权限</span>：</div>
+						<div class="mask-list-value">
+							<div class="mask-content-box mask-content-box-bg mask-content-box-428">
+								<ul class="mask-select-box">
+									<li v-for="t in contentList" v-if="roleType == 'admin' && t.parent == 2 && t.id != 3">
+										<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+										{{t.name}}
+									</li>
+									<li v-for="t in contentList" v-if="roleType != 'admin' && t.parent == 2 && t.id != 3 && t.id != 10">
+										<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+										{{t.name}}
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="mask-row-list">
+						<div class="mask-list">
+							<div class="mask-list-name"><span class="text">移动端权限</span>：</div>
+							<div class="mask-list-value mask-list-full-value">
+								<div class="mask-content-box mask-content-box-bg mask-content-box-428">
+									<ul class="mask-select-box">
+										<li v-for="t in contentList" v-if="t.parent == 1">
+											<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+											{{t.name}}
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="mask-list">
-					<div class="mask-list-name"><span>*</span><span class="text">角色账号</span>：</div>
-					<div class="mask-list-value">
-						<input type="text" name="" value="" id="account" class="required" />
-					</div>
-				</div>
-				<div class="mask-list">
-					<div class="mask-list-name"><span>*</span><span class="text">角色密码</span>：</div>
-					<div class="mask-list-value">
-						<input type="password" name="" value="" id="password" class="required password" />
-						<div class="mask-list-prompt">4-16位数字或字母，区分大小写</div>
-					</div>
-				</div>
-			</div>
-			<div class="mask-btn-box">
 				<div class="btn-box">
-					<div class="btn icon icon-save" onclick="edit();" id="creatsave">确定</div>
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
+		param.roleType = "";
+		param.showPassword = true;
+		loadVue(".v-dom", param);
+
+		function selectRoleType() {
+			var roleTypeMap = {
+				"": [],
+				"admin": ["3", "4", "5", "6", "7", "8", "9", "10", "18", "19", "20", "21"],
+				"monitor": ["3", "4", "5", "6", "7", "8", "9"],
+				"engineer": ["3", "18", "19", "20", "21"],
+				"charger": ["3", "4", "5", "6", "7", "8", "9", "18", "19", "20", "21"]
+			}
+			var roleType = $("#roleType").val();
+			setData.roleType = roleType;
+			if(accountInfo.su == 1) {
+				if(roleType == "") {
+					setData.roleType = "admin";
+				}
+			}
+			resetPrivilege(roleTypeMap[roleType]);
+		}
+
+		//重置权限选中状态
+		function resetPrivilege(privilegeList) {
+			var contentList = setData.contentList;
+			for(var i = 0; i < contentList.length; i++) {
+				contentList[i].isActive = false;
+				for(var j = 0; j < privilegeList.length; j++) {
+					if(contentList[i].id == privilegeList[j]) {
+						contentList[i].isActive = true;
+					}
+				}
+			}
+		}
+
 		//编辑
-		function edit() {
+		function save() {
 			var checkI = checkInput();
 			if(checkI == true) {
+				var parentData = setData.parentData;
+				var contentList = setData.contentList;
+				var privilegeList = [];
+				for(var i = 0; i < contentList.length; i++) {
+					if(contentList[i].isActive) {
+						privilegeList.push(contentList[i].id);
+					}
+				}
 				var param = {
-					id: $(".main-mask").attr("data-id"),
+					roleType: $("#roleType").val(),
 					name: $("#name").val(),
+					telephone: $("#telephone").val(),
 					account: $("#account").val(),
-					password: $("#password").val(),
-					privillege: JSON.stringify(accountInfo.privillege)
+					privilegeList: privilegeList
 				};
-				request('POST', '/account/administrator/saveOrUpdate.do', param, true, function(res) {
-					parent.layer.close(index);
+				if(parentData) {
+					param.id = parentData.id;
+				} else {
+					param.password = $("#password").val();
+				}
+				request('POST', '/sinuo/administrator/saveOrUpdate.do', param, true, function(res) {
+					closeMask();
 					parent.layer.msg("操作成功");
+					parent.loadData();
 				}, function(res) {
 					if(res.code == "0004") {
-						layer.msg("该角色已存在，请勿重复操作");
+						layer.msg("该用户已存在");
 					} else {
-						layer.msg('操作失败，请检查网络或重试');
+						layer.msg('操作失败');
 					}
 				})
 			}

@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>邻客综合管理平台</title>
+		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -12,52 +12,53 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
-		<script src="../js/photoloadinit.js"></script>
-		<script src="../js/photoload.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=62b1256164"></script>
-		<script src="../js/common.js?v=fab245d574"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="main-mask VDOM" v-cloak>
-			<div class="con">
-				<div class="kjy-panel-box" v-for="t in checkTaskInfo.standardExecutionList">
-					<div class="kjy-title-box">
-						<div class="kjy-title-inner-box">
-							<div class="kjy-title-text">
-								{{t.standardName}}({{t.standardCode}})
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="mask-box">
+				<div class="mask-inner-box">
+					<div class="mask-content-box" v-for="t in contentList">
+						<div class="mask-list">
+							<div class="mask-list-name"><span class="text">点位名称</span>：</div>
+							<div class="mask-list-value">
+								<div class="mask-list-value-text">{{t.checkPointName}}</div>
+							</div>
+						</div>
+						<div class="mask-list">
+							<div class="mask-list-name"><span class="text">结果描述</span>：</div>
+							<div class="mask-list-value">
+								<div class="mask-textarea-box">{{t.checkDescription}}</div>
+							</div>
+						</div>
+						<div class="mask-list">
+							<div class="mask-list-name"><span class="text">结果图片</span>：</div>
+							<div class="mask-list-value">
+								<div class="mask-content-box">
+									<div class="img-box" v-for="image in t.checkImageList">
+										<img v-bind:src="image" onerror="this.src='../img/common/no-img.png'" />
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="kjy-content-box">
-						<div class="kjy-content-img-box">
-							<div class="img-box">
-								<img src="../img/common/common-bg.png" alt="" onerror="this.src='../img/common/no-img.png'" />
-							</div>
-							<div class="img-box">
-								<img src="../img/common/common-bg.png" alt="" onerror="this.src='../img/common/no-img.png'" />
-							</div>
-							<div class="img-box">
-								<img src="../img/common/common-bg.png" alt="" onerror="this.src='../img/common/no-img.png'" />
-							</div>
-						</div>
-						<div class="kjy-content-text">完成描述</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="closeMask();">返回</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
-		param.checkTaskInfo = {};
-		loadVue(param);
-
-		function loadCheckResultExecution(checkTaskInfo) {
-			setData.checkTaskInfo = checkTaskInfo;
-		}
+		loadVue(".v-dom", param);
 	</script>
 
 </html>

@@ -12,40 +12,29 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=a1737cc854" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=eb33ce4333"></script>
-		<script src="../js/common.js?v=889bbfc9d1"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
-			<div class="tab-box">
-				<div class="tab-inner-box">
-					<ul class="tab-title-box">
-						<li v-bind:class="selected == t.id?'selected':''" v-for="t in menuList" v-on:click="setPath(t.id);">{{t.name}}</li>
-					</ul>
-					<div class="tab-content-box">
-						<iframe v-bind:src="path" frameborder='0' marginheight='0' marginwidth='0' scrolling='yes'></iframe>
-					</div>
-				</div>
+		<div class="kjy-box kjy-flex-box kjy-content-box v-dom" v-cloak>
+			<div class="kjy-title-box">
+				<div class="kjy-title-text">事件中心</div>
+			</div>
+			<ul class="tab-list-box">
+				<li v-for="t in menuList" v-bind:class="selected == t.id?'selected':''" v-on:click="setPath(t.id);">{{t.name}}</li>
+			</ul>
+			<div class="tab-content-box">
+				<iframe v-bind:src="path" name="mainIframe" frameborder='0' marginheight='0' marginwidth='0' scrolling='yes'></iframe>
 			</div>
 		</div>
 	</body>
 	<script>
-		loadVue(param);
-
-		function loadMenu() {
-			setData.menuList = [{
-				id: "0",
-				name: "监控点事件",
-				path: "pointEvent"
-			}]
-			setPath("0");
-		}
-		loadMenu();
+		loadVue(".v-dom", param);
 	</script>
 
 </html>

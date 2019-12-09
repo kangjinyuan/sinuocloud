@@ -3,12 +3,12 @@
         "id":"0-0",
         "csub":[
             {
-            	"src":"img/index/icon-surveillance.png",
+            	"src":"img/icon/icon-surveillance.png",
                 "x":"200",
                 "y":"200"
             },
             {
-            	"src":"img/index/icon-surveillance.png",
+            	"src":"img/icon/icon-surveillance.png",
                 "x":"200",
                 "y":"300"
             }
@@ -18,12 +18,12 @@
         "id":"0-1",
         "csub":[
         	{
-        		"src":"img/index/icon-surveillance.png",
+        		"src":"img/icon/icon-surveillance.png",
                 "x":"300",
                 "y":"200"
         	},
         	{
-        		"src":"img/index/icon-surveillance.png",
+        		"src":"img/icon/icon-surveillance.png",
                 "x":"300",
                 "y":"400"
         	}

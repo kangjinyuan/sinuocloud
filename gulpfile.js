@@ -11,7 +11,7 @@ var app = "js/app.js",
 	init = "js/init.js",
 	login = "js/login.js",
 	rightNav = "js/rightNav.js",
-	selectExcel = "js/selectExcel.js",
+	selectData = "js/selectData.js",
 	upload = "js/upload.js",
 	postUrl = "js/postUrl.js",
 	editInit = "js/editInit.js",
@@ -22,7 +22,7 @@ var app = "js/app.js",
 	logincss = "css/login.css",
 	maincss = "css/main.css";
 
-var jsonArr = [app, common, init, login, rightNav, selectExcel, upload, postUrl, editInit, ChinaNumToEnglishNum, appcss, commoncss, logincss, maincss];
+var jsonArr = [app, common, init, login, rightNav, selectData, upload, postUrl, editInit, ChinaNumToEnglishNum, appcss, commoncss, logincss, maincss];
 
 //生成对应的json文件
 //teskName:任务名称

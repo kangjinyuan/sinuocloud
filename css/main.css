@@ -23,7 +23,7 @@
 .user-info-box{width: 30%;}
 .user-info-inner-box{width: auto;padding-right: 72px;margin-left: 61.5px;height: 100%;font: 12px/52px 微软雅黑;color: #34e4ff;text-align: right;background:url(../img/common/header-user-info-box-bg.png) right bottom no-repeat;background-size: auto 53px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
 .user-info-inner-box span{margin-right: 12px;}
-.quit{cursor: pointer;width: 20px;height: 20px;background: url(../img/common/icon-quit.png) center center no-repeat;background-size: 100% 100%;right: 18px;}
+.quit{cursor: pointer;width: 20px;height: 20px;background: url(../img/icon/icon-quit.png) center center no-repeat;background-size: 100% 100%;right: 18px;}
 .header-animate3-bg{width: 61.5px;height: 61.5px;background-image: url(../img/common/header-animate3-bg.png);left: 0;top: 7px;}
 .header-animate3{width: 36px;height: 36px;background-image: url(../img/common/header-animate3.png);animation: headerAnimate 3s linear 0s infinite normal;-webkit-animation: headerAnimate 3s linear 0s infinite normal;-moz-animation: headerAnimate 3s linear 0s infinite normal;-ms-animation: headerAnimate 3s linear 0s infinite normal;-o-animation: headerAnimate 3s linear 0s infinite normal;}
 

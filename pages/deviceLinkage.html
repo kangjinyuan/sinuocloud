@@ -1,0 +1,193 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/animate.min.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="search-box">
+				<div class="search-row-box">
+					<div class="search-list-box">
+						<div class="search-list">
+							<div class="search-name">消防设备：</div>
+							<div class="search-value">
+								<input type="text" name="" value="" id="fireDeviceName" placeholder="消防设备" />
+							</div>
+						</div>
+					</div>
+					<div class="search-btn-box">
+						<div class="btn" onclick="search();">查询</div>
+						<div class="btn" onclick="reloadPage();">重置</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="deviceLinkage();">新建</div>
+					<div class="btn" onclick="del();">删除</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="decorate-list common-left-top-decorate position-left-top"></div>
+				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+				<div class="decorate-list common-right-top-decorate position-right-top"></div>
+				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="no-data-inner-box">
+							<div class="icon icon-no-data"></div>
+							<div class="no-data-text">暂时没有联动记录哦</div>
+						</div>
+					</div>
+				</div>
+				<div class="kjy-data-inner-box" v-else>
+					<div class="kjy-table">
+						<table>
+							<thead>
+								<tr>
+									<th class="padding40">
+										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
+									<th>消防设备</th>
+									<th>监控点</th>
+									<th>创建时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td class="padding40">
+										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*20)+(i+1)}}</td>
+									<td>{{t.fireDeviceName}}</td>
+									<td>{{t.cameraDeviceName}}</td>
+									<td>{{t.createTime}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="deviceLinkage(t);">编辑</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="page-box"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.videoLinkageType = [];
+		loadVue(".v-dom", param);
+
+		function deviceLinkage(obj) {
+			openMask("/part/deviceLinkage", ["530px", "360px"], function(layerDom, layerIframe) {
+				var videoLinkageType = setData.videoLinkageType;
+				for(var i = 0; i < videoLinkageType.length; i++) {
+					resetData(1, videoLinkageType[i]);
+				}
+				layerIframe.setData.videoLinkageType = videoLinkageType;
+				if(obj) {
+					layerIframe.setData.parentData = obj;
+					layerIframe.loadDevice();
+					layerIframe.loadVideoLinkageType();
+					layerDom.find(".select-device-box").hide();
+					layerDom.find("#deviceName").val(obj.fireDeviceName);
+					layerDom.find("#indexCode").val(obj.fireDeviceIndexCode);
+				}
+			});
+		}
+
+		//删除数据
+		function del() {
+			if(idList.length == 0) {
+				layer.msg("请选择视频联动");
+				return false;
+			}
+			openConfirm("确定删除所选视频联动？", function() {
+				var param = {
+					idList: idList
+				}
+				request('POST', '/sinuo/event/v1/deleteVideoLinkage', param, true, function(res) {
+					loadData();
+					layer.closeAll('dialog');
+				}, function(res) {
+					layer.msg("删除失败");
+				})
+			})
+		}
+
+		function resetData(flag, obj) {
+			if(flag == 0) {
+				obj.isActive = false;
+				obj.animatedName = "fadeInUp";
+				var cameraDeviceList = obj.cameraDeviceList;
+				var cameraDeviceName = [];
+				for(var j = 0; j < cameraDeviceList.length; j++) {
+					cameraDeviceList[j].deviceName = cameraDeviceList[j].cameraDeviceName;
+					cameraDeviceList[j].indexCode = cameraDeviceList[j].cameraDeviceIndexCode;
+					cameraDeviceName.push(cameraDeviceList[j].cameraDeviceName);
+				}
+				obj.cameraDeviceName = cameraDeviceName.join(",");
+			} else if(flag == 1) {
+				obj.isActive = false;
+				if(obj.id == 1 || obj.id == 2) {
+					obj.isActive = true;
+				}
+			}
+		}
+
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20,
+				fireDeviceName: $("#fireDeviceName").val()
+			};
+			request("POST", "/sinuo/event/v1/findVideoLinkageList", param, true, function(res) {
+				var dataList = res.data.dataList;
+				resetDataList(function() {
+					for(var i = 0; i < dataList.length; i++) {
+						resetData(0, dataList[i]);
+					}
+					setData.dataList = dataList;
+					setData.allIsActive = false;
+					loadPage();
+				})
+			});
+		}
+
+		function loadVideoLinkageType() {
+			var param = {};
+			request("POST", "/sinuo/event/v1/findVideoLinkageType", param, true, function(res) {
+				var dataList = res.data;
+				for(var i = 0; i < dataList.length; i++) {
+					resetData(1, dataList[i]);
+				}
+				setData.videoLinkageType = dataList;
+			}, function(res) {
+				layer.msg("联动类型加载失败");
+			});
+		}
+
+		loadData();
+		loadVideoLinkageType();
+	</script>
+
+</html>

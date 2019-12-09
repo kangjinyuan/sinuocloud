@@ -1,0 +1,265 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/animate.min.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="search-box">
+				<div class="search-row-box">
+					<div class="search-list-box">
+						<div class="search-list">
+							<div class="search-name">事件类型：</div>
+							<div class="search-value">
+								<select name="" required="required" id="eventTypeId" v-on:change="search();">
+									<option value="">事件类型</option>
+									<option v-bind:value="t.eventTypeId" v-for="t in eventType">{{t.eventName}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="search-list">
+							<div class="search-name">监控点：</div>
+							<div class="search-value">
+								<input type="text" name="" value="" id="monitorPointName" placeholder="监控点" />
+							</div>
+						</div>
+						<div class="search-list">
+							<div class="search-name">是否启用：</div>
+							<div class="search-value">
+								<select name="" required="required" id="status" v-on:change="search();">
+									<option value="">是否启用</option>
+									<option value="1">是</option>
+									<option value="0">否</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="search-btn-box">
+						<div class="btn" onclick="search();">查询</div>
+						<div class="btn" onclick="reloadPage();">重置</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="eventRegister();">新建</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="decorate-list common-left-top-decorate position-left-top"></div>
+				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+				<div class="decorate-list common-right-top-decorate position-right-top"></div>
+				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="no-data-inner-box">
+							<div class="icon icon-no-data"></div>
+							<div class="no-data-text">暂时没有事件记录哦</div>
+						</div>
+					</div>
+				</div>
+				<div class="kjy-data-inner-box" v-else>
+					<div class="kjy-table">
+						<table>
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>监控点</th>
+									<th>事件类型</th>
+									<th>报警级别</th>
+									<th>是否启用</th>
+									<th>创建时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td>{{t.monitorPointName}}</td>
+									<td>{{t.eventName}}</td>
+									<td v-if="t.alarmLvl == 0">{{t.alarmLvlText}}</td>
+									<td v-else-if="t.alarmLvl == 1" class="grade-text-color0">{{t.alarmLvlText}}</td>
+									<td v-else-if="t.alarmLvl == 2" class="grade-text-color1">{{t.alarmLvlText}}</td>
+									<td v-else="t.alarmLvl == 3" class="grade-text-color2">{{t.alarmLvlText}}</td>
+									<td>{{t.statusText}}</td>
+									<td>{{t.createTime}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="changeStatus(t);">{{t.status == 0?'启用':'禁用'}}</li>
+											<li v-on:click="eventRegister(t);">编辑</li>
+											<li v-on:click="del(t);">删除</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="page-box"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.eventType = [];
+		loadVue(".v-dom", param);
+
+		function changeStatus(obj) {
+			if(obj.status == "0") {
+				var status = "1";
+			} else if(obj.status == "1") {
+				var status = "0";
+			}
+			var param = {
+				createEventId: obj.createEventId,
+				status: status
+			}
+			request("POST", "/sinuo/event/v1/modifyEventStatus", param, true, function(res) {
+				layer.msg("操作成功");
+				loadData();
+			}, function(res) {
+				layer.msg("操作失败");
+			})
+		}
+
+		function eventRegister(obj) {
+			openMask("/part/eventRegister", ["512px", "360px"], function(layerDom, layerIframe) {
+				var eventType = setData.eventType;
+				for(var i = 0; i < eventType.length; i++) {
+					resetData(1, eventType[i]);
+				}
+				layerIframe.setData.eventType = eventType;
+				if(obj) {
+					var armingCycle = obj.armingCycle;
+					var armingCycleNumber = armingCycle.length;
+					layerIframe.setData.parentData = obj;
+					layerIframe.loadEventType();
+					layerDom.find(".select-monitor-box").hide();
+					layerDom.find("#deviceName").val(obj.monitorPointName);
+					layerDom.find("#indexCode").val(obj.monitorPointCode);
+					layerDom.find("#eventLevel").val(obj.alarmLvl);
+					layerDom.find("#armingCycleNumber").val(armingCycleNumber);
+					layerIframe.setAlarmCycle(function() {
+						for(var i = 0; i < armingCycleNumber; i++) {
+							layerDom.find(".start-time").eq(i).val(armingCycle[i].startTime);
+							layerDom.find(".end-time").eq(i).val(armingCycle[i].endTime);
+						}
+					});
+				}
+			});
+		}
+
+		//删除数据
+		function del(obj) {
+			openConfirm("确定删除该事件？", function() {
+				var param = {
+					createEventId: obj.createEventId
+				}
+				request('POST', '/sinuo/event/v1/deleteEvent', param, true, function(res) {
+					loadData();
+					layer.closeAll('dialog');
+				}, function(res) {
+					layer.msg("删除失败");
+				})
+			})
+		}
+
+		function resetData(flag, obj) {
+			if(flag == 0) {
+				obj.isActive = false;
+				obj.animatedName = "fadeInUp";
+				if(obj.alarmLvl == "0") {
+					obj.alarmLvlText = "无";
+				} else if(obj.alarmLvl == "1") {
+					obj.alarmLvlText = "Ⅰ级";
+				} else if(obj.alarmLvl == "2") {
+					obj.alarmLvlText = "Ⅱ级";
+				} else if(obj.alarmLvl == "3") {
+					obj.alarmLvlText = "Ⅲ级";
+				}
+				if(obj.status == "0") {
+					obj.statusText = "否";
+				} else if(obj.status == "1") {
+					obj.statusText = "是";
+				}
+				var eventData = obj.eventData;
+				var eventName = [];
+				for(var i = 0; i < eventData.length; i++) {
+					eventName.push(eventData[i].eventName);
+				}
+				obj.eventName = eventName.join(",");
+				var armingCycle = [];
+				var armingCycleRange = obj.armingCycle.split(",");
+				for(var i = 0; i < armingCycleRange.length; i++) {
+					var timeArray = armingCycleRange[i].split("-");
+					var time = {
+						startTime: timeArray[0],
+						endTime: timeArray[1]
+					}
+					armingCycle.push(time);
+				}
+				obj.armingCycle = armingCycle;
+			} else if(flag == 1) {
+				obj.isActive = false;
+			}
+		}
+
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20,
+				eventTypeId: $("#eventTypeId").val(),
+				monitorPointName: $("#monitorPointName").val(),
+				status: $("#status").val()
+			};
+			request("POST", "/sinuo/event/v1/getCreateEventList", param, true, function(res) {
+				var dataList = res.data.dataList;
+				resetDataList(function() {
+					for(var i = 0; i < dataList.length; i++) {
+						resetData(0, dataList[i]);
+					}
+					setData.dataList = dataList;
+					setData.allIsActive = false;
+					loadPage();
+				})
+			}, function(res) {
+				layer.msg("事件记录加载失败");
+			});
+		}
+
+		function loadEventType() {
+			var param = {};
+			request("POST", "/sinuo/event/v1/getEventType", param, true, function(res) {
+				var dataList = res.data;
+				for(var i = 0; i < dataList.length; i++) {
+					resetData(1, dataList[i]);
+				}
+				setData.eventType = dataList;
+			}, function(res) {
+				layer.msg("事件类型加载失败");
+			});
+		}
+
+		loadEventType();
+		loadData();
+	</script>
+
+</html>

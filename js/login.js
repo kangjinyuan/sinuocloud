@@ -47,9 +47,9 @@ function login() {
 		account: $('#account').val(),
 		password: $("#password").val()
 	}
-	request('POST', '/administrator/login.do', param, true, function(res) {
-		window.localStorage.setItem("accessToken", res.accessToken);
-		window.localStorage.setItem("accountInfo", JSON.stringify(res.data));
+	request('POST', '/sinuo/administrator/login.do', param, true, function(res) {
+		var accountInfo = res.data;
+		window.localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
 		window.location.href = "main.html?timestamp=" + timestamp;
 	}, function(res) {
 		if(res.code == "0005") {

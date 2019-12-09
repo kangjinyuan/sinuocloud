@@ -12,64 +12,129 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
-		<script src="../js/postUrl.js?v=62b1256164"></script>
-		<script src="../js/common.js?v=fab245d574"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="main-mask main-mask-bottom">
-			<div class="con">
-				<div class="mask-list">
-					<div class="mask-list-name"><span>*</span><span class="text">点位名称</span>：</div>
-					<div class="mask-list-value">
-						<input type="text" name="" id="standardName" value="" class="required big len30" />
-						<div class="mask-list-prompt">点位名称不超过30个字</div>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="mask-box v-dom">
+				<div class="mask-inner-box">
+					<div class="mask-list">
+						<div class="mask-list-name">点位名称：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="name" value="" class="required" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">二维码编码：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="qrCode" value="" placeholder="字母或数字" class="required regular-code" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">NFC编码：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="nfcCode" value="" placeholder="字母或数字" class="required regular-code" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">巡查内容：</div>
+						<div class="mask-list-value">
+							<div class="no-content-box width-104" v-if="contentList.length == 0">暂无巡查内容</div>
+							<div class="mask-value-list-box" v-else>
+								<div class="mask-value-list" v-for="(t,i) in contentList">
+									<input type="text" name="" v-bind:value="t" v-bind:placeholder="'巡查内容'+(i+1)" class="width-104 pointContent" v-on:input="resetContentList($event,i)" />
+									<div class="icon icon-del-range" v-on:click="delContent(i);"></div>
+								</div>
+							</div>
+						</div>
+						<div class="btn-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="addContent();">添加</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="mask-list">
-					<div class="mask-list-name"><span>*</span><span class="text">点位编码</span>：</div>
-					<div class="mask-list-value">
-						<input type="text" name="" id="standardCode" value="" class="required regular-code" placeholder="填写字母和数字" />
-					</div>
-				</div>
-				<div class="mask-list">
-					<div class="mask-list-name"><span>*</span><span class="text">点位描述</span>：</div>
-					<div class="mask-list-value">
-						<input type="text" name="" value="" id="standardDescription" class="required big" />
-					</div>
-				</div>
-			</div>
-			<div class="mask-btn-box">
 				<div class="btn-box">
-					<div class="btn icon icon-save" onclick="edit();" id="creatsave">确定</div>
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
+		loadVue(".v-dom", param);
+
+		function addContent() {
+			var contentList = setData.contentList;
+			if(contentList.length == 5) {
+				layer.msg("最多添加5个巡查内容");
+				return false;
+			}
+			contentList.push("");
+		}
+
+		function resetContentList(event, i) {
+			var ev = event.currentTarget;
+			setData.contentList[i] = $(ev).val();
+		}
+
 		//编辑
-		function edit() {
+		function save() {
 			var checkI = checkInput();
 			if(checkI == true) {
+				var parentData = setData.parentData;
+				var contentList = setData.contentList;
+				if(contentList.length == 0) {
+					layer.msg("请添加巡查内容");
+					return false;
+				} else {
+					for(var i = 0; i < contentList.length; i++) {
+						if(contentList[i] == "") {
+							layer.msg("请完善巡查内容");
+							return false;
+						}
+						if(contentList[i].length >= 120) {
+							layer.msg("第" + (i + 1) + "个巡查内容字数过长，最大字数120字");
+							return false;
+						}
+					}
+				}
 				var param = {
-					id: $(".main-mask").attr("data-id"),
-					standardName: $("#standardName").val(),
-					standardCode: $("#standardCode").val(),
-					standardDescription: $("#standardDescription").val()
+					name: $("#name").val(),
+					qrCode: $("#qrCode").val(),
+					nfcCode: $("#nfcCode").val(),
+					contentList: contentList
 				};
-				request('POST', '/property/checkStandard/saveOrUpdate.do', param, true, function(res) {
-					parent.layer.close(index);
+				if(parentData) {
+					param.id = parentData.id
+				}
+				request('POST', '/sinuo/checkPoint/saveOrUpdate.do', param, true, function(res) {
+					closeMask();
 					parent.layer.msg("操作成功");
+					parent.loadData();
 				}, function(res) {
 					if(res.code == "0004") {
 						layer.msg("该点位已存在，请勿重复操作");
 					} else {
-						layer.msg('操作失败，请检查网络或重试');
+						layer.msg('操作失败');
 					}
 				})
+			}
+		}
+
+		function loadContentList() {
+			var parentData = setData.parentData;
+			var contentList = parentData.contentList;
+			for(var i = 0; i < contentList.length; i++) {
+				setData.contentList.push(contentList[i]);
 			}
 		}
 	</script>

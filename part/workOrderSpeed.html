@@ -1,0 +1,67 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="mask-box">
+				<div class="mask-inner-box">
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">负责人</span>：</div>
+						<div class="mask-list-value">
+							<div class="mask-list-value-text">{{parentData.charger?parentData.charger:'无'}}</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">处理进度</span>：</div>
+						<div class="mask-list-value">
+							<div class="speed-box">
+								<div class="speed-list-box" v-for="(t,i) in parentData.eventList">
+									<div v-bind:class="i ==0?'icon-speed-select-circle':'icon-speed-circle'"></div>
+									<div class="speed-list-inner-box">
+										<div class="speed-list-text">{{t.event}}</div>
+										<div class="speed-list-text">{{t.eventDetail}}</div>
+										<div class="speed-list-text">{{t.createTime}}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name"><span class="text">备注</span>：</div>
+						<div class="mask-list-value">
+							<div class="mask-textarea-box">{{parentData.orderDetail}}</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(".v-dom", param);
+	</script>
+
+</html>

@@ -40,7 +40,7 @@ var param = {
 	allIsActive: false,
 	totalPage: 0,
 	pageSize: 0,
-	currentPage: 0,
+	pageNo: 0,
 	count: 0,
 	dataLength: 0
 }
@@ -172,9 +172,10 @@ function loadTimeSlot(date, callback) {
 	}, 1000);
 }
 
-function loadVue(param) {
+//加载VUE
+function loadVue(el, param) {
 	setData = new Vue({
-		el: '.VDOM',
+		el: el,
 		data: param,
 		filters: {
 			resetTime: function(time, flag) {
@@ -242,10 +243,9 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 				setData.dataLength = res.data.length;
 				setData.totalPage = res.totalPage;
 				setData.pageSize = res.pageSize;
-				setData.currentPage = res.currentPage;
+				setData.pageNo = res.pageNo;
 				setData.count = res.count;
 			}
-			if($(".VDOM").length > 0) {
 				nextTick(function() {
 					if(window.loadMore) {
 						loadMore();
@@ -253,7 +253,6 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 						banner();
 					}
 				});
-			}
 			if(showLoading == true) {
 				layer.closeAll('loading');
 			}
@@ -395,7 +394,7 @@ function scrollpage(dom, callback) {
 	$(window).scroll(function() {
 		var dot = 1;
 		if(dot + $(window).scrollTop() > (dom.height() - $(window).height())) {
-			if(page == setData.currentPage) {
+			if(page == setData.pageNo) {
 				page++;
 				if(page > setData.totalPage) {
 					page = setData.totalPage;

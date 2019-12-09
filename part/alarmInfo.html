@@ -12,35 +12,140 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<link rel="stylesheet" href="../css/swiper.min.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../js/swiper.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
-		<script src="../js/photoloadinit.js"></script>
-		<script src="../js/photoload.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=62b1256164"></script>
-		<script src="../js/common.js?v=fab245d574"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="main-mask VDOM" v-cloak>
-			<div class="con">
-				<div class="mask-list">
-					<div class="mask-list-name"><span class="text">报警图片：</div>
-					<div class="mask-list-value">
-						<div class="img-box" v-for="image in alarmInfo.imageList">
-							<img v-bind:src="image" alt="" onerror="this.src='../img/common/no-img.png'" />
+		<div class="kjy-box kjy-flex-box v-dom">
+			<div class="mask-box">
+				<div class="mask-inner-box">
+					<div class="event-info-box">
+						<div class="event-info-img-box">
+							<div class="full-box" v-if="parentData.catchImageList == 0">
+								<div class="no-data-box">
+									<div class="no-data-row-text">暂时没有抓拍图片哦</div>
+								</div>
+							</div>
+							<div class="swiper-container" v-else>
+								<ul class="swiper-wrapper">
+									<li class="swiper-slide" v-for="image in parentData.catchImageList">
+										<div class="img-box">
+											<img v-bind:src="image" onerror="this.src='../img/common/no-img.png'" />
+										</div>
+									</li>
+								</ul>
+								<div class="swiper-pagination"></div>
+							</div>
 						</div>
+						<div class="event-info-content-box">
+							<div class="event-info-content-inner-box">
+								<div class="mask-title-box">报警信息</div>
+								<div class="cut-line mask-cut-line-bg"></div>
+								<div class="mask-content-box">
+									<div class="mask-content-text">报警位置：{{parentData.alarmLocation?parentData.alarmLocation:'暂无报警位置'}}</div>
+									<div class="mask-content-text">报警类型：{{parentData.alarmType}}</div>
+									<div class="mask-content-text">报警级别：
+										<span v-if="parentData.eventLvl == 0">{{parentData.eventLvlText}}</span>
+										<span class="grade-text-color0" v-else-if="parentData.eventLvl == 1">{{parentData.eventLvlText}}</span>
+										<span class="grade-text-color1" v-else-if="parentData.eventLvl == 2">{{parentData.eventLvlText}}</span>
+										<span class="grade-text-color2" v-else>{{parentData.eventLvlText}}</span>
+									</div>
+									<div class="mask-content-text">报警时间：{{parentData.alarmTime}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="workOrder();">生成工单</div>
+						<div class="btn" onclick="alarmHandle();" v-if="parentData.processStatus == 0">处理</div>
+						<div class="btn" onclick="videoSurveillance();">现场视频</div>
+						<div class="btn" onclick="closeMask();">返回</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
-	<script>
-		param.alarmInfo = {
-			imageList:["../img/common/common-bg.png","../img/common/common-bg.png","../img/common/common-bg.png"]
-		};
-		loadVue(param);
+	<script type="text/javascript">
+		loadVue(".v-dom", param);
+
+		function videoSurveillance() {
+			var parentData = setData.parentData;
+			if(parentData.deviceLogo == "1") {
+				var param = {
+					indexCode: parentData.fireIndexCode
+				}
+				request("POST", "/sinuo/alarmEvent/v1/lookSiteVideo", param, true, function(res) {
+					var dataList = res.data;
+					if(dataList.length == 0) {
+						layer.msg("该设备没有联动监控点");
+						return false;
+					}
+					showVideoSurveillance(dataList);
+				}, function(res) {
+					layer.msg("获取联动监控点失败");
+				});
+			} else if(parentData.deviceLogo = "2") {
+				var dataList = [{
+					id: parentData.deviceId,
+					cameraDeviceName: parentData.deviceName,
+					cameraDeviceIndexCode: parentData.cameraIndexCode
+				}]
+				showVideoSurveillance(dataList);
+			}
+		}
+
+		function showVideoSurveillance(dataList) {
+			var parentData = setData.parentData;
+			parent.openMask("/part/videoSurveillance", ["90%", "90%"], function(layerDom, layerIframe) {
+				layerIframe.setData.parentData = parentData;
+				layerIframe.setData.dataList = dataList;
+				layerIframe.tabCamera(dataList[0]);
+			})
+		}
+
+		function workOrder() {
+			var parentData = setData.parentData;
+			parent.openMask("/part/workOrder", ["460px", "380px"], function(layerDom, layerIframe) {
+				layerDom.find(".select-device-box").hide();
+				layerDom.find("#deviceName").val(parentData.deviceName);
+				layerDom.find("#deviceId").val(parentData.deviceId);
+				layerDom.find("#orderAddress").val(parentData.alarmLocation);
+			});
+		}
+
+		function alarmHandle() {
+			var parentData = setData.parentData;
+			parent.openMask("/part/alarmHandle", ["300px", "160px"], function(layerDom, layerIframe) {
+				layerIframe.setData.parentData = parentData;
+			});
+		}
+
+		function setSwiper() {
+			nextTick(function() {
+				var mySwiper = new Swiper('.swiper-container', {
+					direction: 'horizontal',
+					loop: true,
+					autoplay: {
+						delay: 5000,
+						stopOnLastSlide: false,
+						disableOnInteraction: true,
+					},
+					pagination: {
+						el: '.swiper-pagination',
+						clickable: true
+					}
+				})
+			})
+		}
 	</script>
 
 </html>

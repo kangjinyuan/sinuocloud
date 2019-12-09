@@ -12,108 +12,118 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=1c1ac2354f" />
+		<link rel="stylesheet" href="../css/animate.min.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=62b1256164"></script>
-		<script src="../js/common.js?v=fab245d574"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
 			<div class="search-box">
-				<div class="search-list-box">
-					<div class="search-list">
-						<div class="search-name">点位名称：</div>
-						<div class="search-value">
-							<input type="text" name="" value="" id="standardName" placeholder="输入点位名称" />
+				<div class="search-row-box">
+					<div class="search-list-box">
+						<div class="search-list">
+							<div class="search-name">点位名称：</div>
+							<div class="search-value">
+								<input type="text" name="" value="" id="name" placeholder="点位名称" />
+							</div>
 						</div>
 					</div>
-					<div class="search-list">
-						<div class="search-name">点位编码：</div>
-						<div class="search-value">
-							<input type="text" name="" value="" id="standardCode" placeholder="输入点位编码" />
-						</div>
+					<div class="search-btn-box">
+						<div class="btn" onclick="search();">查询</div>
+						<div class="btn" onclick="reloadPage();">重置</div>
 					</div>
 				</div>
 			</div>
 			<div class="btn-box">
 				<div class="btn-inner-box">
-					<div class="btn" onclick="sreach();">查询</div>
-					<div class="btn" onclick="showCheckPoint(0,'','新建点位')">新建点位</div>
+					<div class="btn" onclick="checkPoint()">新建</div>
 					<div class="btn" onclick="del();">删除</div>
-					<div class="btn" onclick="reloadPage();">重置</div>
 				</div>
 			</div>
 			<div class="kjy-data-box">
+				<div class="decorate-list common-left-top-decorate position-left-top"></div>
+				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+				<div class="decorate-list common-right-top-decorate position-right-top"></div>
+				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
 				<div class="full-box" v-if="dataList.length == 0">
 					<div class="no-data-box">
-						<div class="icon icon-no-data"></div>
-						<div class="no-data-text">暂时没有巡查点位哦</div>
+						<div class="no-data-inner-box">
+							<div class="icon icon-no-data"></div>
+							<div class="no-data-text">暂时没有巡查点位哦</div>
+						</div>
 					</div>
 				</div>
-				<div class="kjy-table" v-else>
-					<table>
-						<thead>
-							<tr>
-								<th class="padding20">
-									<div v-bind:class="['no-check',allIsActive?'checked':'']" v-on:click="selectAllData()"></div>序号</th>
-								<th>点位名称</th>
-								<th>点位编码</th>
-								<th>点位描述</th>
-								<th>操作</th>
-							</tr>
-						</thead>
+				<div class="kjy-data-inner-box">
+					<div class="kjy-table">
+						<table>
+							<thead>
+								<tr>
+									<th class="padding40">
+										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
+									<th>点位名称</th>
+									<th>二维码编码</th>
+									<th>NFC编码</th>
+									<th>操作</th>
+								</tr>
+							</thead>
 
-						<tbody id="tbody">
-							<tr v-for="(t,i) in dataList">
-								<td class="padding20">
-									<div v-bind:class="['no-check',t.isActive?'checked':'']" v-on:click="selectOneData(t)"></div>{{((currentPage-1)*20)+(i+1)}}</td>
-								<td>{{t.standardName}}</td>
-								<td>{{t.standardCode}}</td>
-								<td>{{t.standardDescription}}</td>
-								<td>
-									<div class="btn" v-on:click="showCheckPoint(1,t,'编辑点位')">编辑</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="page-box">
-				<div class="page-inner-box">
-					<div class="icon icon-first-page" onclick="firstPage()">首页</div>
-					<div class="icon icon-before-page" onclick="beforePage();">上一页</div>
-					<div class="icon icon-next-page" onclick="nextPage();">下一页</div>
-					<div class="icon icon-last-page" onclick="lastPage();">末页</div>
-					<div class="default page-input">第<input type="text" name="" v-bind:value="currentPage" />页</div>
-					<div class="icon icon-next-page" onclick="jumpPage();">跳转</div>
-					<div class="default">共<span>{{totalPage}}</span>页</div>
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td class="padding40">
+										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*20)+(i+1)}}</td>
+									<td>{{t.name}}</td>
+									<td>{{t.qrCode}}</td>
+									<td>{{t.nfcCode}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="checkPoint(t);">编辑</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="page-box"></div>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
-		loadVue(param);
+		loadVue(".v-dom", param);
+
 		//新建或编辑
-		function showCheckPoint(flag, obj, title) {
-			openMask(obj.id, "../part/checkPoint", title, "630px", "330px", function(layerDom, layerIframe) {
-				layerDom.find("#standardName").val(obj.standardName);
-				layerDom.find("#standardCode").val(obj.standardCode);
-				layerDom.find("#standardDescription").val(obj.standardDescription);
-				judeEdit(flag, layerDom);
-			})
+		function checkPoint(obj) {
+			openMask("/part/checkPoint", ["400px", "320px"], function(layerDom, layerIframe) {
+				if(obj) {
+					layerIframe.setData.parentData = obj;
+					layerIframe.loadContentList();
+					layerDom.find("#name").val(obj.name);
+					layerDom.find("#qrCode").val(obj.qrCode);
+					layerDom.find("#nfcCode").val(obj.nfcCode);
+				}
+			});
 		}
 
 		//删除数据
 		function del() {
-			delData("确定删除所选巡查点位吗？", function(param) {
-				request('POST', '/property/checkStandard/delete.do', param, true, function(res) {
+			if(idList.length == 0) {
+				layer.msg("请选择巡查点位");
+				return false;
+			}
+			openConfirm("确定删除所选巡查点位吗？", function() {
+				var param = {
+					idList: idList
+				}
+				request('POST', '/sinuo/checkPoint/delete.do', param, true, function(res) {
 					loadData();
 					layer.closeAll('dialog');
 				}, function(res) {
-					layer.msg("删除失败，请检查网络或重试");
+					layer.msg("删除失败");
 				})
 			})
 		}
@@ -122,16 +132,19 @@
 		function loadData() {
 			var param = {
 				pageNo: pageNo,
-				standardName: $("#standardName").val(),
-				standardCode: $("#standardCode").val()
+				name: $("#name").val()
 			};
-			request('POST', '/property/checkStandard/queryList.do', param, true, function(res) {
-				var dataList = res.data;
-				for(var i = 0; i < dataList.length; i++) {
-					dataList[i].isActive = false;
-				}
-				setData.dataList = dataList;
-				setData.allIsActive = false;
+			request('POST', '/sinuo/checkPoint/queryList.do', param, true, function(res) {
+				var dataList = res.data.dataList;
+				resetDataList(function() {
+					for(var i = 0; i < dataList.length; i++) {
+						dataList[i].isActive = false;
+						dataList[i].animatedName = "fadeInUp";
+					}
+					setData.dataList = dataList;
+					setData.allIsActive = false;
+					loadPage();
+				})
 			}, function() {
 				layer.msg("巡查点位加载失败");
 			})

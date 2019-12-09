@@ -1,0 +1,149 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
+		<link rel="stylesheet" href="../css/reset.css" />
+		<link rel="stylesheet" href="../layui/css/layui.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="mask-box">
+				<div class="mask-inner-box">
+					<div class="kjy-box kjy-flex-box">
+						<div class="search-box">
+							<div class="search-row-box">
+								<div class="search-list-box">
+									<div class="search-list">
+										<div class="search-name">设备名称：</div>
+										<div class="search-value">
+											<input type="text" name="" value="" id="deviceName" placeholder="设备名称" />
+										</div>
+									</div>
+									<div class="search-list">
+										<div class="search-name">设备地址：</div>
+										<div class="search-value">
+											<input type="text" name="" value="" id="deviceAddress" placeholder="设备地址" />
+										</div>
+									</div>
+								</div>
+								<div class="search-btn-box">
+									<div class="btn" onclick="search();">查询</div>
+								</div>
+							</div>
+						</div>
+						<div class="kjy-data-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="full-box" v-if="dataList.length == 0">
+								<div class="no-data-box">
+									<div class="no-data-inner-box">
+										<div class="icon icon-no-data"></div>
+										<div class="no-data-text">暂时没有设备记录哦</div>
+									</div>
+								</div>
+							</div>
+							<div class="kjy-data-inner-box" v-else>
+								<div class="kjy-table">
+									<table>
+										<thead>
+											<th class="padding40">序号</th>
+											<th>设备名称</th>
+											<th>设备类型</th>
+											<th>设备地址</th>
+											<th>设备状态</th>
+										</thead>
+										<tbody>
+											<tr v-for="(t,i) in dataList" v-on:click="tabData(t)">
+												<td class="padding40">
+													<div v-bind:class="['icon','icon-radio-box',t.isActive?'icon-radio-checked':'']"></div>{{((pageNo-1)*20)+(i+1)}}</td>
+												<td>{{t.deviceName}}</td>
+												<td>{{t.deviceTypeName}}</td>
+												<td>{{t.installLocation?t.installLocation:'暂无设备地址'}}</td>
+												<td>{{t.statusText}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="page-box"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.deviceLogo = "";
+		param.deviceTypeList = [];
+		loadVue(".v-dom", param);
+
+		//确定上一级页面参数
+		function save() {
+			if(!dataInfo) {
+				layer.msg("请选择设备");
+				return false;
+			}
+			parent.getMaskData(function(layerDom, layerIframe) {
+				layerDom.find("#deviceName").val(dataInfo.deviceName);
+				layerDom.find("#indexCode").val(dataInfo.indexCode);
+				layerDom.find("#deviceId").val(dataInfo.id);
+				layerDom.find("#orderAddress").val(dataInfo.installLocation);
+				closeMask();
+			});
+		}
+
+		//		加载数据
+		function loadData() {
+			var deviceLogo = setData.deviceLogo;
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20,
+				deviceLogo: deviceLogo,
+				deviceName: $("#deviceName").val(),
+				deviceAddress: $("#deviceAddress").val()
+			}
+			request("POST", "/sinuo/device/v1/findDeviceList", param, true, function(res) {
+				var dataList = res.data.dataList;
+				for(var i = 0; i < dataList.length; i++) {
+					if(dataList[i].status == "0") {
+						dataList[i].statusText = "离线";
+					} else if(dataList[i].status == "1") {
+						dataList[i].statusText = "在线";
+					} else if(dataList[i].status == "2") {
+						dataList[i].statusText = "故障";
+					}
+				}
+				resetDataInfo(dataList);
+				setData.dataList = dataList;
+				loadPage();
+			}, function(res) {
+				layer.msg("设备记录加载失败");
+			})
+		}
+	</script>
+
+</html>

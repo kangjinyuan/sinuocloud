@@ -12,44 +12,48 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=a1737cc854" />
-		<link rel="stylesheet" href="../layui/css/layui.css" />
+		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
 		<script src="../js/jquery-1.9.1.min.js"></script>
-		<script src="../layui/layui.js"></script>
-		<script src="../layui/lay/modules/layer.js"></script>
+		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
 		<script src="../js/hls.min.js"></script>
-		<script src="../js/postUrl.js?v=eb33ce4333"></script>
-		<script src="../js/common.js?v=889bbfc9d1"></script>
+		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
+		<script src="../js/common.js?v=c98a4e1add"></script>
 	</head>
 
 	<body>
-		<div class="kjy-box kjy-flex-box VDOM" v-cloak>
+		<div class="kjy-box kjy-flex-box kjy-content-box v-dom" v-cloak>
+			<div class="kjy-title-box">
+				<div class="kjy-title-text">视频监控</div>
+			</div>
 			<div class="opera-list-box">
 				<div class="opera-list opera-left-box">
 					<div class="opera-list-inner-box">
 						<div class="search-box">
-							<div class="search-full-width-box">
-								<input type="text" name="" value="" placeholder="请输入关键词" id="cameraName" oninput="sreach();" />
+							<div class="search-row-box">
+								<input type="text" name="" value="" id="regionName" placeholder="关键词" oninput="search();" class="full-width" />
+								<div class="icon icon-search"></div>
 							</div>
 						</div>
-						<div class="full-box" v-if="dataList.length == 0">
+						<div class="full-box" v-if="allIsActive">
 							<div class="no-data-box">
-								<div class="icon icon-no-data"></div>
-								<div class="no-data-text">暂时没有监控点哦</div>
+								<div class="no-data-inner-box">
+									<div class="icon icon-no-data"></div>
+									<div class="no-data-text">暂时没有监控点哦</div>
+								</div>
 							</div>
 						</div>
 						<div class="fold-box" v-else>
 							<div class="fold-list-box" v-for="t in dataList" v-if="t.cameraList.length > 0">
 								<div class="fold-title-box" v-on:click="switchActive(t);">
-									<div class="fold-title-text-box">
+									<div v-bind:class="['fold-title-text-box',t.isActive?'selected':'']">
 										{{t.name}}
 									</div>
-									<div v-bind:class="['icon','position-right',t.isActive?'icon-arrow-up':'icon-arrow-down']"></div>
+									<div v-bind:class="['icon',t.isActive?'icon-fold-open':'icon-fold-no-open']"></div>
 								</div>
 								<div class="fold-content-box" v-if="t.isActive">
-									<ul class="fold-content-list-box" v-for="t in t.cameraList">
-										<li v-bind:class="cameraInfo.cameraIndexCode == t.cameraIndexCode?'selected':''" v-on:click="tabCamera(t);">{{t.cameraName}}</li>
+									<ul>
+										<li v-bind:class="cameraInfo.indexCode == t.indexCode?'selected':''" v-for="t in t.cameraList" v-on:click="tabCamera(t);">{{t.deviceName}}</li>
 									</ul>
 								</div>
 							</div>
@@ -64,7 +68,6 @@
 							</div>
 							<div class="btn-box">
 								<div class="btn-inner-box">
-									<div class="btn" onclick="manualRecord();">{{manualRecordState?'暂停':'录像'}}</div>
 									<div class="btn" onclick="manualCapture();">抓图</div>
 								</div>
 							</div>
@@ -75,32 +78,30 @@
 		</div>
 	</body>
 	<script>
-		param.manualRecordState = false;
 		param.cameraInfo = {};
-		loadVue(param);
+		loadVue(".v-dom", param);
 
+		//加载区域	
 		function loadData() {
 			var param = {
 				path: "/api/resource/v1/regions/root",
-				showLoading: true,
 				param: {}
 			}
-			hikRequest(param, function(res) {
+			hikRequest(param, true, function(res) {
 				var indexCode = res.data.indexCode;
 				var param = {
 					path: "/api/irds/v2/region/nodesByParams",
-					showLoading: true,
 					param: {
-						"resourceType": "region",
-						"parentIndexCodes": [
+						resourceType: "region",
+						regionName: $("#regionName").val(),
+						parentIndexCodes: [
 							indexCode
 						],
-						"isSubRegion": false,
-						"pageNo": 1,
-						"pageSize": 100
+						pageNo: pageNo,
+						pageSize: 1000
 					}
 				}
-				hikRequest(param, function(res) {
+				hikRequest(param, false, function(res) {
 					var regionList = res.data.list;
 					for(var i = 0; i < regionList.length; i++) {
 						regionList[i].isActive = true;
@@ -111,48 +112,51 @@
 			})
 		}
 
+		//加载监控点
 		function loadCamera(regionList) {
 			var param = {
-				path: "/api/resource/v1/camera/advance/cameraList",
-				showLoading: true,
-				param: {
-					"pageNo": 1,
-					"pageSize": 1000,
-					"cameraName": $("#cameraName").val(),
-					"isCascade": 0,
-					"treeCode": "0"
-				}
+				pageNo: pageNo,
+				pageSize: 1000,
+				deviceLogo: "2"
 			}
-			hikRequest(param, function(res) {
-				var cameraList = res.data.list;
+			request("POST", "/sinuo/device/v1/findDeviceList", param, true, function(res) {
+				var dataList = res.data.dataList;
 				for(var i = 0; i < regionList.length; i++) {
-					for(var j = 0; j < cameraList.length; j++) {
-						if(regionList[i].indexCode == cameraList[j].regionIndexCode) {
-							regionList[i].cameraList.push(cameraList[j]);
+					for(var j = 0; j < dataList.length; j++) {
+						if(regionList[i].indexCode == dataList[j].regionIndexCode) {
+							regionList[i].cameraList.push(dataList[j]);
 						}
 					}
 				}
 				setData.dataList = regionList;
-				tabCamera(cameraList[0]);
-			})
+				if(regionList[0].cameraList.length == 0) {
+					setData.allIsActive = true;
+					return false;
+				}
+				setData.allIsActive = false;
+				tabCamera(regionList[0].cameraList[0]);
+			}, function(res) {
+				layer.msg("设备记录加载失败");
+			});
 		}
 
+		//切换监控点
 		function tabCamera(obj) {
 			setData.cameraInfo = obj;
 			getPreviewUrl();
 		}
 
+		//获取视频流
 		function getPreviewUrl() {
 			var cameraInfo = setData.cameraInfo;
 			var param = {
 				path: "/api/video/v1/cameras/previewURLs",
-				showLoading: true,
 				param: {
-					"cameraIndexCode": cameraInfo.cameraIndexCode,
-					"protocol": "hls"
+					cameraIndexCode: cameraInfo.indexCode,
+					protocol: "hls"
 				}
 			}
-			hikRequest(param, function(res) {
+			hikRequest(param, true, function(res) {
 				var videoUrl = res.data.url;
 				if(Hls.isSupported()) {
 					var video = $("#video").get(0);
@@ -163,46 +167,19 @@
 			})
 		}
 
-		function manualRecord() {
-			var manualRecordState = setData.manualRecordState;
-			var cameraInfo = setData.cameraInfo;
-			if(manualRecordState) {
-				var requestUrl = "/api/video/v1/manualRecord/stop";
-				var requestParam = {
-					"cameraIndexCode": cameraInfo.cameraIndexCode,
-					"taskID": "1",
-					"type": 0
-				}
-			} else {
-				var requestUrl = "/api/video/v1/manualRecord/start";
-				var requestParam = {
-					"cameraIndexCode": cameraInfo.cameraIndexCode,
-					"recordType": 6,
-					"type": 0
-				}
-			}
-
-			var param = {
-				path: requestUrl,
-				showLoading: true,
-				param: requestParam
-			}
-			hikRequest(param, function(res) {
-				videotapeState = !videotapeState;
-			})
-		}
-
+		//抓图
 		function manualCapture() {
 			var cameraInfo = setData.cameraInfo;
 			var param = {
 				path: "/api/video/v1/manualCapture",
-				showLoading: true,
 				param: {
-					"cameraIndexCode": cameraInfo.cameraIndexCode
+					cameraIndexCode: cameraInfo.indexCode
 				}
 			}
-			hikRequest(param, function(res) {
-				layer.msg("抓图成功");
+			hikRequest(param, true, function(res) {
+				openMask("/part/videoImage", ["500px", "380px"], function(layerDom, layerIframe) {
+					layerIframe.setData.picUrl = res.data.picUrl;
+				});
 			})
 		}
 
