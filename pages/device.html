@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,19 +6,19 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/animate.min.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
@@ -28,44 +28,36 @@
 			</div>
 			<div class="search-box">
 				<div class="search-row-box">
-					<div class="search-list-box">
-						<div class="search-list">
-							<div class="search-name">设备名称：</div>
-							<div class="search-value">
-								<input type="text" name="" value="" id="deviceName" placeholder="设备名称" />
-							</div>
+					<div class="search-list">
+						<div class="search-name">设备名称：</div>
+						<div class="search-value"><input type="text" name="" value="" id="deviceName" placeholder="设备名称"></div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">设备类型：</div>
+						<div class="search-value">
+							<select name="" required="required" id="deviceTypeId" onchange="search();">
+								<option value="">设备类型</option>
+								<option v-bind:value="t.id" v-for="t in deviceType">{{t.name}}</option>
+							</select>
 						</div>
-						<div class="search-list">
-							<div class="search-name">设备类型：</div>
-							<div class="search-value">
-								<select name="" required="required" id="deviceTypeId" onchange="search();">
-									<option value="">设备类型</option>
-									<option v-bind:value="t.id" v-for="t in deviceType">{{t.name}}</option>
-								</select>
-							</div>
-						</div>
-						<div class="search-list">
-							<div class="search-name">设备分组：</div>
-							<div class="search-value">
-								<input type="text" name="" value="" id="deviceRegion" placeholder="设备分组" />
-							</div>
-						</div>
-						<div class="search-list">
-							<div class="search-name">设备地址：</div>
-							<div class="search-value">
-								<input type="text" name="" value="" id="deviceAddress" placeholder="设备地址" />
-							</div>
-						</div>
-						<div class="search-list">
-							<div class="search-name">设备状态：</div>
-							<div class="search-value">
-								<select name="" required="required" id="deviceStatus" onchange="search();">
-									<option value="">设备状态</option>
-									<option value="1">在线</option>
-									<option value="0">离线</option>
-									<option value="2">故障</option>
-								</select>
-							</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">设备分组：</div>
+						<div class="search-value"><input type="text" name="" value="" id="deviceRegion" placeholder="设备分组"></div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">设备地址：</div>
+						<div class="search-value"><input type="text" name="" value="" id="deviceAddress" placeholder="设备地址"></div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">设备状态：</div>
+						<div class="search-value">
+							<select name="" required="required" id="deviceStatus" onchange="search();">
+								<option value="">设备状态</option>
+								<option value="1">在线</option>
+								<option value="0">离线</option>
+								<option value="2">故障</option>
+							</select>
 						</div>
 					</div>
 					<div class="search-btn-box">
@@ -76,7 +68,7 @@
 			</div>
 			<div class="btn-box">
 				<div class="btn-inner-box">
-					<div class="btn" onclick="syncDevice();">同步设备</div>
+					<div class="btn" onclick="syncDevice();">同步</div>
 				</div>
 			</div>
 			<div class="kjy-data-box">
@@ -107,10 +99,9 @@
 									<th>操作</th>
 								</tr>
 							</thead>
-
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
-									<td>{{((pageNo-1)*20)+(i+1)}}</td>
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
 									<td>{{t.deviceName}}</td>
 									<td>{{t.deviceCode?t.deviceCode:'暂无设备编码'}}</td>
 									<td>{{t.deviceTypeName}}</td>
@@ -146,7 +137,7 @@
 
 		function syncDevice() {
 			var param = {};
-			request("POST", "/sinuo/device/v1/syncDevice", param, true, function(res) {
+			request("POST", "/device/v1/syncDevice", param, true, function(res) {
 				layer.msg("同步成功");
 				loadData();
 			}, function(res) {
@@ -164,7 +155,7 @@
 				deviceAddress: $("#deviceAddress").val(),
 				deviceStatus: $("#deviceStatus").val()
 			}
-			request("POST", "/sinuo/device/v1/findDeviceList", param, true, function(res) {
+			request("POST", "/device/v1/findDeviceList", param, true, function(res) {
 				var dataList = res.data.dataList;
 				resetDataList(function() {
 					for(var i = 0; i < dataList.length; i++) {
@@ -187,7 +178,7 @@
 
 		function loadAlarmType() {
 			var param = {};
-			request("POST", "/sinuo/alarmEvent/v1/findAlarmType", param, true, function(res) {
+			request("POST", "/alarmEvent/v1/findAlarmType", param, true, function(res) {
 				setData.deviceType = res.data;
 			}, function(res) {
 				layer.msg("报警类型加载失败");

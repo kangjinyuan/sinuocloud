@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,32 +6,28 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/animate.min.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
 		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
 			<div class="search-box">
 				<div class="search-row-box">
-					<div class="search-list-box">
-						<div class="search-list">
-							<div class="search-name">点位名称：</div>
-							<div class="search-value">
-								<input type="text" name="" value="" id="name" placeholder="点位名称" />
-							</div>
-						</div>
+					<div class="search-list">
+						<div class="search-name">点位名称：</div>
+						<div class="search-value"><input type="text" name="" value="" id="name" placeholder="点位名称"></div>
 					</div>
 					<div class="search-btn-box">
 						<div class="btn" onclick="search();">查询</div>
@@ -71,11 +67,10 @@
 									<th>操作</th>
 								</tr>
 							</thead>
-
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
 									<td class="padding40">
-										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*20)+(i+1)}}</td>
+										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
 									<td>{{t.name}}</td>
 									<td>{{t.qrCode}}</td>
 									<td>{{t.nfcCode}}</td>
@@ -119,7 +114,7 @@
 				var param = {
 					idList: idList
 				}
-				request('POST', '/sinuo/checkPoint/delete.do', param, true, function(res) {
+				request('POST', '/checkPoint/delete.do', param, true, function(res) {
 					loadData();
 					layer.closeAll('dialog');
 				}, function(res) {
@@ -134,7 +129,7 @@
 				pageNo: pageNo,
 				name: $("#name").val()
 			};
-			request('POST', '/sinuo/checkPoint/queryList.do', param, true, function(res) {
+			request('POST', '/checkPoint/queryList.do', param, true, function(res) {
 				var dataList = res.data.dataList;
 				resetDataList(function() {
 					for(var i = 0; i < dataList.length; i++) {

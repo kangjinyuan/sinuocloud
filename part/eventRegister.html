@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,96 +6,86 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../layui/css/layui.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../layui/css/layui.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
-		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
-			<div class="mask-box">
-				<div class="mask-inner-box">
-					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">布防周期</span>：</div>
-						<div class="mask-list-value">
-							<select name="" required="required" id="armingCycleNumber" class="required" v-on:change="setAlarmCycle();">
-								<option value="">布防周期</option>
-								<option value="1">1次</option>
-								<option value="2">2次</option>
-								<option value="3">3次</option>
-								<option value="4">4次</option>
-								<option value="5">5次</option>
-							</select>
-						</div>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-list">
+					<div class="mask-list-name">布防周期：</div>
+					<div class="mask-list-value">
+						<select name="" required="required" id="armingCycleNumber" class="required" v-on:change="setAlarmCycle();">
+							<option value="">布防周期</option>
+							<option value="1">1次</option>
+							<option value="2">2次</option>
+							<option value="3">3次</option>
+							<option value="4">4次</option>
+							<option value="5">5次</option>
+						</select>
 					</div>
-					<div class="mask-row-list" v-for="t in armingCycleNumber">
-						<div class="mask-list">
-							<div class="mask-list-name"><span class="text">开始时间</span>：</div>
-							<div class="mask-list-value">
-								<input type="text" name="" value="" class="required width-104 start-time" placeholder="hh:mm:ss" />
-								<div class="icon icon-select-time"></div>
-							</div>
-						</div>
-						<div class="mask-list">
-							<div class="mask-list-name"><span class="text">结束时间</span>：</div>
-							<div class="mask-list-value">
-								<input type="text" name="" value="" class="required width-104 end-time" placeholder="hh:mm:ss" />
-								<div class="icon icon-select-time"></div>
-							</div>
+				</div>
+				<div class="mask-row-list" v-for="t in armingCycleNumber">
+					<div class="mask-list">
+						<div class="mask-list-name">开始时间：</div>
+						<div class="mask-list-value"><input type="text" name="" value="" class="required width-104 start-time" placeholder="hh:mm:ss">
+							<div class="icon icon-select-time"></div>
 						</div>
 					</div>
 					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">监控点</span>：</div>
-						<div class="mask-list-value">
-							<input type="text" name="" value="" id="deviceName" disabled="disabled" class="required" />
-							<input type="hidden" name="" value="" id="indexCode" class="required" />
-							<input type="hidden" name="" value="" id="deviceId" />
-						</div>
-						<div class="btn-box select-monitor-box">
-							<div class="btn-inner-box">
-								<div class="btn" onclick="selectDevice();">选择</div>
-							</div>
-						</div>
-					</div>
-					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">报警级别</span>：</div>
-						<div class="mask-list-value">
-							<select name="" required="required" id="eventLevel" class="required">
-								<option value="">报警级别</option>
-								<option value="0">无</option>
-								<option value="1">Ⅰ级</option>
-								<option value="2">Ⅱ级</option>
-								<option value="3">Ⅲ级</option>
-							</select>
-						</div>
-					</div>
-					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">事件类型</span>：</div>
-						<div class="mask-list-value">
-							<ul class="mask-select-box">
-								<li v-for="t in eventType">
-									<div v-bind:class="['icon', 'icon-check-box','position-left',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
-									{{t.eventName}}
-								</li>
-							</ul>
+						<div class="mask-list-name">结束时间：</div>
+						<div class="mask-list-value"><input type="text" name="" value="" class="required width-104 end-time" placeholder="hh:mm:ss">
+							<div class="icon icon-select-time"></div>
 						</div>
 					</div>
 				</div>
-				<div class="btn-box">
-					<div class="btn-inner-box">
-						<div class="btn" onclick="save();">保存</div>
-						<div class="btn" onclick="closeMask();">返回</div>
+				<div class="mask-list">
+					<div class="mask-list-name">监控点：</div>
+					<div class="mask-list-value"><input type="text" name="" value="" id="deviceName" disabled="disabled" class="required"> <input type="hidden" name="" value="" id="indexCode" class="required"> <input type="hidden" name="" value="" id="deviceId"></div>
+					<div class="btn-box select-monitor-box">
+						<div class="btn-inner-box">
+							<div class="btn" onclick="selectDevice();">选择</div>
+						</div>
 					</div>
+				</div>
+				<div class="mask-list">
+					<div class="mask-list-name">报警级别：</div>
+					<div class="mask-list-value">
+						<select name="" required="required" id="eventLevel" class="required">
+							<option value="">报警级别</option>
+							<option value="0">无</option>
+							<option value="1">Ⅰ级</option>
+							<option value="2">Ⅱ级</option>
+							<option value="3">Ⅲ级</option>
+						</select>
+					</div>
+				</div>
+				<div class="mask-list">
+					<div class="mask-list-name">事件类型：</div>
+					<div class="mask-list-value">
+						<ul class="mask-select-box">
+							<li v-for="t in eventType">
+								<div v-bind:class="['icon', 'icon-check-box','position-left',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>{{t.eventName}}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="save();">保存</div>
+					<div class="btn" onclick="closeMask();">返回</div>
 				</div>
 			</div>
 		</div>
@@ -160,10 +150,10 @@
 					eventLevel: $("#eventLevel").val()
 				}
 				if(parentData) {
-					var requestUrl = "/sinuo/event/v1/modifyEvent";
+					var requestUrl = "/event/v1/modifyEvent";
 					param.createEventId = parentData.createEventId;
 				} else {
-					var requestUrl = "/sinuo/event/v1/subscribeEvent";
+					var requestUrl = "/event/v1/subscribeEvent";
 					param.monitorPointName = $("#deviceName").val();
 					param.monitorPointCode = $("#indexCode").val();
 				}

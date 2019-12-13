@@ -1,92 +1,20 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 	<head>
-		<meta charset="UTF-8">
-		<title>列表动画</title>
-		<link rel="stylesheet" href="css/animate.min.css" />
-		<link rel="stylesheet" href="css/common.css?v=9094e21722" />
-		<style>
-			table {
-				width: 500px;
-			}
-			
-			.v-enter,
-			.v-leave-to {
-				-webkit-animation: animationList 0.2s linear 0s 1 normal;
-				-moz-animation: animationList 0.15s linear 0s 1 normal;
-				-ms-animation: animationList 0.15s linear 0s 1 normal;
-				-o-animation: animationList 0.15s linear 0s 1 normal;
-			}
-			
-			.v-enter-active,
-			.v-leave-active {
-				-webkit-animation: animationList 0.2s linear 0s 1 normal;
-				-moz-animation: animationList 0.15s linear 0s 1 normal;
-				-ms-animation: animationList 0.15s linear 0s 1 normal;
-				-o-animation: animationList 0.15s linear 0s 1 normal;
-			}
-		</style>
+		<meta charset="utf-8">
+		<title>new html</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css">
+		<link rel="stylesheet" type="text/css" href="css/common.css?v=88d3f5c183">
+		<script type="text/javascript" src="js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
-		<div class="body" v-cloak>
-			<table border="" cellspacing="" cellpadding="">
-				<thead>
-					<tr>
-						<th>id</th>
-						<th>content</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="t in list" class="animated bounceInUp">
-						<td>{{t.id}}</td>
-						<td>{{t.name}}</td>
-					</tr>
-				</tbody>
-			</table>
 
-		</div>
-		<script src="js/vue.min.js"></script>
-		<script>
-			let vm = new Vue({
-				el: ".body",
-				data: {
-					list: [{
-							id: 1,
-							name: '张三'
-						},
-						{
-							id: 2,
-							name: '李四'
-						},
-						{
-							id: 3,
-							name: '王五'
-						},
-						{
-							id: 4,
-							name: '赵六'
-						},
-					]
-				},
-				methods: {
-					add() {
-						if(this.id != '' && this.name != '') {
-							this.list.push({
-								id: this.id,
-								name: this.name
-							})
-							this.id = this.name = ''
-						}
+		hello world !
+		<section class="section-box-1"></section>
+		<section class="section-box-2"></section>
 
-					},
-					del(index) {
-						this.list.splice(index, 1)
-					}
-				},
-			})
-		</script>
 	</body>
 
 </html>

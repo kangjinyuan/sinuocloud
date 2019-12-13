@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,19 +6,19 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/animate.min.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
@@ -28,34 +28,31 @@
 			</div>
 			<div class="search-box">
 				<div class="search-row-box">
-					<div class="search-list-box">
-						<div class="search-list">
-							<div class="search-name">创建人：</div>
-							<div class="search-value">
-								<input type="text" name="" value="" id="creatorName" placeholder="创建人" />
-							</div>
+					<div class="search-list">
+						<div class="search-name">创建人：</div>
+						<div class="search-value"><input type="text" name="" value="" id="creatorName" placeholder="创建人"></div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">工单类型：</div>
+						<div class="search-value">
+							<select name="" required="required" id="orderReason" onchange="search();">
+								<option value="">工单类型</option>
+								<option value="0">设备故障</option>
+								<option value="1">设备维修</option>
+							</select>
 						</div>
-						<div class="search-list">
-							<div class="search-name">工单类型：</div>
-							<div class="search-value">
-								<select name="" required="required" id="orderReason" onchange="search();">
-									<option value="">工单类型</option>
-									<option value="0">设备故障</option>
-									<option value="1">设备维修</option>
-								</select>
-							</div>
-						</div>
-						<div class="search-list">
-							<div class="search-name">工单状态：</div>
-							<div class="search-value">
-								<select name="" required="required" id="state" onchange="search();">
-									<option value="">工单状态</option>
-									<option value="0">待分派</option>
-									<option value="1">已接单</option>
-									<option value="2">处理中</option>
-									<option value="3">已完成</option>
-								</select>
-							</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">工单状态：</div>
+						<div class="search-value">
+							<select name="" required="required" id="state" onchange="search();">
+								<option value="">工单状态</option>
+								<option value="0">待分派</option>
+								<option value="1">已接单</option>
+								<option value="2">处理中</option>
+								<option value="3">已完成</option>
+								<option value="4">已关闭</option>
+							</select>
 						</div>
 					</div>
 					<div class="search-btn-box">
@@ -100,11 +97,10 @@
 									<th>操作</th>
 								</tr>
 							</thead>
-
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
 									<td class="padding40">
-										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*20)+(i+1)}}</td>
+										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
 									<td>{{t.orderReasonText}}</td>
 									<td>{{t.stateText}}</td>
 									<td>{{t.orderAddress?t.orderAddress:'暂无工单地址'}}</td>
@@ -115,6 +111,7 @@
 									<td>
 										<ul class="opera-box">
 											<li v-on:click="workOrderSpeed(t);">处理进度</li>
+											<li v-if="t.state < 2" v-on:click="closeOrder(t);">关闭</li>
 										</ul>
 									</td>
 								</tr>
@@ -133,11 +130,17 @@
 			openMask("/part/workOrder", ["460px", "380px"]);
 		}
 
+		function closeOrder(obj) {
+			openMask("/part/closeOrder", ["480px", "236px"], function(layerDom, layerIframe) {
+				layerIframe.setData.parentData = obj;
+			})
+		}
+
 		function workOrderSpeed(obj) {
 			var param = {
 				id: obj.id
 			}
-			request("POST", "/sinuo/workOrder/queryEventList.do", param, true, function(res) {
+			request("POST", "/workOrder/queryEventList.do", param, true, function(res) {
 				var eventList = res.data.reverse();
 				obj.eventList = eventList;
 				openMask("/part/workOrderSpeed", ["515px", "430px"], function(layerDom, layerIframe) {
@@ -158,7 +161,7 @@
 				var param = {
 					idList: idList
 				}
-				request('POST', '/sinuo/workOrder/delete.do', param, true, function(res) {
+				request('POST', '/workOrder/delete.do', param, true, function(res) {
 					loadData();
 					layer.closeAll('dialog');
 				}, function(res) {
@@ -177,7 +180,7 @@
 				addressType: $("#addressType").val(),
 				charger: $("#charger").val()
 			};
-			request('POST', '/sinuo/workOrder/queryList.do', param, true, function(res) {
+			request('POST', '/workOrder/queryList.do', param, true, function(res) {
 				var dataList = res.data.dataList;
 				resetDataList(function() {
 					for(var i = 0; i < dataList.length; i++) {
@@ -196,6 +199,8 @@
 							dataList[i].stateText = "处理中";
 						} else if(dataList[i].state == 3) {
 							dataList[i].stateText = "已完成";
+						} else if(dataList[i].state == 4) {
+							dataList[i].stateText = "已关闭";
 						}
 					}
 					setData.dataList = dataList;

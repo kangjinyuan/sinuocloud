@@ -1,7 +1,6 @@
 var windowHeight;
 $(function() {
 	param.currentTime = "";
-	param.accountName = accountInfo.name;
 	loadVue(".v-dom", param);
 	loadData();
 	loadTime();

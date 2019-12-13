@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,72 +6,63 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../layui/css/layui.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../layui/css/layui.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
-		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
-			<div class="mask-box">
-				<div class="mask-inner-box">
-					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">消防设备</span>：</div>
-						<div class="mask-list-value">
-							<input type="text" name="" value="" id="deviceName" disabled="disabled" class="required" />
-							<input type="hidden" name="" value="" id="indexCode" class="required" />
-							<input type="hidden" name="" value="" id="deviceId" />
-						</div>
-						<div class="btn-box select-device-box">
-							<div class="btn-inner-box">
-								<div class="btn" onclick="selectDevice();">选择</div>
-							</div>
-						</div>
-					</div>
-					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">监控点</span>：</div>
-						<div class="mask-list-value">
-							<div class="no-content-box" v-if="contentList.length == 0">暂无监控点</div>
-							<ul class="range-box" v-else>
-								<li v-for="(t,i) in contentList">
-									{{t.deviceName}}
-									<div class="icon icon-del-range" v-on:click="delContent(i);"></div>
-								</li>
-							</ul>
-						</div>
-						<div class="btn-box">
-							<div class="btn-inner-box">
-								<div class="btn" onclick="selectDeviceRange();">选择</div>
-							</div>
-						</div>
-					</div>
-					<div class="mask-list">
-						<div class="mask-list-name"><span class="text">联动类型</span>：</div>
-						<div class="mask-list-value">
-							<ul class="mask-select-box">
-								<li v-for="t in videoLinkageType">
-									<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
-									{{t.typeName}}
-								</li>
-							</ul>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-list">
+					<div class="mask-list-name">消防设备：</div>
+					<div class="mask-list-value"><input type="text" name="" value="" id="deviceName" disabled="disabled" class="required"> <input type="hidden" name="" value="" id="indexCode" class="required"> <input type="hidden" name="" value="" id="deviceId"></div>
+					<div class="btn-box select-device-box">
+						<div class="btn-inner-box">
+							<div class="btn" onclick="selectDevice();">选择</div>
 						</div>
 					</div>
 				</div>
-				<div class="btn-box">
-					<div class="btn-inner-box">
-						<div class="btn" onclick="save();">保存</div>
-						<div class="btn" onclick="closeMask();">返回</div>
+				<div class="mask-list">
+					<div class="mask-list-name">监控点：</div>
+					<div class="mask-list-value">
+						<div class="no-content-box" v-if="contentList.length == 0">暂无监控点</div>
+						<ul class="range-box" v-else>
+							<li v-for="(t,i) in contentList">{{t.deviceName}}
+								<div class="icon icon-del-range" v-on:click="delContent(i);"></div>
+							</li>
+						</ul>
 					</div>
+					<div class="btn-box">
+						<div class="btn-inner-box">
+							<div class="btn" onclick="selectDeviceRange();">选择</div>
+						</div>
+					</div>
+				</div>
+				<div class="mask-list">
+					<div class="mask-list-name">联动类型：</div>
+					<div class="mask-list-value">
+						<ul class="mask-select-box">
+							<li v-for="t in videoLinkageType">
+								<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>{{t.typeName}}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="save();">保存</div>
+					<div class="btn" onclick="closeMask();">返回</div>
 				</div>
 			</div>
 		</div>
@@ -144,10 +135,10 @@
 					linkageType: JSON.stringify(linkageType)
 				}
 				if(parentData) {
-					var requestUrl = "/sinuo/event/v1/modifyVideoLinkage";
+					var requestUrl = "/event/v1/modifyVideoLinkage";
 					param.videoLinkageId = parentData.id;
 				} else {
-					var requestUrl = "/sinuo/event/v1/addVideoLinkage";
+					var requestUrl = "/event/v1/addVideoLinkage";
 					param.fireDeviceName = $("#deviceName").val();
 					param.fireDeviceIndexCode = $("#indexCode").val();
 				}

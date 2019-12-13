@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -12,7 +12,7 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="css/reset.css" />
-		<link rel="stylesheet" href="css/common.css?v=9094e21722" />
+		<link rel="stylesheet" href="css/common.css?v=88d3f5c183" />
 		<script src="js/jquery-1.9.1.min.js"></script>
 		<script src="layui/layui.all.js"></script>
 		<script src="js/echarts-all-3.js"></script>
@@ -22,8 +22,9 @@
 		<script src="js/jquery.mousewheel.min.js"></script>
 		<script src="js/hls.min.js"></script>
 		<script src="js/vue.min.js"></script>
-		<script src="js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="js/common.js?v=c98a4e1add"></script>
+		<script src="js/postUrl.js?v=b3167ffa28"></script>
+		<script src="js/common.js?v=8bdd65fff2"></script>
+		<script src="src/receive.js"></script>
 	</head>
 
 	<body>
@@ -40,22 +41,22 @@
 							<div class="today-alert-box position-center">
 								<div class="today-alert-inner-box">
 									<div class="today-alert-title-box position-center">
-										<div class="today-alert-title-text position-left-bottom">报警总数:<span>300</span>起</div>
+										<div class="today-alert-title-text position-left-bottom">报警总数:<span>{{todayAlarm.totalNum}}</span>起</div>
 									</div>
 								</div>
 								<div class="today-alert-inner-box">
 									<div class="today-alert-content-box">
 										<ul>
 											<li>
-												<div class="today-alert-text today-alert-number"><span>18</span>起</div>
-												<div class="today-alert-text">火警故障</div>
+												<div class="today-alert-text today-alert-number"><span>{{todayAlarm.fireAlarmNum}}</span>起</div>
+												<div class="today-alert-text">火警数量</div>
 											</li>
 											<li>
-												<div class="today-alert-text today-alert-number"><span>8</span>起</div>
+												<div class="today-alert-text today-alert-number"><span>{{todayAlarm.faultAlarmNum}}</span>起</div>
 												<div class="today-alert-text">故障数量</div>
 											</li>
 											<li>
-												<div class="today-alert-text today-alert-number"><span>12</span>起</div>
+												<div class="today-alert-text today-alert-number"><span>{{todayAlarm.resetNum}}</span>起</div>
 												<div class="today-alert-text">复位次数</div>
 											</li>
 										</ul>
@@ -64,15 +65,15 @@
 									<div class="today-alert-content-box">
 										<ul>
 											<li>
-												<div class="today-alert-text today-alert-number"><span class="grade-text-color0">2</span>起</div>
+												<div class="today-alert-text today-alert-number"><span class="grade-text-color0">{{todayAlarm.oneLevelAlarmNum}}</span>起</div>
 												<div class="today-alert-text">Ⅰ级预警</div>
 											</li>
 											<li>
-												<div class="today-alert-text today-alert-number"><span class="grade-text-color1">4</span>起</div>
+												<div class="today-alert-text today-alert-number"><span class="grade-text-color1">{{todayAlarm.twoLevelAlarmNum}}</span>起</div>
 												<div class="today-alert-text">Ⅱ级预警</div>
 											</li>
 											<li>
-												<div class="today-alert-text today-alert-number"><span class="grade-text-color2">7</span>起</div>
+												<div class="today-alert-text today-alert-number"><span class="grade-text-color2">{{todayAlarm.threeLevelAlarmNum}}</span>起</div>
 												<div class="today-alert-text">Ⅲ级预警</div>
 											</li>
 										</ul>
@@ -99,20 +100,20 @@
 									<li>时间</li>
 								</ul>
 								<div class="scroll-content-box">
-									<div class="full-box" v-if="alarmRecordList.length == 0">
+									<div class="full-box" v-if="alarmRecord.length == 0">
 										<div class="no-data-box">
 											<div class="no-data-row-text">暂时没有实时报警哦</div>
 										</div>
 									</div>
 									<div class="scroll-content-inner-box" v-else>
 										<ul class="alarm-record-box position-left-top">
-											<li v-for="t in alarmRecordList" v-on:click="alarmInfo(t);">
+											<li v-for="t in alarmRecord" v-on:click="alarmInfo(t);">
 												<div v-if="t.eventLvl == '0'">{{t.eventLvlText}}</div>
 												<div v-if="t.eventLvl == '1'" class="grade-text-color1">{{t.eventLvlText}}</div>
 												<div v-if="t.eventLvl == '2'" class="grade-text-color2">{{t.eventLvlText}}</div>
 												<div v-if="t.eventLvl == '3'" class="grade-text-color3">{{t.eventLvlText}}</div>
 												<div>{{t.deviceTypeName}}</div>
-												<div v-bind:title="t.alarmLocation?t.alarmLocation:'暂无报警位置'">{{t.alarmLocation?t.alarmLocation:'暂无报警位置'}}</div>
+												<div v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</div>
 												<div v-bind:class="t.processStatus==0?'':'state-text-color0'">{{t.processStatusText}}</div>
 												<div v-bind:title="t.alarmTime">{{t.alarmTime}}</div>
 											</li>
@@ -125,7 +126,7 @@
 				</div>
 				<div class="row-list-box row-list-height-30">
 					<div class="row-list-inner-box">
-						<div class="row-list-title-box">今日巡检任务</div>
+						<div class="row-list-title-box">今日巡查任务</div>
 						<div class="row-list-content-box">
 							<div class="decorate-list common-left-top-decorate position-left-top"></div>
 							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
@@ -135,7 +136,7 @@
 								<div class="check-task-pie-box">
 									<div class="check-task-pie"></div>
 									<div class="check-task-text-box">
-										<p>75%</p>
+										<p>{{checkTask.completeRate}}%</p>
 										<p>完成率</p>
 									</div>
 								</div>
@@ -199,7 +200,7 @@
 										<ul class="work-order-box position-left-top">
 											<li v-for="t in workOrderList">
 												<div v-bind:title="t.orderDetail">{{t.orderDetail}}</div>
-												<div>{{t.charger?t.charger:'暂无负责人'}}</div>
+												<div>{{t.charger?t.charger:'无'}}</div>
 												<div class="grade-text-color0">{{t.scheduleEndTime}}</div>
 											</li>
 										</ul>
@@ -218,9 +219,9 @@
 							<div class="decorate-list common-right-top-decorate position-right-top"></div>
 							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
 							<div class="row-list-search-box">
-								<select name="" id="monthSummary">
+								<select name="" id="monthSummary" onchange="getAlarmSummary();">
 									<option value="1">1月</option>
-									<option value="3">2月</option>
+									<option value="2">2月</option>
 									<option value="3">3月</option>
 									<option value="4">4月</option>
 									<option value="5">5月</option>
@@ -236,25 +237,16 @@
 							<div class="month-summary-box">
 								<div class="month-summary-inner-box position-center">
 									<div class="month-summary-list">
-										<div class="month-summary-pie-box">
-											<div class="month-summary-pie month-summary-alert-pie"></div>
-											<div class="month-summary-pie-text-box">报警次数</div>
-										</div>
-										<div class="month-summary-number"><span>16</span>次</div>
+										<div class="month-summary-title-box month-summary-alarm">报警次数</div>
+										<div class="month-summary-number"><span>{{alarmSummary.alarmNum}}</span>次</div>
 									</div>
 									<div class="month-summary-list">
-										<div class="month-summary-pie-box">
-											<div class="month-summary-pie month-summary-fault-pie"></div>
-											<div class="month-summary-pie-text-box">故障次数</div>
-										</div>
-										<div class="month-summary-number"><span>17</span>次</div>
+										<div class="month-summary-title-box month-summary-fault">故障次数</div>
+										<div class="month-summary-number"><span>{{alarmSummary.faultNum}}</span>次</div>
 									</div>
 									<div class="month-summary-list">
-										<div class="month-summary-pie-box">
-											<div class="month-summary-pie month-summary-low-pressure-pie"></div>
-											<div class="month-summary-pie-text-box">低压报警</div>
-										</div>
-										<div class="month-summary-number"><span>6</span>次</div>
+										<div class="month-summary-title-box month-summary-low-pressure">低压报警</div>
+										<div class="month-summary-number"><span>{{alarmSummary.lowPressureNum}}</span>次</div>
 									</div>
 								</div>
 							</div>
@@ -280,7 +272,7 @@
 											<div class="security-index-title-line position-right"></div>
 										</div>
 										<div class="security-index-content">
-											<p>第<span>05</span>名</p>
+											<p>第<span>{{safetyLevel.rankingNum}}</span>名</p>
 											<p>在郑州市排名</p>
 										</div>
 									</div>
@@ -291,7 +283,7 @@
 										<div class="security-index-pie"></div>
 										<div class="security-index-pie-text-box">
 											<p>今日得分</p>
-											<p>42分</p>
+											<p>{{safetyLevel.scoreNum}}分</p>
 										</div>
 									</div>
 								</div>
@@ -327,69 +319,26 @@
 		</div>
 	</body>
 	<script>
+		param.todayAlarm = {};
+		param.alarmRecord = [];
+		param.checkTask = {};
 		param.buildIndex = 0;
-		param.workOrderList = [];
-		param.alarmRecordList = [];
 		param.regionList = [];
 		param.floorList = [];
 		param.cameraList = [];
+		param.workOrderList = [];
+		param.alarmSummary = {};
+		param.safetyLevel = {};
 		loadVue(".v-dom", param);
 		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		$("#monthSummary").val(month);
 		var alarmRecordTimer = null;
 		var workOrderTimer = null;
 		var checkTaskBar = echarts.init($(".check-task-bar-box").get(0));
 		var carAccess = echarts.init($(".car-access-box").get(0));
 		var visitorAccess = echarts.init($(".visitor-access-box").get(0));
-		$(function() {
-			$("#monthSummary").val(date.getMonth() + 1);
-			$(".check-task-pie").circleChart({
-				color: "#07a6ff",
-				startAngle: 0,
-				widthRatio: 0.16,
-				animation: "easeInOutCubic",
-				background: false,
-				value: 56,
-				size: 72,
-				lineCap: "round"
-			});
-			$(".month-summary-alert-pie").circleChart({
-				color: "#ffd34e",
-				startAngle: 0,
-				animation: "easeInOutCubic",
-				background: false,
-				value: 16,
-				size: 64,
-				lineCap: "round"
-			});
-			$(".month-summary-fault-pie").circleChart({
-				color: "#e96623",
-				startAngle: 0,
-				animation: "easeInOutCubic",
-				background: false,
-				value: 17,
-				size: 64,
-				lineCap: "round"
-			});
-			$(".month-summary-low-pressure-pie").circleChart({
-				color: "#ff414a",
-				startAngle: 0,
-				animation: "easeInOutCubic",
-				background: false,
-				value: 7,
-				size: 64,
-				lineCap: "round"
-			});
-			$(".security-index-pie").circleChart({
-				color: "#07a6ff",
-				startAngle: 0,
-				widthRatio: 0.06,
-				animation: "easeInOutCubic",
-				background: false,
-				value: 42,
-				size: 110,
-				lineCap: "round"
-			});
-		})
 
 		function resetChartSize() {
 			bindWindowChange(function() {
@@ -424,61 +373,286 @@
 			}, 5000);
 		}
 
-		function getCheckTask() {
-			totalNumber = [9, 12];
-			checkTaskBar.setOption({
-				tooltip: {
-					show: false
-				},
-				grid: {
-					left: "0",
-					right: "0",
-					bottom: "10",
-					top: "20"
-				},
-				xAxis: [{
-					type: 'value',
-					show: false
-				}],
-				yAxis: [{
-					type: 'category',
-					show: false,
-					data: ["今日完成情况", "今日巡检任务总数"]
-				}],
-				series: [{
-					type: 'bar',
-					barWidth: 5,
-					label: {
-						normal: {
-							show: true,
-							distance: 6,
-							position: "insideBottomLeft",
-							textStyle: {
-								color: "#fff",
-								fontSize: 10,
+		function getTodayAlarm() {
+			var param = {};
+			request("POST", "/home/v1/alarmTodayNum", param, true, function(res) {
+				setData.todayAlarm = res.data;
+			}, function(res) {
+				layer.msg("今日报警获取失败");
+			});
+		}
 
+		function getAlarmRecord(showLoading) {
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20
+			}
+			request("POST", "/alarmEvent/v1/findAlarmRecord", param, showLoading, function(res) {
+				var dataList = res.data.dataList;
+				for(var i = 0; i < dataList.length; i++) {
+					if(dataList[i].eventLvl == "0") {
+						dataList[i].eventLvlText = "无";
+					} else if(dataList[i].eventLvl == "1") {
+						dataList[i].eventLvlText = "Ⅰ级";
+					} else if(dataList[i].eventLvl == "2") {
+						dataList[i].eventLvlText = "Ⅱ级";
+					} else if(dataList[i].eventLvl == "3") {
+						dataList[i].eventLvlText = "Ⅲ级";
+					}
+					if(dataList[i].processStatus == "0") {
+						dataList[i].processStatusText = "未处理";
+					} else if(dataList[i].processStatus == "1") {
+						dataList[i].processStatusText = "已处理";
+					}
+					dataList[i].catchImageList = dataList[i].catchImage ? dataList[i].catchImage.split(",") : [];
+				}
+				setData.alarmRecord = dataList
+			}, function(res) {
+				layer.msg("实时报警加载失败");
+			});
+		}
+
+		function alarmInfo(obj) {
+			openMask("/part/alarmInfo", ["480px", "340px"], function(layerDom, layerIframe) {
+				layerIframe.setData.parentData = obj;
+				if(obj.catchImageList.length > 1) {
+					layerIframe.setSwiper();
+				}
+			});
+		}
+
+		function getCheckTask() {
+			var param = {};
+			request("POST", "/home/v1/checkTaskToday", param, true, function(res) {
+				var dataInfo = res.data;
+				checkTaskBar.setOption({
+					tooltip: {
+						show: false
+					},
+					grid: {
+						left: "0",
+						right: "0",
+						bottom: "10",
+						top: "20"
+					},
+					xAxis: [{
+						type: 'value',
+						show: false
+					}],
+					yAxis: [{
+						type: 'category',
+						show: false,
+						data: ["今日完成情况", "今日巡检任务总数"]
+					}],
+					series: [{
+						type: 'bar',
+						barWidth: 5,
+						label: {
+							normal: {
+								show: true,
+								distance: 6,
+								position: "insideBottomLeft",
+								textStyle: {
+									color: "#fff",
+									fontSize: 10,
+
+								},
+								formatter: "{b} {c}个任务"
 							},
-							formatter: "{b} {c}个任务"
 						},
-					},
-					itemStyle: {
-						normal: {
-							color: new echarts.graphic.LinearGradient(
-								0, 0, 1, 0, [{
-										offset: 0,
-										color: '#07a6ff'
-									},
-									{
-										offset: 1,
-										color: '#33d9fb'
-									}
-								]
-							)
+						itemStyle: {
+							normal: {
+								color: new echarts.graphic.LinearGradient(
+									0, 0, 1, 0, [{
+											offset: 0,
+											color: '#07a6ff'
+										},
+										{
+											offset: 1,
+											color: '#33d9fb'
+										}
+									]
+								)
+							}
+						},
+						data: [dataInfo.taskCompleteNum, dataInfo.checkTaskTotal]
+					}]
+				}, true);
+				$(".check-task-pie").circleChart({
+					color: "#07a6ff",
+					startAngle: 0,
+					widthRatio: 0.16,
+					animation: "easeInOutCubic",
+					background: false,
+					value: dataInfo.completeRate,
+					size: 72,
+					lineCap: "round"
+				});
+				setData.checkTask = dataInfo;
+			}, function(res) {
+				layer.msg("今日巡查任务获取失败");
+			});
+		}
+
+		function loadRegion() {
+			var timestamp = new Date().getTime();
+			$.getJSON('json/floor.json?timestamp=' + timestamp, function(res) {
+				setData.floorList = res;
+				var param = {
+					path: "/api/resource/v1/regions/root",
+					param: {}
+				}
+				hikRequest(param, true, function(res) {
+					var indexCode = res.data.indexCode;
+					var param = {
+						path: "/api/irds/v2/region/nodesByParams",
+						param: {
+							resourceType: "region",
+							parentIndexCodes: [
+								indexCode
+							],
+							pageNo: pageNo,
+							pageSize: 1000
 						}
-					},
-					data: totalNumber
-				}]
-			}, true);
+					}
+					hikRequest(param, true, function(res) {
+						var regionList = res.data.list;
+						var buildIndex = setData.buildIndex;
+						for(var i = 0; i < regionList.length; i++) {
+							regionList[i].isActive = false;
+							regionList[i].floorId = buildIndex + "-" + i;
+						}
+						setData.regionList = regionList;
+						tabFloor(regionList[0]);
+					})
+				})
+			});
+		}
+
+		function tabFloor(obj) {
+			var regionList = setData.regionList;
+			for(var i = 0; i < regionList.length; i++) {
+				regionList[i].isActive = false;
+			}
+			obj.isActive = true;
+			loadCamera(obj)
+		}
+
+		function loadCamera(obj) {
+			var param = {
+				path: "/api/resource/v1/camera/advance/cameraList",
+				param: {
+					pageNo: pageNo,
+					pageSize: 1000,
+					regionIndexCode: obj.indexCode
+				}
+			}
+			hikRequest(param, true, function(res) {
+				setData.cameraList = res.data.list;
+				var floorList = setData.floorList;
+				var floorId = obj.floorId;
+				for(var i = 0; i < floorList.length; i++) {
+					if(floorId == floorList[i].id) {
+						var markers = floorList[i].csub;
+						var floorImage = "img/floorImage/" + floorId + ".png";
+						$("#floorImage").zoomMarker_CleanMarker();
+						$("#floorImage").zoomMarker_LoadImage(floorImage);
+						for(var j = 0; j < markers.length; j++) {
+							var dom = "<div class='floor-video-box'><div class='video-circle-box'></div><div class='video-box'><video controls='controls' src='' autoplay='autoplay' controls='controls'></video><div class='decorate-list common-left-top-decorate position-left-top'></div><div class='decorate-list common-left-bottom-decorate position-left-bottom'></div><div class='decorate-list common-right-top-decorate position-right-top'></div><div class='decorate-list common-right-bottom-decorate position-right-bottom'></div></div></div>"
+							$('#floorImage').zoomMarker_AddMarker({
+								src: markers[j].src,
+								x: markers[j].x,
+								y: markers[j].y,
+								size: 40,
+								hint: {
+									value: dom
+								},
+								click: function(e) {
+									showVideo(e);
+								}
+							});
+							getPreviewUrl(j);
+						}
+					}
+				}
+			})
+		}
+
+		function getPreviewUrl(i) {
+			var zoomMarker = $(".zoom-marker");
+			var cameraList = setData.cameraList;
+			var cameraIndexCode = cameraList[i].cameraIndexCode;
+			var param = {
+				path: "/api/video/v1/cameras/previewURLs",
+				param: {
+					cameraIndexCode: cameraIndexCode,
+					protocol: "hls"
+				}
+			}
+			hikRequest(param, true, function(res) {
+				var videoUrl = res.data.url;
+				if(Hls.isSupported()) {
+					var video = zoomMarker.eq(i).find("video").get(0);
+					var hls = new Hls();
+					hls.loadSource(videoUrl);
+					hls.attachMedia(video);
+				}
+			})
+		}
+
+		function showVideo(e) {
+			var size = e.param.size;
+			var marker = e.marker;
+			marker.find("video").get(0).play();
+			marker.siblings().find(".floor-video-box").hide();
+			marker.find(".floor-video-box").css({
+				"top": size / 2,
+				"left": size
+			}).show(500);
+		}
+
+		function getWorkOrder(showLoading) {
+			var param = {}
+			request("POST", "/workOrder/queryList.do", param, showLoading, function(res) {
+				setData.workOrderList = res.data.dataList;
+			}, function(res) {
+				layer.msg("工单记录加载失败");
+			});
+		}
+
+		function getAlarmSummary() {
+			var month = resetTime(year + "-" + $("#monthSummary").val(), 4);
+			var param = {
+				month: month
+			}
+			request("POST", "/home/v1/monthSummary", param, true, function(res) {
+				setData.alarmSummary = res.data;
+			}, function(res) {
+				layer.msg("月度汇总获取失败");
+			});
+		}
+
+		function getSafetyLevel() {
+			var param = {};
+			request("POST", "/home/v1/safetyLevel", param, true, function(res) {
+				var dataInfo = res.data;
+				if(dataInfo.rankingNum < 10) {
+					dataInfo.rankingNum = "0" + dataInfo.rankingNum;
+				}
+				$(".security-index-pie").circleChart({
+					color: "#07a6ff",
+					startAngle: 0,
+					widthRatio: 0.06,
+					animation: "easeInOutCubic",
+					background: false,
+					value: dataInfo.scoreNum,
+					size: 110,
+					lineCap: "round"
+				});
+				setData.safetyLevel = dataInfo;
+			}, function(res) {
+				layer.msg("安全指数获取失败");
+			})
 		}
 
 		function getCarAccess() {
@@ -683,178 +857,16 @@
 			}, true);
 		}
 
-		function loadRegion() {
-			var timestamp = new Date().getTime();
-			$.getJSON('json/floor.json?timestamp=' + timestamp, function(res) {
-				setData.floorList = res;
-				var param = {
-					path: "/api/resource/v1/regions/root",
-					param: {}
-				}
-				hikRequest(param, true, function(res) {
-					var indexCode = res.data.indexCode;
-					var param = {
-						path: "/api/irds/v2/region/nodesByParams",
-						param: {
-							resourceType: "region",
-							parentIndexCodes: [
-								indexCode
-							],
-							pageNo: pageNo,
-							pageSize: 1000
-						}
-					}
-					hikRequest(param, true, function(res) {
-						var regionList = res.data.list;
-						var buildIndex = setData.buildIndex;
-						for(var i = 0; i < regionList.length; i++) {
-							regionList[i].isActive = false;
-							regionList[i].floorId = buildIndex + "-" + i;
-						}
-						setData.regionList = regionList;
-						tabFloor(regionList[0]);
-					})
-				})
-			});
-		}
-
-		function tabFloor(obj) {
-			var regionList = setData.regionList;
-			for(var i = 0; i < regionList.length; i++) {
-				regionList[i].isActive = false;
-			}
-			obj.isActive = true;
-			loadCamera(obj)
-		}
-
-		function loadCamera(obj) {
-			var param = {
-				path: "/api/resource/v1/camera/advance/cameraList",
-				param: {
-					pageNo: pageNo,
-					pageSize: 1000,
-					regionIndexCode: obj.indexCode
-				}
-			}
-			hikRequest(param, true, function(res) {
-				setData.cameraList = res.data.list;
-				var floorList = setData.floorList;
-				var floorId = obj.floorId;
-				for(var i = 0; i < floorList.length; i++) {
-					if(floorId == floorList[i].id) {
-						var markers = floorList[i].csub;
-						var floorImage = "img/floorImage/" + floorId + ".png";
-						$("#floorImage").zoomMarker_CleanMarker();
-						$("#floorImage").zoomMarker_LoadImage(floorImage);
-						for(var j = 0; j < markers.length; j++) {
-							var dom = "<div class='floor-video-box'><div class='video-circle-box'></div><div class='video-box'><video controls='controls' src='' autoplay='autoplay' controls='controls'></video><div class='decorate-list common-left-top-decorate position-left-top'></div><div class='decorate-list common-left-bottom-decorate position-left-bottom'></div><div class='decorate-list common-right-top-decorate position-right-top'></div><div class='decorate-list common-right-bottom-decorate position-right-bottom'></div></div></div>"
-							$('#floorImage').zoomMarker_AddMarker({
-								src: markers[j].src,
-								x: markers[j].x,
-								y: markers[j].y,
-								size: 40,
-								hint: {
-									value: dom
-								},
-								click: function(e) {
-									showVideo(e);
-								}
-							});
-							getPreviewUrl(j);
-						}
-					}
-				}
-			})
-		}
-
-		function getPreviewUrl(i) {
-			var zoomMarker = $(".zoom-marker");
-			var cameraList = setData.cameraList;
-			var cameraIndexCode = cameraList[i].cameraIndexCode;
-			var param = {
-				path: "/api/video/v1/cameras/previewURLs",
-				param: {
-					cameraIndexCode: cameraIndexCode,
-					protocol: "hls"
-				}
-			}
-			hikRequest(param, true, function(res) {
-				var videoUrl = res.data.url;
-				if(Hls.isSupported()) {
-					var video = zoomMarker.eq(i).find("video").get(0);
-					var hls = new Hls();
-					hls.loadSource(videoUrl);
-					hls.attachMedia(video);
-				}
-			})
-		}
-
-		function showVideo(e) {
-			var size = e.param.size;
-			var marker = e.marker;
-			marker.find("video").get(0).play();
-			marker.siblings().find(".floor-video-box").hide();
-			marker.find(".floor-video-box").css({
-				"top": size / 2,
-				"left": size
-			}).show(500);
-		}
-
-		function getWorkOrder(showLoading) {
-			var param = {}
-			request("POST", "/sinuo/workOrder/queryList.do", param, showLoading, function(res) {
-				setData.workOrderList = res.data.dataList;
-			}, function(res) {
-				layer.msg("获取工单记录失败");
-			});
-		}
-
-		function getAlarmRecord(showLoading) {
-			var param = {
-				pageNo: pageNo,
-				pageSize: 20
-			}
-			request("POST", "/sinuo/alarmEvent/v1/findAlarmRecord", param, showLoading, function(res) {
-				var dataList = res.data.dataList;
-				for(var i = 0; i < dataList.length; i++) {
-					if(dataList[i].eventLvl == "0") {
-						dataList[i].eventLvlText = "无";
-					} else if(dataList[i].eventLvl == "1") {
-						dataList[i].eventLvlText = "Ⅰ级";
-					} else if(dataList[i].eventLvl == "2") {
-						dataList[i].eventLvlText = "Ⅱ级";
-					} else if(dataList[i].eventLvl == "3") {
-						dataList[i].eventLvlText = "Ⅲ级";
-					}
-					if(dataList[i].processStatus == "0") {
-						dataList[i].processStatusText = "未处理";
-					} else if(dataList[i].processStatus == "1") {
-						dataList[i].processStatusText = "已处理";
-					}
-					dataList[i].catchImageList = dataList[i].catchImage ? dataList[i].catchImage.split(",") : [];
-				}
-				setData.alarmRecordList = dataList
-			}, function(res) {
-				layer.msg("实时报警加载失败");
-			});
-		}
-
-		function alarmInfo(obj) {
-			openMask("/part/alarmInfo", ["480px", "340px"], function(layerDom, layerIframe) {
-				layerIframe.setData.parentData = obj;
-				if(obj.catchImageList.length > 1) {
-					layerIframe.setSwiper();
-				}
-			});
-		}
-
+		getTodayAlarm();
+		getAlarmRecord(true);
+		getCheckTask();
 		loadFloorImage();
 		loadRegion();
-		getCheckTask();
+		getWorkOrder(true);
+		getAlarmSummary();
+		getSafetyLevel();
 		getCarAccess();
 		getVisitorAccess();
-		getWorkOrder(true);
-		getAlarmRecord(true);
 		resetChartSize();
 		nextTick(function() {
 			setAlarmRecordTimer();

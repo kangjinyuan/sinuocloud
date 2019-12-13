@@ -57,7 +57,6 @@ function loadVue(el, param) {
 
 //刷新页面
 function reloadPage() {
-	getQueryString("pathData")
 	window.location.reload();
 }
 
@@ -146,7 +145,7 @@ function hikRequest(param, showLoading, callback) {
 	} else {
 		var isPage = false;
 	}
-	request("POST", "/sinuo/artemis/v1/post/string", param, showLoading, function(res) {
+	request("POST", "/artemis/v1/post/string", param, showLoading, function(res) {
 		callback(res);
 		if(isPage == true) {
 			idList = [];
@@ -370,6 +369,7 @@ function tabData(obj) {
 	resetDataInfo(dataList);
 }
 
+//重置dataInfo
 function resetDataInfo(dataList) {
 	for(var i = 0; i < dataList.length; i++) {
 		dataList[i].isActive = false;
@@ -831,7 +831,7 @@ function getPrivilege(param, callback) {
 		idList: param.idList,
 		parent: param.parent
 	}
-	request("POST", "/sinuo/privilege/queryList.do", param, false, function(res) {
+	request("POST", "/privilege/queryList.do", param, false, function(res) {
 		var dataList = res.data.dataList;
 		if(callback) {
 			callback(dataList);
@@ -963,7 +963,7 @@ function checkInput() {
 	}
 
 	for(var i = 0; i < $(".regular-code").length; i++) {
-		if(!regular_password.test($(".regular-code").eq(i).val())) {
+		if(!regular_code.test($(".regular-code").eq(i).val())) {
 			var required = $(".regular-code").eq(i).parent().siblings(".mask-list-name").text();
 			layer.msg(required + " 格式错误 请核对");
 			return false;

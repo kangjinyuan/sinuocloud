@@ -47,7 +47,7 @@ function login() {
 		account: $('#account').val(),
 		password: $("#password").val()
 	}
-	request('POST', '/sinuo/administrator/login.do', param, true, function(res) {
+	request('POST', '/administrator/login.do', param, true, function(res) {
 		var accountInfo = res.data;
 		window.localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
 		window.location.href = "main.html?timestamp=" + timestamp;

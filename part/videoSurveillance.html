@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,67 +6,63 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
 		<script src="../js/hls.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
-		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
-			<div class="mask-box">
-				<div class="mask-inner-box">
-					<div class="opera-list-box">
-						<div class="opera-list opera-left-box">
-							<div class="opera-list-inner-box">
-								<div class="full-box" v-if="dataList.length == 0">
-									<div class="no-data-box">
-										<div class="no-data-inner-box">
-											<div class="icon icon-no-data"></div>
-											<div class="no-data-text">暂时没有监控点哦</div>
-										</div>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="opera-list-box">
+					<div class="opera-list opera-left-box">
+						<div class="opera-list-inner-box">
+							<div class="full-box" v-if="dataList.length == 0">
+								<div class="no-data-box">
+									<div class="no-data-inner-box">
+										<div class="icon icon-no-data"></div>
+										<div class="no-data-text">暂时没有监控点哦</div>
 									</div>
 								</div>
-								<div class="fold-box" v-else>
-									<div class="fold-list-box">
-										<div class="fold-title-box">
-											<div class="fold-title-text-box">
-												{{parentData.deviceName}}
-											</div>
-										</div>
-										<div class="fold-content-box">
-											<ul>
-												<li v-bind:class="cameraInfo.cameraDeviceIndexCode == t.cameraDeviceIndexCode?'selected':''" v-for="t in dataList" v-on:click="tabCamera(t);">{{t.cameraDeviceName}}</li>
-											</ul>
-										</div>
+							</div>
+							<div class="fold-box" v-else>
+								<div class="fold-list-box">
+									<div class="fold-title-box">
+										<div class="fold-title-text-box">{{parentData.deviceName}}</div>
+									</div>
+									<div class="fold-content-box">
+										<ul>
+											<li v-bind:class="cameraInfo.cameraDeviceIndexCode == t.cameraDeviceIndexCode?'selected':''" v-for="t in dataList" v-on:click="tabCamera(t);">{{t.cameraDeviceName}}</li>
+										</ul>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="opera-list opera-right-box">
-							<div class="opera-list-inner-box">
-								<div class="opera-video-box">
-									<div class="video-box full-height-box">
-										<video src="" controls="controls" autoplay="autoplay" id="video"></video>
-									</div>
+					</div>
+					<div class="opera-list opera-right-box">
+						<div class="opera-list-inner-box">
+							<div class="opera-video-box">
+								<div class="video-box full-height-box">
+									<video src="" controls="controls" autoplay="autoplay" id="video"></video>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="btn-box">
-					<div class="btn-inner-box">
-						<div class="btn" onclick="closeMask();">返回</div>
-					</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="closeMask();">返回</div>
 				</div>
 			</div>
 		</div>

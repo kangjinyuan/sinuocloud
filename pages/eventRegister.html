@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 
 	<head>
@@ -6,50 +6,46 @@
 		<title>思诺科技消安一体化平台</title>
 		<meta name="keywords" content="">
 		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Cache-Control" content="no-cache">
 		<meta http-equiv="Expires" content="0">
-		<link rel="shortcut icon" href="../img/logo.png" type="image/x-icon" />
-		<link rel="stylesheet" href="../css/reset.css" />
-		<link rel="stylesheet" href="../css/animate.min.css" />
-		<link rel="stylesheet" href="../css/common.css?v=9094e21722" />
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=ea43ea1cce"></script>
-		<script src="../js/common.js?v=c98a4e1add"></script>
+		<script src="../js/postUrl.js?v=b3167ffa28"></script>
+		<script src="../js/common.js?v=8bdd65fff2"></script>
 	</head>
 
 	<body>
 		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
 			<div class="search-box">
 				<div class="search-row-box">
-					<div class="search-list-box">
-						<div class="search-list">
-							<div class="search-name">事件类型：</div>
-							<div class="search-value">
-								<select name="" required="required" id="eventTypeId" v-on:change="search();">
-									<option value="">事件类型</option>
-									<option v-bind:value="t.eventTypeId" v-for="t in eventType">{{t.eventName}}</option>
-								</select>
-							</div>
+					<div class="search-list">
+						<div class="search-name">事件类型：</div>
+						<div class="search-value">
+							<select name="" required="required" id="eventTypeId" v-on:change="search();">
+								<option value="">事件类型</option>
+								<option v-bind:value="t.eventTypeId" v-for="t in eventType">{{t.eventName}}</option>
+							</select>
 						</div>
-						<div class="search-list">
-							<div class="search-name">监控点：</div>
-							<div class="search-value">
-								<input type="text" name="" value="" id="monitorPointName" placeholder="监控点" />
-							</div>
-						</div>
-						<div class="search-list">
-							<div class="search-name">是否启用：</div>
-							<div class="search-value">
-								<select name="" required="required" id="status" v-on:change="search();">
-									<option value="">是否启用</option>
-									<option value="1">是</option>
-									<option value="0">否</option>
-								</select>
-							</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">监控点：</div>
+						<div class="search-value"><input type="text" name="" value="" id="monitorPointName" placeholder="监控点"></div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">是否启用：</div>
+						<div class="search-value">
+							<select name="" required="required" id="status" v-on:change="search();">
+								<option value="">是否启用</option>
+								<option value="1">是</option>
+								<option value="0">否</option>
+							</select>
 						</div>
 					</div>
 					<div class="search-btn-box">
@@ -90,7 +86,6 @@
 									<th>操作</th>
 								</tr>
 							</thead>
-
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
 									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
@@ -132,7 +127,7 @@
 				createEventId: obj.createEventId,
 				status: status
 			}
-			request("POST", "/sinuo/event/v1/modifyEventStatus", param, true, function(res) {
+			request("POST", "/event/v1/modifyEventStatus", param, true, function(res) {
 				layer.msg("操作成功");
 				loadData();
 			}, function(res) {
@@ -173,7 +168,7 @@
 				var param = {
 					createEventId: obj.createEventId
 				}
-				request('POST', '/sinuo/event/v1/deleteEvent', param, true, function(res) {
+				request('POST', '/event/v1/deleteEvent', param, true, function(res) {
 					loadData();
 					layer.closeAll('dialog');
 				}, function(res) {
@@ -230,7 +225,7 @@
 				monitorPointName: $("#monitorPointName").val(),
 				status: $("#status").val()
 			};
-			request("POST", "/sinuo/event/v1/getCreateEventList", param, true, function(res) {
+			request("POST", "/event/v1/getCreateEventList", param, true, function(res) {
 				var dataList = res.data.dataList;
 				resetDataList(function() {
 					for(var i = 0; i < dataList.length; i++) {
@@ -247,7 +242,7 @@
 
 		function loadEventType() {
 			var param = {};
-			request("POST", "/sinuo/event/v1/getEventType", param, true, function(res) {
+			request("POST", "/event/v1/getEventType", param, true, function(res) {
 				var dataList = res.data;
 				for(var i = 0; i < dataList.length; i++) {
 					resetData(1, dataList[i]);
