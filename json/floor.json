@@ -1,7 +1,7 @@
 [
    {
         "id":"0-0",
-        "csub":[
+        "childList":[
             {
             	"src":"img/icon/icon-surveillance.png",
                 "x":"200",
@@ -16,7 +16,7 @@
     },
     {
         "id":"0-1",
-        "csub":[
+        "childList":[
         	{
         		"src":"img/icon/icon-surveillance.png",
                 "x":"300",
@@ -31,34 +31,34 @@
     },
     {
         "id":"0-2",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-3",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-4",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-5",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-6",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-7",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-8",
-        "csub":[]
+        "childList":[]
     },
     {
         "id":"0-10",
-        "csub":[]
+        "childList":[]
     }
 ]

@@ -4,7 +4,7 @@ var accountInfo = window.localStorage.getItem("accountInfo") ? JSON.parse(window
 var regular_num = /^[0-9.-]*$/;
 
 //	手机正则表达式
-var regular_phone = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+var regular_telephone = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
 
 //	密码正则表达式
 var regular_password = /^[A-Za-z0-9]{4,16}$/;
@@ -138,6 +138,132 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 	});
 }
 
+//闪向请求
+function shanxiangRequest(method, requestUrl, param, showLoading, okCallback, noCallback) {
+	var timestamp = new Date().getTime();
+	if(param.pageNo) {
+		var isPage = true;
+	} else {
+		var isPage = false;
+	}
+	if(method == "POST") {
+		if(accountInfo) {
+			param.accessToken = accountInfo.accessToken;
+		}
+		param = JSON.stringify(param);
+	}
+	if(showLoading) {
+		var loadding = layer.load(1, {
+			shade: [0.2, '#333'],
+			area: ['37px', '37px']
+		});
+	}
+	if(requestUrl.indexOf("?") > 0) {
+		requestUrl = requestUrl + "&timestamp=" + timestamp;
+	} else {
+		requestUrl = requestUrl + "?timestamp=" + timestamp;
+	}
+	$.ajax({
+		type: method,
+		url: hikUrl + requestUrl,
+		contentType: "application/json;charset=UTF-8",
+		data: param,
+		dataType: 'json',
+		success: function(res) {
+			if(res.code == "0000") {
+				okCallback(res);
+				if(isPage == true) {
+					idList = [];
+					var data = res.data;
+					setData.dataLength = data.dataList.length;
+					setData.totalPage = data.totalPage;
+					setData.pageSize = data.pageSize;
+					setData.pageNo = data.pageNo;
+					setData.count = data.count;
+					resetPage();
+				}
+			} else if(res.code == "0007" || res.code == "0006") {
+				window.localStorage.setItem("accountInfo", "");
+				top.location.href = host + "/sinuocloud/login.html";
+			} else if(res.code == "5000") {
+				layer.msg("服务器内部错误");
+			} else {
+				noCallback(res);
+			}
+			if(showLoading) {
+				layer.closeAll('loading');
+			}
+		},
+		error: function(res) {
+			if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
+				window.location.href = host + '/sinuocloud/part/err.html';
+			}
+		}
+	});
+}
+
+//思诺请求
+function sinuoRequest(method, requestUrl, param, showLoading, okCallback, noCallback) {
+	var timestamp = new Date().getTime();
+	if(param.pageNo) {
+		var isPage = true;
+	} else {
+		var isPage = false;
+	}
+	if(method == "POST") {
+		if(accountInfo) {
+			param.accessToken = accountInfo.accessToken;
+		}
+		param = JSON.stringify(param);
+	}
+	if(showLoading) {
+		var loadding = layer.load(1, {
+			shade: [0.2, '#333'],
+			area: ['37px', '37px']
+		});
+	}
+	if(requestUrl.indexOf("?") > 0) {
+		requestUrl = requestUrl + "&timestamp=" + timestamp;
+	} else {
+		requestUrl = requestUrl + "?timestamp=" + timestamp;
+	}
+	$.ajax({
+		type: method,
+		url: sinuoUrl + requestUrl,
+		headers: {
+			"Content-Type": "application/json;charset=utf8",
+			"Authorization": "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hZG1pbi5pZmlyZXNlcnZpY2UuY29tXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNTc3NjkwNTczLCJleHAiOjE4OTMwNTA1NzMsIm5iZiI6MTU3NzY5MDU3MywianRpIjoid0xTTTNiMnU0UUpoc212OCIsInN1YiI6NDIsInBydiI6ImJiNjVkOWI4ZmJmMGRhOTgyN2M4ZWQyMzFkOWM1NGM4MTdmMGZiYjIifQ.1ohkOy4CLnXtpZAqiqtMaTjULT_OBDXA4p8djB1ylMQ"
+		},
+		data: param,
+		dataType: 'json',
+		success: function(res) {
+			if(res.code == "0") {
+				okCallback(res);
+				if(isPage == true) {
+					idList = [];
+					var data = res.data;
+					setData.dataLength = data.data.length;
+					setData.totalPage = data.last_page;
+					setData.pageSize = data.per_page;
+					setData.pageNo = data.current_page;
+					setData.count = data.total;
+					resetPage();
+				}
+			} else {
+				noCallback(res);
+			}
+			if(showLoading) {
+				layer.closeAll('loading');
+			}
+		},
+		error: function(res) {
+			if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
+				window.location.href = host + '/sinuocloud/part/err.html';
+			}
+		}
+	});
+}
+
 //海康请求函数
 function hikRequest(param, showLoading, callback) {
 	if(param.param.pageNo) {
@@ -145,7 +271,7 @@ function hikRequest(param, showLoading, callback) {
 	} else {
 		var isPage = false;
 	}
-	request("POST", "/artemis/v1/post/string", param, showLoading, function(res) {
+	shanxiangRequest("POST", "/artemis/v1/post/string", param, showLoading, function(res) {
 		callback(res);
 		if(isPage == true) {
 			idList = [];
@@ -400,7 +526,7 @@ function openMask(url, area, callback) {
 		skin: "layui-layer-transparent",
 		success: function(layero, index) {
 			var layerDom = layer.getChildFrame('body', index);
-			var layerIframe = window[layero.find('iframe')[0]['name']];
+			var layerIframe = layero.find('iframe')[0].contentWindow;
 			var indexList = [];
 			for(var i = 0; i < maskArray.length; i++) {
 				indexList.push(maskArray[i].index);
@@ -497,7 +623,7 @@ function resetPage() {
 						pageList.push("");
 					}
 				} else if(i > pageNo + 1) {
-					if($.inArray("", pageList, pageNo - 1) == -1) {
+					if($.inArray("", pageList, 3) == -1) {
 						pageList.push("");
 					}
 				}
@@ -760,9 +886,6 @@ function bindWindowChange(callback) {
 	$(window).resize(function() {
 		callback();
 	})
-	$(window).ready(function() {
-		callback();
-	})
 }
 
 //根据索引获取数组
@@ -809,17 +932,17 @@ function setPath(id) {
 				return false;
 			}
 			var childList = menuList[i].childList;
+			var path = host + "/sinuocloud" + menuList[i].path + ".html?timestamp=" + timestamp;
 			if(childList.length > 0) {
-				var iframe = $('iframe')[0];
-				var iframeWindow = window[iframe['name']];
-				iframe.onload = function() {
+				var iframe = $(".main-box iframe");
+				iframe.load(function() {
+					var iframeWindow = iframe[0].contentWindow;
 					iframeWindow.setData.menuList = childList;
-					iframeWindow.setData.selected = childList[0].id;
 					iframeWindow.setPath(childList[0].id);
-				};
+				})
 			}
 			setData.selected = id;
-			setData.path = host + "/sinuocloud" + menuList[i].path + ".html?timestamp=" + timestamp;
+			setData.path = path;
 		}
 	}
 }
@@ -847,6 +970,40 @@ function resetDataList(callback) {
 	nextTick(function() {
 		callback();
 	})
+}
+
+//设置圆形进度条
+function setCircleProgress(dom, value, thickness, gradient) {
+	dom.circleProgress({
+		value: value,
+		size: dom.width(),
+		startAngle: Math.PI / 2,
+		thickness: thickness,
+		lineCap: 'round',
+		fill: {
+			gradient: gradient
+		}
+	});
+}
+
+//数字位数不够补零
+function formatZero(num, len) {
+	if(String(num).length > len) return num;
+	return(Array(len).join(0) + num).slice(-len);
+}
+
+function playerVideo(id, src) {
+	videojs.options.flash.swf = host + '/sinuocloud/video/video-js.swf';
+	var videoPlayer = videojs(id);
+	videoPlayer.src({
+		src: src
+	});
+	videoPlayer.play();
+}
+
+function disposeVideo(id) {
+	var videoPlayer = videojs(id);
+	videoPlayer.dispose();
 }
 
 //正则验证
@@ -914,49 +1071,49 @@ function checkInput() {
 		}
 	}
 
-	for(var i = 0; i < $(".num").length; i++) {
-		if(!regular_num.test($(".num").eq(i).val())) {
-			var required = $(".num").eq(i).parent().siblings(".mask-list-name").text();
+	for(var i = 0; i < $(".regular-num").length; i++) {
+		if(!regular_num.test($(".regular-num").eq(i).val())) {
+			var required = $(".regular-num").eq(i).parent().siblings(".mask-list-name").text();
 			layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
 
-	if($(".phone").val() != "" && $(".phone").val() != undefined) {
-		if(!regular_phone.test($(".phone").val())) {
-			var required = $(".phone").parent().siblings(".mask-list-name").text();
+	if($(".regular-telephone").val() != "" && $(".regular-telephone").val() != undefined) {
+		if(!regular_telephone.test($(".regular-telephone").val())) {
+			var required = $(".regular-telephone").parent().siblings(".mask-list-name").text();
 			layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
 
-	for(var i = 0; i < $(".password").length; i++) {
-		if(!regular_password.test($(".password").eq(i).val())) {
-			var required = $(".password").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式:4-16位数字或字母，区分大小写");
+	for(var i = 0; i < $(".regular-password").length; i++) {
+		if(!regular_password.test($(".regular-password").eq(i).val())) {
+			var required = $(".regular-password").eq(i).parent().siblings(".mask-list-name").text();
+			layer.msg(required + " 格式为4-16位数字或字母，区分大小写");
 			return false;
 		}
 	}
 
-	if($(".email").val() != "" && $(".email").val() != undefined) {
-		if(!regular_email.test($(".email").val())) {
-			var required = $(".email").parent().siblings(".mask-list-name").text();
+	if($(".regular-email").val() != "" && $(".regular-email").val() != undefined) {
+		if(!regular_email.test($(".regular-email").val())) {
+			var required = $(".regular-email").parent().siblings(".mask-list-name").text();
 			layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
 
-	if($(".id-number").val() != "" && $(".id-number").val() != undefined) {
-		if(!regular_idNumber.test($(".id-number").val())) {
-			var required = $(".id-number").parent().siblings(".mask-list-name").text();
+	if($(".regular-id-number").val() != "" && $(".regular-id-number").val() != undefined) {
+		if(!regular_idNumber.test($(".regular-id-number").val())) {
+			var required = $(".regular-id-number").parent().siblings(".mask-list-name").text();
 			layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
 
-	if($(".room-address").val() != "" && $(".room-address").val() != undefined) {
-		if(!regular_roomAddress.test($(".room-address").val())) {
-			var required = $(".room-address").parent().siblings(".mask-list-name").text();
+	if($(".regular-room-address").val() != "" && $(".regular-room-address").val() != undefined) {
+		if(!regular_roomAddress.test($(".regular-room-address").val())) {
+			var required = $(".regular-room-address").parent().siblings(".mask-list-name").text();
 			layer.msg(required + " 格式错误 请核对");
 			return false;
 		}

@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -27,7 +27,9 @@
 				<div class="search-row-box">
 					<div class="search-list">
 						<div class="search-name">用户账号：</div>
-						<div class="search-value"><input type="text" name="" value="" id="account" placeholder="用户账号"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="account" placeholder="用户账号">
+						</div>
 					</div>
 					<div class="search-list">
 						<div class="search-name">用户类型：</div>
@@ -83,10 +85,10 @@
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
 									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-									<td>{{t.name}}</td>
+									<td v-bind:title="t.name">{{t.name}}</td>
 									<td>{{t.account}}</td>
 									<td>{{t.roleType}}</td>
-									<td>{{t.telephone?t.telephone:'暂无手机号'}}</td>
+									<td>{{t.telephone?t.telephone:'无'}}</td>
 									<td>{{t.updateTime}}</td>
 									<td>{{t.createTime}}</td>
 									<td>
@@ -111,7 +113,7 @@
 
 		//新建或编辑
 		function administrator(obj) {
-			openMask("/part/administrator", ["500px", "380px"], function(layerDom, layerIframe) {
+			openMask("/part/administrator", ["512px", "380px"], function(layerDom, layerIframe) {
 				var privilege = setData.privilege;
 				for(var i = 0; i < privilege.length; i++) {
 					resetData(1, privilege[i]);

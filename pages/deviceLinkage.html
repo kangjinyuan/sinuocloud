@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -27,7 +27,9 @@
 				<div class="search-row-box">
 					<div class="search-list">
 						<div class="search-name">消防设备：</div>
-						<div class="search-value"><input type="text" name="" value="" id="fireDeviceName" placeholder="消防设备"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="fireDeviceName" placeholder="消防设备">
+						</div>
 					</div>
 					<div class="search-btn-box">
 						<div class="btn" onclick="search();">查询</div>
@@ -59,21 +61,25 @@
 						<table>
 							<thead>
 								<tr>
-									<th class="padding40">
+									<th class="padding-left-52">
 										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
 									<th>消防设备</th>
+									<th>设备类型</th>
+									<th>设备地址</th>
+									<th>用户编码</th>
 									<th>监控点</th>
-									<th>创建时间</th>
 									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
-									<td class="padding40">
+									<td class="padding-left-52">
 										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-									<td>{{t.fireDeviceName}}</td>
-									<td>{{t.cameraDeviceName}}</td>
-									<td>{{t.createTime}}</td>
+									<td v-bind:title="t.fireDeviceName">{{t.fireDeviceName}}</td>
+									<td>{{t.deviceType}}</td>
+									<td v-bind:title="t.deviceAddress?t.deviceAddress:'无'">{{t.deviceAddress?t.deviceAddress:'无'}}</td>
+									<td>{{t.fireDeviceIndexCode?t.fireDeviceIndexCode:'无'}}</td>
+									<td v-bind:title="t.cameraDeviceName">{{t.cameraDeviceName}}</td>
 									<td>
 										<ul class="opera-box">
 											<li v-on:click="deviceLinkage(t);">编辑</li>
@@ -93,7 +99,7 @@
 		loadVue(".v-dom", param);
 
 		function deviceLinkage(obj) {
-			openMask("/part/deviceLinkage", ["530px", "360px"], function(layerDom, layerIframe) {
+			openMask("/part/deviceLinkage", ["520px", "360px"], function(layerDom, layerIframe) {
 				var videoLinkageType = setData.videoLinkageType;
 				for(var i = 0; i < videoLinkageType.length; i++) {
 					resetData(1, videoLinkageType[i]);
@@ -103,9 +109,12 @@
 					layerIframe.setData.parentData = obj;
 					layerIframe.loadDevice();
 					layerIframe.loadVideoLinkageType();
-					layerDom.find(".select-device-box").hide();
 					layerDom.find("#deviceName").val(obj.fireDeviceName);
 					layerDom.find("#indexCode").val(obj.fireDeviceIndexCode);
+					layerDom.find("#deviceTypeName").val(obj.deviceType);
+					layerDom.find("#deviceAddress").val(obj.deviceAddress);
+				} else {
+					layerDom.find(".select-device-btn-box").show();
 				}
 			});
 		}

@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../layui/css/layui.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -27,13 +27,20 @@
 				<div class="kjy-box kjy-flex-box">
 					<div class="search-box">
 						<div class="search-row-box">
-							<div class="search-list">
-								<div class="search-name">设备名称：</div>
-								<div class="search-value"><input type="text" name="" value="" id="deviceName" placeholder="设备名称"></div>
+							<div class="search-list" v-if="deviceLogo != 2">
+								<div class="search-name">设备类型：</div>
+								<div class="search-value">
+									<select name="" required="required" id="deviceTypeId" onchange="search();">
+										<option value="">设备类型</option>
+										<option v-bind:value="t.id" v-for="t in deviceType">{{t.name}}</option>
+									</select>
+								</div>
 							</div>
 							<div class="search-list">
-								<div class="search-name">设备地址：</div>
-								<div class="search-value"><input type="text" name="" value="" id="deviceAddress" placeholder="设备地址"></div>
+								<div class="search-name">用户编码：</div>
+								<div class="search-value">
+									<input type="text" name="" value="" id="userCode" placeholder="用户编码">
+								</div>
 							</div>
 							<div class="search-btn-box">
 								<div class="btn" onclick="search();">查询</div>
@@ -57,19 +64,19 @@
 							<div class="kjy-table">
 								<table>
 									<thead>
-										<th class="padding40">序号</th>
-										<th>设备名称</th>
+										<th class="padding-left-52">序号</th>
+										<th>用户编码</th>
 										<th>设备类型</th>
 										<th>设备地址</th>
 										<th>设备状态</th>
 									</thead>
 									<tbody>
 										<tr v-for="(t,i) in dataList" v-on:click="tabData(t)">
-											<td class="padding40">
+											<td class="padding-left-52">
 												<div v-bind:class="['icon','icon-radio-box',t.isActive?'icon-radio-checked':'']"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-											<td>{{t.deviceName}}</td>
+											<td v-bind:title="t.indexCode?t.indexCode:'无'">{{t.indexCode?t.indexCode:'无'}}</td>
 											<td>{{t.deviceTypeName}}</td>
-											<td>{{t.installLocation?t.installLocation:'暂无设备地址'}}</td>
+											<td v-bind:title="t.installLocation?t.installLocation:'无'">{{t.installLocation?t.installLocation:'无'}}</td>
 											<td>{{t.statusText}}</td>
 										</tr>
 									</tbody>
@@ -89,8 +96,8 @@
 		</div>
 	</body>
 	<script>
+		param.deviceType = [];
 		param.deviceLogo = "";
-		param.deviceTypeList = [];
 		loadVue(".v-dom", param);
 
 		//确定上一级页面参数
@@ -102,8 +109,13 @@
 			parent.getMaskData(function(layerDom, layerIframe) {
 				layerDom.find("#deviceName").val(dataInfo.deviceName);
 				layerDom.find("#indexCode").val(dataInfo.indexCode);
-				layerDom.find("#deviceId").val(dataInfo.id);
-				layerDom.find("#orderAddress").val(dataInfo.installLocation);
+				if($("#deviceTypeId").val() == "1") {
+					layerDom.find("#deviceId").val(dataInfo.indexCode);
+				} else {
+					layerDom.find("#deviceId").val(dataInfo.id);
+				}
+				layerDom.find("#deviceAddress").val(dataInfo.installLocation);
+				layerDom.find("#deviceTypeName").val(dataInfo.deviceTypeName);
 				closeMask();
 			});
 		}
@@ -115,8 +127,8 @@
 				pageNo: pageNo,
 				pageSize: 20,
 				deviceLogo: deviceLogo,
-				deviceName: $("#deviceName").val(),
-				deviceAddress: $("#deviceAddress").val()
+				userCode: $("#userCode").val(),
+				deviceTypeId: $("#deviceTypeId").val()
 			}
 			request("POST", "/device/v1/findDeviceList", param, true, function(res) {
 				var dataList = res.data.dataList;
@@ -136,6 +148,16 @@
 				layer.msg("设备记录加载失败");
 			})
 		}
+
+		function loadAlarmType() {
+			var param = {};
+			request("POST", "/alarmEvent/v1/findAlarmType", param, true, function(res) {
+				setData.deviceType = res.data;
+			}, function(res) {
+				layer.msg("设备类型加载失败");
+			});
+		}
+		loadAlarmType();
 	</script>
 
 </html>

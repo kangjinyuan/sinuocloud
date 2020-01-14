@@ -12,21 +12,28 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link href="../video/video.js/dist/video-js.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/hls.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../video/video.min.js"></script>
+		<script src="../video/videojs-flash.min.js"></script>
+		<!--<script src="../js/hls.min.js"></script>-->
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
-		<div class="mask-box v-dom" v-cloak>
+		<div class="mask-box mask-padding-66-50 v-dom" v-cloak>
 			<div class="mask-inner-box">
 				<div class="opera-list-box">
 					<div class="opera-list opera-left-box">
 						<div class="opera-list-inner-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
 							<div class="full-box" v-if="dataList.length == 0">
 								<div class="no-data-box">
 									<div class="no-data-inner-box">
@@ -35,10 +42,10 @@
 									</div>
 								</div>
 							</div>
-							<div class="fold-box" v-else>
+							<div class="fold-box full-height-box" v-else>
 								<div class="fold-list-box">
 									<div class="fold-title-box">
-										<div class="fold-title-text-box">{{parentData.deviceName}}</div>
+										<div class="fold-title-text-box selected">{{parentData.deviceName}}</div>
 									</div>
 									<div class="fold-content-box">
 										<ul>
@@ -52,8 +59,14 @@
 					<div class="opera-list opera-right-box">
 						<div class="opera-list-inner-box">
 							<div class="opera-video-box">
+								<div class="decorate-list common-left-top-decorate position-left-top"></div>
+								<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+								<div class="decorate-list common-right-top-decorate position-right-top"></div>
+								<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
 								<div class="video-box full-height-box">
-									<video src="" controls="controls" autoplay="autoplay" id="video"></video>
+									<video id="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" autoplay="autoplay">
+										<source src='' type='rtmp/flv' />
+									</video>
 								</div>
 							</div>
 						</div>
@@ -78,23 +91,31 @@
 		}
 
 		//获取视频流
+		//		function getPreviewUrl() {
+		//			var cameraInfo = setData.cameraInfo;
+		//			var param = {
+		//				path: "/api/video/v1/cameras/previewURLs",
+		//				param: {
+		//					cameraIndexCode: cameraInfo.cameraDeviceIndexCode,
+		//					protocol: "hls"
+		//				}
+		//			}
+		//			hikRequest(param, true, function(res) {
+		//				var videoUrl = res.data.url;
+		//				if(Hls.isSupported()) {
+		//					var video = $("#video").get(0);
+		//					var hls = new Hls();
+		//					hls.loadSource(videoUrl);
+		//					hls.attachMedia(video);
+		//				}
+		//			})
+		//		}
+
 		function getPreviewUrl() {
 			var cameraInfo = setData.cameraInfo;
-			var param = {
-				path: "/api/video/v1/cameras/previewURLs",
-				param: {
-					cameraIndexCode: cameraInfo.cameraDeviceIndexCode,
-					protocol: "hls"
-				}
-			}
-			hikRequest(param, true, function(res) {
-				var videoUrl = res.data.url;
-				if(Hls.isSupported()) {
-					var video = $("#video").get(0);
-					var hls = new Hls();
-					hls.loadSource(videoUrl);
-					hls.attachMedia(video);
-				}
+			setData.videoUrl = cameraInfo.videoUrl;
+			nextTick(function() {
+				playerVideo("videoPlayer", cameraInfo.videoUrl);
 			})
 		}
 	</script>

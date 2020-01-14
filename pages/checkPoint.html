@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -27,7 +27,9 @@
 				<div class="search-row-box">
 					<div class="search-list">
 						<div class="search-name">点位名称：</div>
-						<div class="search-value"><input type="text" name="" value="" id="name" placeholder="点位名称"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="name" placeholder="点位名称">
+						</div>
 					</div>
 					<div class="search-btn-box">
 						<div class="btn" onclick="search();">查询</div>
@@ -59,7 +61,7 @@
 						<table>
 							<thead>
 								<tr>
-									<th class="padding40">
+									<th class="padding-left-52">
 										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
 									<th>点位名称</th>
 									<th>二维码编码</th>
@@ -69,9 +71,9 @@
 							</thead>
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
-									<td class="padding40">
+									<td class="padding-left-52">
 										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-									<td>{{t.name}}</td>
+									<td v-bind:title="t.name">{{t.name}}</td>
 									<td>{{t.qrCode}}</td>
 									<td>{{t.nfcCode}}</td>
 									<td>
@@ -93,13 +95,15 @@
 
 		//新建或编辑
 		function checkPoint(obj) {
-			openMask("/part/checkPoint", ["400px", "320px"], function(layerDom, layerIframe) {
+			openMask("/part/checkPoint", ["424px", "320px"], function(layerDom, layerIframe) {
 				if(obj) {
 					layerIframe.setData.parentData = obj;
 					layerIframe.loadContentList();
 					layerDom.find("#name").val(obj.name);
 					layerDom.find("#qrCode").val(obj.qrCode);
 					layerDom.find("#nfcCode").val(obj.nfcCode);
+				} else {
+					layerIframe.setData.contentList = [""];
 				}
 			});
 		}

@@ -53,7 +53,7 @@ function login() {
 		window.location.href = "main.html?timestamp=" + timestamp;
 	}, function(res) {
 		if(res.code == "0005") {
-			layer.msg("您的用户名或密码不正确");
+			layer.msg("您的账号或密码不正确");
 		} else {
 			layer.msg("登录失败，请检查网络或重试");
 		}

@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -30,7 +30,15 @@
 				<div class="search-row-box">
 					<div class="search-list">
 						<div class="search-name">创建人：</div>
-						<div class="search-value"><input type="text" name="" value="" id="creatorName" placeholder="创建人"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="creatorName" placeholder="创建人">
+						</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">负责人：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="charger" placeholder="负责人">
+						</div>
 					</div>
 					<div class="search-list">
 						<div class="search-name">工单类型：</div>
@@ -39,6 +47,8 @@
 								<option value="">工单类型</option>
 								<option value="0">设备故障</option>
 								<option value="1">设备维修</option>
+								<option value="2">环境干扰</option>
+								<option value="3">其他</option>
 							</select>
 						</div>
 					</div>
@@ -85,7 +95,7 @@
 						<table>
 							<thead>
 								<tr>
-									<th class="padding40">
+									<th class="padding-left-52">
 										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
 									<th>工单类型</th>
 									<th>工单状态</th>
@@ -99,15 +109,15 @@
 							</thead>
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
-									<td class="padding40">
+									<td class="padding-left-52">
 										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
 									<td>{{t.orderReasonText}}</td>
 									<td>{{t.stateText}}</td>
-									<td>{{t.orderAddress?t.orderAddress:'暂无工单地址'}}</td>
-									<td>{{t.orderDetail}}</td>
+									<td v-bind:title="t.orderAddress?t.orderAddress:'无'">{{t.orderAddress?t.orderAddress:'无'}}</td>
+									<td v-bind:title="t.orderDetail">{{t.orderDetail}}</td>
 									<td>{{t.scheduleEndTime}}</td>
-									<td>{{t.creatorName?t.creatorName:'暂无创建人'}}</td>
-									<td>{{t.charger?t.charger:'暂无负责人'}}</td>
+									<td>{{t.creatorName?t.creatorName:'无'}}</td>
+									<td>{{t.charger?t.charger:'无'}}</td>
 									<td>
 										<ul class="opera-box">
 											<li v-on:click="workOrderSpeed(t);">处理进度</li>
@@ -127,7 +137,9 @@
 		loadVue(".v-dom", param);
 
 		function workOrder() {
-			openMask("/part/workOrder", ["460px", "380px"]);
+			openMask("/part/workOrder", ["480px", "380px"], function(layerDom, layerIframe) {
+				layerDom.find(".select-device-btn-box").show();
+			});
 		}
 
 		function closeOrder(obj) {
@@ -177,7 +189,6 @@
 				creatorName: $("#creatorName").val(),
 				orderReason: $("#orderReason").val(),
 				state: $("#state").val(),
-				addressType: $("#addressType").val(),
 				charger: $("#charger").val()
 			};
 			request('POST', '/workOrder/queryList.do', param, true, function(res) {
@@ -190,6 +201,10 @@
 							dataList[i].orderReasonText = "设备故障";
 						} else if(dataList[i].orderReason == "1") {
 							dataList[i].orderReasonText = "设备维修";
+						} else if(dataList[i].orderReason == "2") {
+							dataList[i].orderReasonText = "环境干扰";
+						} else if(dataList[i].orderReason == "3") {
+							dataList[i].orderReasonText = "其他";
 						}
 						if(dataList[i].state == 0) {
 							dataList[i].stateText = "待分派";

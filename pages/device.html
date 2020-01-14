@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -30,7 +30,9 @@
 				<div class="search-row-box">
 					<div class="search-list">
 						<div class="search-name">设备名称：</div>
-						<div class="search-value"><input type="text" name="" value="" id="deviceName" placeholder="设备名称"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="deviceName" placeholder="设备名称">
+						</div>
 					</div>
 					<div class="search-list">
 						<div class="search-name">设备类型：</div>
@@ -43,11 +45,15 @@
 					</div>
 					<div class="search-list">
 						<div class="search-name">设备分组：</div>
-						<div class="search-value"><input type="text" name="" value="" id="deviceRegion" placeholder="设备分组"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="deviceRegion" placeholder="设备分组">
+						</div>
 					</div>
 					<div class="search-list">
 						<div class="search-name">设备地址：</div>
-						<div class="search-value"><input type="text" name="" value="" id="deviceAddress" placeholder="设备地址"></div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="deviceAddress" placeholder="设备地址">
+						</div>
 					</div>
 					<div class="search-list">
 						<div class="search-name">设备状态：</div>
@@ -102,11 +108,11 @@
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
 									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-									<td>{{t.deviceName}}</td>
-									<td>{{t.deviceCode?t.deviceCode:'暂无设备编码'}}</td>
+									<td v-bind:title="t.deviceName">{{t.deviceName}}</td>
+									<td>{{t.deviceCode?t.deviceCode:'无'}}</td>
 									<td>{{t.deviceTypeName}}</td>
 									<td>{{t.regionPathName}}</td>
-									<td>{{t.installLocation?t.installLocation:'暂无设备地址'}}</td>
+									<td v-bind:title="t.installLocation?t.installLocation:'无'">{{t.installLocation?t.installLocation:'无'}}</td>
 									<td>{{t.statusText}}</td>
 									<td>
 										<ul class="opera-box">
@@ -127,7 +133,7 @@
 		loadVue(".v-dom", param);
 
 		function deviceEventRecord(obj) {
-			openMask("/part/deviceAlarmRecord", ["90%", "90%"], function(layerDom, layerIframe) {
+			openMask("/part/deviceAlarmRecord", ["60%", "82%"], function(layerDom, layerIframe) {
 				layerIframe.setData.indexCode = obj.indexCode;
 				layerIframe.setData.deviceLogo = obj.deviceLogo;
 				layerIframe.setData.deviceType = obj.deviceTypeId;
@@ -137,12 +143,13 @@
 
 		function syncDevice() {
 			var param = {};
-			request("POST", "/device/v1/syncDevice", param, true, function(res) {
-				layer.msg("同步成功");
-				loadData();
-			}, function(res) {
-				layer.msg("同步失败");
-			});
+			//			request("POST", "/device/v1/syncDevice", param, true, function(res) {
+			//				layer.msg("同步成功");
+			//				loadData();
+			//			}, function(res) {
+			//				layer.msg("同步失败");
+			//			});
+			layer.msg("该功能未开放");
 		}
 
 		function loadData() {
@@ -181,7 +188,7 @@
 			request("POST", "/alarmEvent/v1/findAlarmType", param, true, function(res) {
 				setData.deviceType = res.data;
 			}, function(res) {
-				layer.msg("报警类型加载失败");
+				layer.msg("设备类型加载失败");
 			});
 		}
 

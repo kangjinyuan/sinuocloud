@@ -30,6 +30,7 @@
     "jshint": "^2.11.0-rc1",
     "pretty-hrtime": "^1.0.3",
     "run-sequence": "^2.2.1",
+    "video.js": "^7.6.6",
     "vue-print-nb": "^1.0.3"
   },
   "devDependencies": {

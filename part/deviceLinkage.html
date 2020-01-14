@@ -13,12 +13,12 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../layui/css/layui.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -26,8 +26,14 @@
 			<div class="mask-inner-box">
 				<div class="mask-list">
 					<div class="mask-list-name">消防设备：</div>
-					<div class="mask-list-value"><input type="text" name="" value="" id="deviceName" disabled="disabled" class="required"> <input type="hidden" name="" value="" id="indexCode" class="required"> <input type="hidden" name="" value="" id="deviceId"></div>
-					<div class="btn-box select-device-box">
+					<div class="mask-list-value">
+						<input type="text" name="" value="" id="deviceName" disabled="disabled" class="required">
+						<input type="hidden" name="" value="" id="indexCode" class="required">
+						<input type="hidden" name="" value="" id="deviceId">
+						<input type="hidden" name="" value="" id="deviceTypeName" class="required">
+						<input type="hidden" name="" value="" id="deviceAddress">
+					</div>
+					<div class="btn-box select-device-btn-box hide-box">
 						<div class="btn-inner-box">
 							<div class="btn" onclick="selectDevice();">选择</div>
 						</div>
@@ -54,7 +60,9 @@
 					<div class="mask-list-value">
 						<ul class="mask-select-box">
 							<li v-for="t in videoLinkageType">
-								<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>{{t.typeName}}</li>
+								<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+								{{t.typeName}}
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -72,7 +80,7 @@
 		loadVue(".v-dom", param);
 
 		function selectDevice() {
-			parent.openMask("/part/selectDevice", ["660px", "360px"], function(layerDom, layerIframe) {
+			parent.openMask("/part/selectDevice", ["780px", "380px"], function(layerDom, layerIframe) {
 				var dataInfo = {
 					id: $("#deviceId").val(),
 					deviceName: $("#deviceName").val()
@@ -84,7 +92,7 @@
 		}
 
 		function selectDeviceRange() {
-			parent.openMask("/part/selectDeviceRange", ["660px", "360px"], function(layerDom, layerIframe) {
+			parent.openMask("/part/selectDeviceRange", ["780px", "380px"], function(layerDom, layerIframe) {
 				layerIframe.setData.deviceLogo = "2";
 				layerIframe.setData.contentList = setData.contentList;
 				layerIframe.loadSelectDataList();
@@ -111,7 +119,9 @@
 					var obj = {
 						id: contentList[i].id,
 						cameraDeviceName: contentList[i].deviceName,
-						cameraDeviceIndexCode: contentList[i].indexCode
+						cameraDeviceIndexCode: contentList[i].indexCode,
+						deviceCode: contentList[i].deviceCode,
+						installLocation: contentList[i].installLocation
 					}
 					cameraDevice.push(obj);
 				}
@@ -141,6 +151,8 @@
 					var requestUrl = "/event/v1/addVideoLinkage";
 					param.fireDeviceName = $("#deviceName").val();
 					param.fireDeviceIndexCode = $("#indexCode").val();
+					param.deviceType = $("#deviceTypeName").val();
+					param.deviceAddress = $("#deviceAddress").val();
 				}
 				request('POST', requestUrl, param, true, function(res) {
 					closeMask();

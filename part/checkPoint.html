@@ -12,12 +12,12 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -25,23 +25,29 @@
 			<div class="mask-inner-box">
 				<div class="mask-list">
 					<div class="mask-list-name">点位名称：</div>
-					<div class="mask-list-value"><input type="text" name="" id="name" value="" class="required"></div>
+					<div class="mask-list-value">
+						<input type="text" name="" id="name" value="" class="required">
+					</div>
 				</div>
 				<div class="mask-list">
 					<div class="mask-list-name">二维码编码：</div>
-					<div class="mask-list-value"><input type="text" name="" id="qrCode" value="" placeholder="字母或数字" class="required regular-code"></div>
+					<div class="mask-list-value">
+						<input type="text" name="" id="qrCode" value="" placeholder="字母或数字" class="required">
+					</div>
 				</div>
 				<div class="mask-list">
 					<div class="mask-list-name">NFC编码：</div>
-					<div class="mask-list-value"><input type="text" name="" id="nfcCode" value="" placeholder="字母或数字" class="required regular-code"></div>
+					<div class="mask-list-value">
+						<input type="text" name="" id="nfcCode" value="" placeholder="字母或数字" class="required">
+					</div>
 				</div>
 				<div class="mask-list">
 					<div class="mask-list-name">巡查内容：</div>
 					<div class="mask-list-value">
-						<div class="no-content-box width-104" v-if="contentList.length == 0">暂无巡查内容</div>
-						<div class="mask-value-list-box" v-else>
-							<div class="mask-value-list" v-for="(t,i) in contentList"><input type="text" name="" v-bind:value="t" v-bind:placeholder="'巡查内容'+(i+1)" class="width-104 pointContent" v-on:input="resetContentList($event,i)">
-								<div class="icon icon-del-range" v-on:click="delContent(i);"></div>
+						<div class="mask-value-list-box">
+							<div class="mask-value-list" v-for="(t,i) in contentList">
+								<input type="text" name="" v-bind:value="t" v-bind:placeholder="'巡查内容'+(i+1)" class="width-156" v-on:input="resetContentList($event,i)">
+								<div class="icon icon-del-range" v-on:click="delContent(i);" v-if="i > 0"></div>
 							</div>
 						</div>
 					</div>

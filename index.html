@@ -12,19 +12,24 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="css/reset.css" />
-		<link rel="stylesheet" href="css/common.css?v=88d3f5c183" />
+		<link rel="stylesheet" href="video/video.js/dist/video-js.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/common.css?v=10ba9b2e4b" />
 		<script src="js/jquery-1.9.1.min.js"></script>
 		<script src="layui/layui.all.js"></script>
+		<script src="js/swiper.min.js"></script>
 		<script src="js/echarts-all-3.js"></script>
-		<script src="js/circleChart.es5.min.js"></script>
+		<script src="js/circle-progress.min.js"></script>
+		<script src="js/wave-progress.js"></script>
 		<script src="js/hammer.min.js"></script>
 		<script src="js/zoom-marker.min.js"></script>
 		<script src="js/jquery.mousewheel.min.js"></script>
-		<script src="js/hls.min.js"></script>
+		<script src="video/video.min.js"></script>
+		<script src="video/videojs-flash.min.js"></script>
+		<!--<script src="js/hls.min.js"></script>-->
 		<script src="js/vue.min.js"></script>
-		<script src="js/postUrl.js?v=b3167ffa28"></script>
-		<script src="js/common.js?v=8bdd65fff2"></script>
-		<script src="src/receive.js"></script>
+		<script src="js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -46,12 +51,12 @@
 								</div>
 								<div class="today-alert-inner-box">
 									<div class="today-alert-content-box">
-										<ul>
+										<ul class="position-transform-vertical">
 											<li>
 												<div class="today-alert-text today-alert-number"><span>{{todayAlarm.fireAlarmNum}}</span>起</div>
 												<div class="today-alert-text">火警数量</div>
 											</li>
-											<li>
+											<li class="position-transform-level">
 												<div class="today-alert-text today-alert-number"><span>{{todayAlarm.faultAlarmNum}}</span>起</div>
 												<div class="today-alert-text">故障数量</div>
 											</li>
@@ -63,12 +68,12 @@
 									</div>
 									<div class="cut-line cut-line-bg position-center"></div>
 									<div class="today-alert-content-box">
-										<ul>
+										<ul class="position-transform-vertical">
 											<li>
 												<div class="today-alert-text today-alert-number"><span class="grade-text-color0">{{todayAlarm.oneLevelAlarmNum}}</span>起</div>
 												<div class="today-alert-text">Ⅰ级预警</div>
 											</li>
-											<li>
+											<li class="position-transform-level">
 												<div class="today-alert-text today-alert-number"><span class="grade-text-color1">{{todayAlarm.twoLevelAlarmNum}}</span>起</div>
 												<div class="today-alert-text">Ⅱ级预警</div>
 											</li>
@@ -91,33 +96,30 @@
 							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
 							<div class="decorate-list common-right-top-decorate position-right-top"></div>
 							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
-							<div class="scroll-box">
-								<ul class="scroll-title-box">
-									<li>等级</li>
-									<li>类别</li>
-									<li>位置</li>
-									<li>处理状态</li>
-									<li>时间</li>
-								</ul>
-								<div class="scroll-content-box">
-									<div class="full-box" v-if="alarmRecord.length == 0">
-										<div class="no-data-box">
-											<div class="no-data-row-text">暂时没有实时报警哦</div>
-										</div>
-									</div>
-									<div class="scroll-content-inner-box" v-else>
-										<ul class="alarm-record-box position-left-top">
-											<li v-for="t in alarmRecord" v-on:click="alarmInfo(t);">
-												<div v-if="t.eventLvl == '0'">{{t.eventLvlText}}</div>
-												<div v-if="t.eventLvl == '1'" class="grade-text-color1">{{t.eventLvlText}}</div>
-												<div v-if="t.eventLvl == '2'" class="grade-text-color2">{{t.eventLvlText}}</div>
-												<div v-if="t.eventLvl == '3'" class="grade-text-color3">{{t.eventLvlText}}</div>
-												<div>{{t.deviceTypeName}}</div>
-												<div v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</div>
-												<div v-bind:class="t.processStatus==0?'':'state-text-color0'">{{t.processStatusText}}</div>
-												<div v-bind:title="t.alarmTime">{{t.alarmTime}}</div>
-											</li>
+							<div class="scroll-box alarm-record-box">
+								<div class="scroll-inner-box">
+									<div class="scroll-title-box">
+										<ul>
+											<li>类型</li>
+											<li>位置</li>
+											<li>用户编码</li>
+											<li>报警时间</li>
 										</ul>
+									</div>
+									<div class="scroll-content-box">
+										<div class="full-box" v-if="alarmRecord.length == 0">
+											<div class="no-data-box">
+												<div class="no-data-row-text">暂时没有实时报警哦</div>
+											</div>
+										</div>
+										<div class="scroll-content-inner-box" v-else>
+											<ul v-for="t in alarmRecord" v-on:click="alarmInfo(t);">
+												<li>{{t.deviceTypeName}}</li>
+												<li v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</li>
+												<li>{{t.fireIndexCode?t.fireIndexCode:'无'}}</li>
+												<li v-bind:title="t.alarmTime">{{t.alarmTime}}</li>
+											</ul>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -126,16 +128,16 @@
 				</div>
 				<div class="row-list-box row-list-height-30">
 					<div class="row-list-inner-box">
-						<div class="row-list-title-box">今日巡查任务</div>
+						<div class="row-list-title-box">巡查任务</div>
 						<div class="row-list-content-box">
 							<div class="decorate-list common-left-top-decorate position-left-top"></div>
 							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
 							<div class="decorate-list common-right-top-decorate position-right-top"></div>
 							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
 							<div class="check-task-box position-center">
-								<div class="check-task-pie-box">
-									<div class="check-task-pie"></div>
-									<div class="check-task-text-box">
+								<div class="check-task-pie-box position-left">
+									<div class="check-task-pie position-center"></div>
+									<div class="check-task-text-box position-transform-vertical">
 										<p>{{checkTask.completeRate}}%</p>
 										<p>完成率</p>
 									</div>
@@ -168,7 +170,7 @@
 								<div class="icon icon-arrow-up" onclick="clickRolling('floor-inner-list',0);"></div>
 								<div class="floor-list">
 									<ul class="floor-inner-list position-left-top">
-										<li v-for="t in regionList" v-bind:class="t.isActive?'selected':''" v-on:click="tabFloor(t);">{{t.name}}</li>
+										<li v-for="t in regionList" v-bind:class="t.isActive?'selected':''" v-on:click="tabRegion(t);">{{t.name}}</li>
 									</ul>
 								</div>
 								<div class="icon icon-arrow-down" onclick="clickRolling('floor-inner-list',1);"></div>
@@ -176,36 +178,67 @@
 						</div>
 					</div>
 				</div>
-				<div class="row-list-box column-list-width-50 row-list-height-30">
+				<div class="row-list-box column-list-width-25 row-list-height-30">
 					<div class="row-list-inner-box">
-						<div class="row-list-title-box">待办事项</div>
+						<div class="row-list-title-box row-list-title-small-bg">消防供水</div>
 						<div class="row-list-content-box">
 							<div class="decorate-list common-left-top-decorate position-left-top"></div>
 							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
 							<div class="decorate-list common-right-top-decorate position-right-top"></div>
 							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
-							<div class="scroll-box">
-								<ul class="scroll-title-box">
-									<li>内容</li>
-									<li>负责人</li>
-									<li>截止时间</li>
-								</ul>
-								<div class="scroll-content-box">
-									<div class="full-box" v-if="workOrderList.length == 0">
-										<div class="no-data-box">
-											<div class="no-data-row-text">暂时没有待办事项哦</div>
-										</div>
-									</div>
-									<div class="scroll-content-inner-box" v-else>
-										<ul class="work-order-box position-left-top">
-											<li v-for="t in workOrderList">
-												<div v-bind:title="t.orderDetail">{{t.orderDetail}}</div>
-												<div>{{t.charger?t.charger:'无'}}</div>
-												<div class="grade-text-color0">{{t.scheduleEndTime}}</div>
-											</li>
-										</ul>
+							<div class="fire-water-box position-center">
+								<div class="fire-water-title">{{fireWater.levelName}}</div>
+								<div class="fire-water-wave-box">
+									<div class="fire-water-wave-inner-box position-center">
+										<canvas class="fire-water-wave position-center" id="fireWaterWave"></canvas>
 									</div>
 								</div>
+								<div class="fire-water-dir">参考值：{{fireWater.referMinValue}}~{{fireWater.referMaxValue}}m</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-list-box column-list-width-25 row-list-height-30">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box row-list-title-small-bg">电气火灾</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="electrical-fire-box position-transform-all">
+								<ul>
+									<li>
+										<div class="icon icon-temperature"></div>
+										<div class="electrical-fire-text-box">
+											<div class="electrical-fire-value">{{electricFire.cableTemperature}}℃</div>
+											<div class="electrical-fire-name">线缆温度</div>
+										</div>
+									</li>
+									<li>
+										<div class="icon icon-Surplus-electrical"></div>
+										<div class="electrical-fire-text-box">
+											<div class="electrical-fire-value">{{electricFire.laveCurrent}}ma</div>
+											<div class="electrical-fire-name">剩余电流</div>
+										</div>
+									</li>
+								</ul>
+								<ul>
+									<li>
+										<div class="icon icon-Voltage"></div>
+										<div class="electrical-fire-text-box">
+											<div class="electrical-fire-value">{{electricFire.voltage}}V</div>
+											<div class="electrical-fire-name">电压</div>
+										</div>
+									</li>
+									<li>
+										<div class="icon icon-electrical"></div>
+										<div class="electrical-fire-text-box">
+											<div class="electrical-fire-value">{{electricFire.current}}A</div>
+											<div class="electrical-fire-name">电流</div>
+										</div>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -235,17 +268,23 @@
 								</select>
 							</div>
 							<div class="month-summary-box">
-								<div class="month-summary-inner-box position-center">
+								<div class="month-summary-inner-box">
 									<div class="month-summary-list">
-										<div class="month-summary-title-box month-summary-alarm">报警次数</div>
+										<div class="month-summary-title-box month-summary-alarm">
+											<div class="month-summary-title-text position-transform-vertical">报警次数</div>
+										</div>
 										<div class="month-summary-number"><span>{{alarmSummary.alarmNum}}</span>次</div>
 									</div>
 									<div class="month-summary-list">
-										<div class="month-summary-title-box month-summary-fault">故障次数</div>
+										<div class="month-summary-title-box month-summary-fault">
+											<div class="month-summary-title-text position-transform-vertical">故障次数</div>
+										</div>
 										<div class="month-summary-number"><span>{{alarmSummary.faultNum}}</span>次</div>
 									</div>
 									<div class="month-summary-list">
-										<div class="month-summary-title-box month-summary-low-pressure">低压报警</div>
+										<div class="month-summary-title-box month-summary-low-pressure">
+											<div class="month-summary-title-text position-transform-vertical">低压报警</div>
+										</div>
 										<div class="month-summary-number"><span>{{alarmSummary.lowPressureNum}}</span>次</div>
 									</div>
 								</div>
@@ -263,8 +302,8 @@
 							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
 							<div class="decorate-list common-right-top-decorate position-right-top"></div>
 							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
-							<div class="security-index-box position-center">
-								<div class="security-index-ranking-box">
+							<div class="security-index-box position-transform-all">
+								<div class="security-index-ranking-box position-transform-vertical">
 									<div class="security-index-ranking-inner-box">
 										<div class="security-index-title-box">
 											<div class="security-index-title-line position-left"></div>
@@ -272,8 +311,8 @@
 											<div class="security-index-title-line position-right"></div>
 										</div>
 										<div class="security-index-content">
-											<p>第<span>{{safetyLevel.rankingNum}}</span>名</p>
-											<p>在郑州市排名</p>
+											<p>第<span>{{safetyLevel.unitRank}}</span>名</p>
+											<p>郑州市内排名</p>
 										</div>
 									</div>
 								</div>
@@ -281,9 +320,9 @@
 									<div class="security-index-pie-inner-box position-bottom">
 										<div class="security-index-pie-bg-box position-center"></div>
 										<div class="security-index-pie"></div>
-										<div class="security-index-pie-text-box">
+										<div class="security-index-pie-text-box position-transform-vertical">
 											<p>今日得分</p>
-											<p>{{safetyLevel.scoreNum}}分</p>
+											<p>{{safetyLevel.unitScore}}</p>
 										</div>
 									</div>
 								</div>
@@ -291,7 +330,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row-list-box row-list-height-35">
+				<!--<div class="row-list-box row-list-height-35">
 					<div class="row-list-inner-box">
 						<div class="row-list-title-box">车流量</div>
 						<div class="row-list-content-box">
@@ -302,8 +341,33 @@
 							<div class="full-box car-access-box"></div>
 						</div>
 					</div>
+				</div>-->
+				<div class="row-list-box row-list-height-35">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">重点压力</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="key-stress-box position-center">
+								<div class="swiper-container">
+									<ul class="swiper-wrapper">
+										<li class="swiper-slide" v-for="t in keyStress">
+											<div class="key-stress-content-box">
+												<div class="key-stress-name">{{t.floorAddress}}</div>
+												<div class="key-stress-dir">参考值：{{t.lowestValue}}~{{t.highestValue}}Mpa</div>
+												<div class="key-stress-gauge-box"></div>
+											</div>
+										</li>
+									</ul>
+									<div class="swiper-pagination"></div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="row-list-box row-list-height-30">
+				<!--<div class="row-list-box row-list-height-30">
 					<div class="row-list-inner-box">
 						<div class="row-list-title-box">客流量</div>
 						<div class="row-list-content-box">
@@ -314,11 +378,60 @@
 							<div class="full-box visitor-access-box"></div>
 						</div>
 					</div>
+				</div>-->
+				<div class="row-list-box row-list-height-30">
+					<div class="row-list-inner-box">
+						<div class="row-list-title-box">待办工单</div>
+						<div class="row-list-content-box">
+							<div class="decorate-list common-left-top-decorate position-left-top"></div>
+							<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
+							<div class="decorate-list common-right-top-decorate position-right-top"></div>
+							<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+							<div class="scroll-box">
+								<ul class="scroll-title-box">
+									<li>工单详情</li>
+									<li>负责人</li>
+									<li>计划结束时间</li>
+								</ul>
+								<div class="scroll-content-box">
+									<div class="full-box" v-if="workOrderList.length == 0">
+										<div class="no-data-box">
+											<div class="no-data-row-text">暂时没有待办事项哦</div>
+										</div>
+									</div>
+									<div class="scroll-content-inner-box work-order-box" v-else>
+										<ul v-for="t in workOrderList">
+											<li v-bind:title="t.orderDetail">{{t.orderDetail}}</li>
+											<li>{{t.charger?t.charger:'无'}}</li>
+											<li v-bind:title="t.scheduleEndTime">{{t.scheduleEndTime}}</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</body>
 	<script>
+		param.videoUrlList = [{
+			id: "1",
+			name: "商业五二层南口",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000008"
+		}, {
+			id: "2",
+			name: "商业二外南通道",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000054"
+		}, {
+			id: "3",
+			name: "监控室",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000055"
+		}, {
+			id: "4",
+			name: "大厅二层南通道向",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000028"
+		}];
 		param.todayAlarm = {};
 		param.alarmRecord = [];
 		param.checkTask = {};
@@ -328,23 +441,36 @@
 		param.cameraList = [];
 		param.workOrderList = [];
 		param.alarmSummary = {};
+		param.fireWater = {};
+		param.electricFire = {};
 		param.safetyLevel = {};
+		param.keyStress = {};
+		param.keyStressPageNo = 0;
+		param.keyStressTotalPage = 0;
 		loadVue(".v-dom", param);
 		var date = new Date();
 		var year = date.getFullYear();
 		var month = date.getMonth() + 1;
 		$("#monthSummary").val(month);
-		var alarmRecordTimer = null;
 		var workOrderTimer = null;
 		var checkTaskBar = echarts.init($(".check-task-bar-box").get(0));
-		var carAccess = echarts.init($(".car-access-box").get(0));
-		var visitorAccess = echarts.init($(".visitor-access-box").get(0));
+		//		var carAccess = echarts.init($(".car-access-box").get(0));
+		//		var visitorAccess = echarts.init($(".visitor-access-box").get(0));
 
 		function resetChartSize() {
 			bindWindowChange(function() {
+				var safetyLevel = setData.safetyLevel;
+				var safetyValue = safetyLevel.safetyValue;
+				var checkTask = setData.checkTask;
 				checkTaskBar.resize();
-				carAccess.resize();
-				visitorAccess.resize();
+				//				carAccess.resize();
+				//				visitorAccess.resize();
+				var dom = $(".key-stress-box .swiper-slide");
+				for(var i = 0; i < dom.length; i++) {
+					window['keyStressGauge' + i].resize();
+				}
+				setCircleProgress($(".security-index-pie"), safetyValue, 3, ["#2aa1e4", "#35c6ef"]);
+				setCircleProgress($(".check-task-pie"), checkTask.completeRate, "5%", ["#2aa1e4", "#35c6ef"]);
 			})
 		}
 
@@ -359,12 +485,6 @@
 				zoom_lock: true,
 				markers: []
 			});
-		}
-
-		function setAlarmRecordTimer() {
-			alarmRecordTimer = setInterval(function() {
-				seamlessRolling($(".alarm-record-box"));
-			}, 5000);
 		}
 
 		function setWorkOrderTimer() {
@@ -384,25 +504,48 @@
 
 		function getAlarmRecord(showLoading) {
 			var param = {
-				pageNo: pageNo,
-				pageSize: 20
+				page: pageNo,
+				perPage: 20,
+				deviceTypeID: "1,2,3,4,5"
 			}
-			request("POST", "/alarmEvent/v1/findAlarmRecord", param, showLoading, function(res) {
-				var dataList = res.data.dataList;
+			sinuoRequest("GET", "/api/alarm-records", param, showLoading, function(res) {
+				var dataList = res.data.data;
 				for(var i = 0; i < dataList.length; i++) {
-					if(dataList[i].eventLvl == "0") {
+					dataList[i].deviceName = dataList[i].detail;
+					dataList[i].deviceTypeName = dataList[i].deviceType;
+					dataList[i].alarmLocation = dataList[i].deviceAddress;
+					dataList[i].alarmTime = dataList[i].time;
+					dataList[i].eventLvl = dataList[i].rating;
+					dataList[i].deviceLogo = "1";
+					dataList[i].processStatus = dataList[i].status;
+					dataList[i].deviceTypeId = dataList[i].deviceTypeID;
+					var fireUserCode = dataList[i].fireUserCode;
+					if(fireUserCode) {
+						fireUserCode = fireUserCode.slice(2);
+						dataList[i].deviceId = fireUserCode;
+					} else {
+						dataList[i].deviceId = dataList[i].deviceNo;
+					}
+					dataList[i].fireIndexCode = fireUserCode;
+					if(dataList[i].eventLvl == "1" || dataList[i].eventLvl == "2" || dataList[i].eventLvl == "3") {
+						dataList[i].eventLvlText = dataList[i].ratingType;
+						if(dataList[i].eventLvl == "1") {
+							dataList[i].eventLvlClass = "grade-text-color0";
+						} else if(dataList[i].eventLvl == "2") {
+							dataList[i].eventLvlClass = "grade-text-color1";
+						} else if(dataList[i].eventLvl == "3") {
+							dataList[i].eventLvlClass = "grade-text-color2";
+						}
+					} else {
 						dataList[i].eventLvlText = "无";
-					} else if(dataList[i].eventLvl == "1") {
-						dataList[i].eventLvlText = "Ⅰ级";
-					} else if(dataList[i].eventLvl == "2") {
-						dataList[i].eventLvlText = "Ⅱ级";
-					} else if(dataList[i].eventLvl == "3") {
-						dataList[i].eventLvlText = "Ⅲ级";
+						dataList[i].eventLvlClass = "";
 					}
 					if(dataList[i].processStatus == "0") {
-						dataList[i].processStatusText = "未处理";
-					} else if(dataList[i].processStatus == "1") {
 						dataList[i].processStatusText = "已处理";
+						dataList[i].processStatusClass = "state-text-color0";
+					} else {
+						dataList[i].processStatusText = "未处理";
+						dataList[i].processStatusClass = "";
 					}
 					dataList[i].catchImageList = dataList[i].catchImage ? dataList[i].catchImage.split(",") : [];
 				}
@@ -446,16 +589,16 @@
 					}],
 					series: [{
 						type: 'bar',
-						barWidth: 5,
+						barWidth: 10,
 						label: {
 							normal: {
 								show: true,
-								distance: 6,
+								distance: 20,
+								offset: [-20, 0],
 								position: "insideBottomLeft",
 								textStyle: {
 									color: "#fff",
-									fontSize: 10,
-
+									fontSize: 12
 								},
 								formatter: "{b} {c}个任务"
 							},
@@ -478,16 +621,7 @@
 						data: [dataInfo.taskCompleteNum, dataInfo.checkTaskTotal]
 					}]
 				}, true);
-				$(".check-task-pie").circleChart({
-					color: "#07a6ff",
-					startAngle: 0,
-					widthRatio: 0.16,
-					animation: "easeInOutCubic",
-					background: false,
-					value: dataInfo.completeRate,
-					size: 72,
-					lineCap: "round"
-				});
+				setCircleProgress($(".check-task-pie"), dataInfo.completeRate, "5%", ["#2aa1e4", "#35c6ef"]);
 				setData.checkTask = dataInfo;
 			}, function(res) {
 				layer.msg("今日巡查任务获取失败");
@@ -521,98 +655,212 @@
 						for(var i = 0; i < regionList.length; i++) {
 							regionList[i].isActive = false;
 							regionList[i].floorId = buildIndex + "-" + i;
+							regionList[i].cameraList = [];
 						}
-						setData.regionList = regionList;
-						tabFloor(regionList[0]);
+						loadCamera(regionList);
 					})
 				})
 			});
 		}
 
-		function tabFloor(obj) {
-			var regionList = setData.regionList;
-			for(var i = 0; i < regionList.length; i++) {
-				regionList[i].isActive = false;
-			}
-			obj.isActive = true;
-			loadCamera(obj)
-		}
-
-		function loadCamera(obj) {
+		function loadCamera(regionList) {
+			var videoUrlList = setData.videoUrlList;
 			var param = {
-				path: "/api/resource/v1/camera/advance/cameraList",
-				param: {
-					pageNo: pageNo,
-					pageSize: 1000,
-					regionIndexCode: obj.indexCode
-				}
+				pageNo: pageNo,
+				pageSize: 1000,
+				deviceLogo: "2"
 			}
-			hikRequest(param, true, function(res) {
-				setData.cameraList = res.data.list;
-				var floorList = setData.floorList;
-				var floorId = obj.floorId;
-				for(var i = 0; i < floorList.length; i++) {
-					if(floorId == floorList[i].id) {
-						var markers = floorList[i].csub;
-						var floorImage = "img/floorImage/" + floorId + ".png";
-						$("#floorImage").zoomMarker_CleanMarker();
-						$("#floorImage").zoomMarker_LoadImage(floorImage);
-						for(var j = 0; j < markers.length; j++) {
-							var dom = "<div class='floor-video-box'><div class='video-circle-box'></div><div class='video-box'><video controls='controls' src='' autoplay='autoplay' controls='controls'></video><div class='decorate-list common-left-top-decorate position-left-top'></div><div class='decorate-list common-left-bottom-decorate position-left-bottom'></div><div class='decorate-list common-right-top-decorate position-right-top'></div><div class='decorate-list common-right-bottom-decorate position-right-bottom'></div></div></div>"
-							$('#floorImage').zoomMarker_AddMarker({
-								src: markers[j].src,
-								x: markers[j].x,
-								y: markers[j].y,
-								size: 40,
-								hint: {
-									value: dom
-								},
-								click: function(e) {
-									showVideo(e);
-								}
-							});
-							getPreviewUrl(j);
+			request("POST", "/device/v1/findDeviceList", param, true, function(res) {
+				var dataList = res.data.dataList;
+				for(var i = 0; i < regionList.length; i++) {
+					for(var j = 0; j < dataList.length; j++) {
+						if(regionList[i].indexCode == dataList[j].regionIndexCode) {
+							dataList[j].videoUrl = videoUrlList[j].videoUrl;
+							regionList[i].cameraList.push(dataList[j]);
 						}
 					}
 				}
-			})
+				setData.regionList = regionList;
+				tabRegion(regionList[0]);
+			}, function(res) {
+				layer.msg("监控设备加载失败");
+			});
 		}
 
-		function getPreviewUrl(i) {
-			var zoomMarker = $(".zoom-marker");
-			var cameraList = setData.cameraList;
-			var cameraIndexCode = cameraList[i].cameraIndexCode;
-			var param = {
-				path: "/api/video/v1/cameras/previewURLs",
-				param: {
-					cameraIndexCode: cameraIndexCode,
-					protocol: "hls"
+		function tabRegion(obj) {
+			resetVideo();
+			var floorList = setData.floorList;
+			var regionList = setData.regionList;
+			for(var i = 0; i < regionList.length; i++) {
+				regionList[i].isActive = false;
+				if(obj.indexCode == regionList[i].indexCode) {
+					regionList[i].isActive = true;
+					var cameraList = regionList[i].cameraList;
+					var markers = floorList[i].childList;
+					$("#floorImage").zoomMarker_CleanMarker();
+					$("#floorImage").zoomMarker_LoadImage(floorImage);
+					for(var j = 0; j < cameraList.length; j++) {
+						var src = markers[j].src;
+						var x = markers[j].x;
+						var y = markers[j].y;
+						var floorImage = "img/floorImage/" + obj.floorId + ".png";
+						var videoId = "videoPlayer" + j;
+						var videoUrl = cameraList[j].videoUrl;
+						var dom = "<div class='floor-video-box'><div class='video-circle-box'></div><div class='video-box'><video id='" + videoId + "' class='video-js vjs-default-skin vjs-big-play-centered' controls preload='auto' autoplay='autoplay'><source src='" + videoUrl + "' type='rtmp/flv' /></video><div class='decorate-list common-left-top-decorate position-left-top'></div><div class='decorate-list common-left-bottom-decorate position-left-bottom'></div><div class='decorate-list common-right-top-decorate position-right-top'></div><div class='decorate-list common-right-bottom-decorate position-right-bottom'></div></div></div>"
+						$('#floorImage').zoomMarker_AddMarker({
+							src: src,
+							x: x,
+							y: y,
+							size: 40,
+							videoId: videoId,
+							videoUrl: videoUrl,
+							hint: {
+								value: dom
+							},
+							click: function(e) {
+								showVideo(e);
+							}
+						});
+						//getPreviewUrl(j);
+					}
 				}
 			}
-			hikRequest(param, true, function(res) {
-				var videoUrl = res.data.url;
-				if(Hls.isSupported()) {
-					var video = zoomMarker.eq(i).find("video").get(0);
-					var hls = new Hls();
-					hls.loadSource(videoUrl);
-					hls.attachMedia(video);
-				}
-			})
 		}
 
+		function resetVideo() {
+			var videoBox = $(".video-box");
+			for(var i = 0; i < videoBox.length; i++) {
+				var videoId = videoBox.eq(i).find(".video-js").attr("id");
+				disposeVideo(videoId);
+			}
+		}
+
+		//		function loadCamera(obj) {
+		//			var param = {
+		//				path: "/api/resource/v1/camera/advance/cameraList",
+		//				param: {
+		//					pageNo: pageNo,
+		//					pageSize: 1000,
+		//					regionIndexCode: obj.indexCode
+		//				}
+		//			}
+		//			hikRequest(param, true, function(res) {
+		//				setData.cameraList = res.data.list;
+		//				var floorList = setData.floorList;
+		//				var floorId = obj.floorId;
+		//				for(var i = 0; i < floorList.length; i++) {
+		//					if(floorId == floorList[i].id) {
+		//						var markers = floorList[i].csub;
+		//						var floorImage = "img/floorImage/" + floorId + ".png";
+		//						$("#floorImage").zoomMarker_CleanMarker();
+		//						$("#floorImage").zoomMarker_LoadImage(floorImage);
+		//						for(var j = 0; j < markers.length; j++) {
+		//							var videoId = "videoPlayer" + j;
+		//							var videoUrl = markers[j].videoUrl;
+		//							var dom = "<div class='floor-video-box'><div class='video-circle-box'></div><div class='video-box'><video id='" + videoId + "' class='video-js vjs-default-skin vjs-big-play-centered' controls preload='auto' autoplay='autoplay'><source src='" + videoUrl + "' type='rtmp/flv' /></video><div class='decorate-list common-left-top-decorate position-left-top'></div><div class='decorate-list common-left-bottom-decorate position-left-bottom'></div><div class='decorate-list common-right-top-decorate position-right-top'></div><div class='decorate-list common-right-bottom-decorate position-right-bottom'></div></div></div>"
+		//							$('#floorImage').zoomMarker_AddMarker({
+		//								src: markers[j].src,
+		//								x: markers[j].x,
+		//								y: markers[j].y,
+		//								size: 40,
+		//								videoId: videoId,
+		//								videoUrl: videoUrl,
+		//								hint: {
+		//									value: dom
+		//								},
+		//								click: function(e) {
+		//									showVideo(e);
+		//								}
+		//							});
+		//							//getPreviewUrl(j);
+		//						}
+		//					}
+		//				}
+		//			})
+		//		}
+
+		//		function getPreviewUrl(i) {
+		//			var zoomMarker = $(".zoom-marker");
+		//			var cameraList = setData.cameraList;
+		//			var cameraIndexCode = cameraList[i].cameraIndexCode;
+		//			var param = {
+		//				path: "/api/video/v1/cameras/previewURLs",
+		//				param: {
+		//					cameraIndexCode: cameraIndexCode,
+		//					protocol: "hls"
+		//				}
+		//			}
+		//			hikRequest(param, true, function(res) {
+		//				var videoUrl = res.data.url;
+		//				if(Hls.isSupported()) {
+		//					var video = zoomMarker.eq(i).find("video").get(0);
+		//					var hls = new Hls();
+		//					hls.loadSource(videoUrl);
+		//					hls.attachMedia(video);
+		//				}
+		//			})
+		//		}
+
 		function showVideo(e) {
-			var size = e.param.size;
+			var param = e.param;
 			var marker = e.marker;
-			marker.find("video").get(0).play();
-			marker.siblings().find(".floor-video-box").hide();
+			var size = e.param.size;
 			marker.find(".floor-video-box").css({
-				"top": size / 2,
-				"left": size
+				"top": param.size / 2,
+				"left": param.size
 			}).show(500);
+			playerVideo(param.videoId, param.videoUrl);
+		}
+
+		function getFireWater() {
+			var param = {};
+			request("POST", "/home/v1/fireWaterSupplyData", param, true, function(res) {
+				var dataInfo = res.data;
+				setData.fireWater = dataInfo;
+				var waterValue = dataInfo.waterValue;
+				var referMinValue = dataInfo.referMinValue;
+				var referMaxValue = dataInfo.referMaxValue;
+				var endValue = waterValue / referMaxValue * 100;
+				if(waterValue < referMinValue || waterValue > referMaxValue) {
+					var afterColor = ["rgba(175, 21, 21, 0.3)", "rgba(253, 60, 60, 0.3)"];
+					var frontColor = ["rgba(175, 21, 21, 0.9)", "rgba(253, 60, 60, 0.9)"];
+				} else {
+					var afterColor = ["rgba(51, 217, 251, 0.3)", "rgba(7, 166, 255, 0.3)"];
+					var frontColor = ["rgba(51, 217, 251, 0.9)", "rgba(7, 166, 255, 0.9)"];
+				}
+				waveProgress({
+					id: "fireWaterWave",
+					waveWidth: 0.05,
+					waveHeight: 8,
+					xOffset: 0,
+					speed: 0.002,
+					startValue: 0,
+					endValue: endValue,
+					fillText: waterValue,
+					afterColor: afterColor,
+					frontColor: frontColor,
+					fontSize: "22",
+					textAlign: "center",
+					fillStyle: "#ffffff"
+				});
+			}, function(res) {
+				layer.msg("消防供水加载失败");
+			});
+		}
+
+		function getElectricFire() {
+			var param = {};
+			request("POST", "/home/v1/findElectricFireData", param, true, function(res) {
+				setData.electricFire = res.data;
+			}, function(res) {
+				layer.msg("电气火灾加载失败");
+			})
 		}
 
 		function getWorkOrder(showLoading) {
-			var param = {}
+			var param = {
+				state: "0"
+			}
 			request("POST", "/workOrder/queryList.do", param, showLoading, function(res) {
 				setData.workOrderList = res.data.dataList;
 			}, function(res) {
@@ -634,24 +882,122 @@
 
 		function getSafetyLevel() {
 			var param = {};
-			request("POST", "/home/v1/safetyLevel", param, true, function(res) {
-				var dataInfo = res.data;
-				if(dataInfo.rankingNum < 10) {
-					dataInfo.rankingNum = "0" + dataInfo.rankingNum;
-				}
-				$(".security-index-pie").circleChart({
-					color: "#07a6ff",
-					startAngle: 0,
-					widthRatio: 0.06,
-					animation: "easeInOutCubic",
-					background: false,
-					value: dataInfo.scoreNum,
-					size: 110,
-					lineCap: "round"
-				});
+			sinuoRequest("GET", "/api/dashboard/fire-alarm", param, true, function(res) {
+				var dataInfo = res.data.fireAlarm.today;
+				dataInfo.unitRank = formatZero(dataInfo.unitRank, 2);
+				var unitScore = parseFloat(dataInfo.unitScore).toFixed(2);
+				dataInfo.unitScore = unitScore;
+				var safetyValue = unitScore / 100;
+				dataInfo.safetyValue = safetyValue;
 				setData.safetyLevel = dataInfo;
+				setCircleProgress($(".security-index-pie"), safetyValue, 3, ["#2aa1e4", "#35c6ef"]);
 			}, function(res) {
 				layer.msg("安全指数获取失败");
+			})
+		}
+
+		function setKeyStress(myChart, min, max, value) {
+			var radius = $(".key-stress-gauge-box").width() / 2;
+			if(value < min || value > max) {
+				var detailColor = "#fd0101";
+			} else {
+				var detailColor = "#07a6ff";
+			}
+			myChart.setOption({
+				series: [{
+					name: '重点压力',
+					type: 'gauge',
+					center: ['50%', "60%"],
+					min: 0,
+					max: 1,
+					splitNumber: 5,
+					radius: radius,
+					startAngle: 180,
+					endAngle: 0,
+					detail: {
+						show: true,
+						textStyle: {
+							fontWeight: 'bolder',
+							fontSize: 22,
+							color: detailColor
+						}
+					},
+					axisLine: {
+						lineStyle: {
+							width: 5,
+							color: [
+								[0.2, '#07a6ff'],
+								[0.8, '#27f3fa'],
+								[1, '#07a6ff']
+							]
+						}
+					},
+					axisTick: {
+						splitNumber: 10,
+						length: 10,
+						lineStyle: {
+							color: 'auto'
+						}
+					},
+					splitLine: {
+						length: 10,
+						lineStyle: {
+							color: 'auto',
+							width: 2,
+						}
+					},
+					pointer: {
+						width: 4,
+						length: "70%"
+					},
+					title: {
+						textStyle: {
+							fontWeight: "bolder",
+							fontSize: 12,
+							color: '#07a6ff'
+						}
+					},
+					data: [{
+						value: value,
+						name: 'Mpa'
+					}]
+				}]
+			}, true);
+		}
+
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				pageSize: "1000"
+			};
+			request("POST", "/home/v1/findGravityPressureData", param, true, function(res) {
+				var dataList = res.data.dataList;
+				setData.keyStress = dataList;
+				nextTick(function() {
+					var mySwiper = new Swiper('.swiper-container', {
+						direction: 'horizontal',
+						loop: true,
+						slidesPerView: 2,
+						slidesPerGroup: 2,
+						autoplay: {
+							delay: 5000,
+							stopOnLastSlide: false,
+							disableOnInteraction: true,
+						},
+						pagination: {
+							el: '.swiper-pagination',
+							clickable: true
+						}
+					})
+					var dom = $(".key-stress-box .swiper-slide");
+					for(var i = 0; i < dom.length; i++) {
+						var index = dom.eq(i).attr("data-swiper-slide-index");
+						var myChart = window['keyStressGauge' + i] = echarts.init(dom.eq(i).find(".key-stress-gauge-box").get(0));
+						setKeyStress(myChart, dataList[index].lowestValue, dataList[index].highestValue, dataList[index].pressureValue);
+					}
+				})
+			}, function(res) {
+				layer.msg("重点压力加载失败");
 			})
 		}
 
@@ -668,21 +1014,22 @@
 					}
 				},
 				legend: {
-					bottom: '0',
+					bottom: '6',
 					itemWidth: 8,
 					itemHeight: 8,
+					itemGap: 20,
 					data: ['场内车辆总数', '入场车辆数', '出场车辆数'],
 					textStyle: {
 						color: "#fff",
-						fontSize: 8,
-						lineHeight: 8
+						fontSize: 10,
+						lineHeight: 10
 					}
 				},
 				grid: {
-					left: "30",
-					right: "10",
+					left: "40",
+					right: "20",
 					top: "40",
-					bottom: "40"
+					bottom: "50"
 				},
 				xAxis: [{
 					type: 'category',
@@ -694,13 +1041,16 @@
 						}
 					},
 					splitLine: {
-						show: false,
+						show: false
 					},
 					axisLine: {
 						show: true,
 						lineStyle: {
-							color: ["#1e95ff"]
+							color: ["rgba(30, 149, 255, 0.8)"]
 						}
+					},
+					axisTick: {
+						show: false
 					}
 				}],
 				yAxis: [{
@@ -717,19 +1067,26 @@
 						}
 					},
 					splitLine: {
-						show: false,
+						show: true,
+						lineStyle: {
+							type: "dashed",
+							color: ['rgba(13, 66, 133, 0.6)']
+						}
 					},
 					axisLine: {
 						show: true,
 						lineStyle: {
-							color: ["#1e95ff"]
+							color: ["rgba(30, 149, 255, 0.8)"]
 						}
+					},
+					axisTick: {
+						show: false
 					}
 				}],
 				series: [{
 					name: '场内车辆总数',
 					type: 'bar',
-					barWidth: 8,
+					barWidth: 10,
 					itemStyle: {
 						normal: {
 							color: new echarts.graphic.LinearGradient(
@@ -754,12 +1111,12 @@
 					hoverAnimation: true,
 					itemStyle: {
 						normal: {
-							color: '#fd7270'
+							color: '#fe0202'
 						}
 					},
 					lineStyle: {
 						normal: {
-							color: '#fd7270',
+							color: '#fe0202',
 							width: 1
 						}
 					},
@@ -772,12 +1129,12 @@
 					hoverAnimation: true,
 					itemStyle: {
 						normal: {
-							color: '#fcb609'
+							color: '#ffc703'
 						}
 					},
 					lineStyle: {
 						normal: {
-							color: '#fcb609',
+							color: '#ffc703',
 							width: 1
 						}
 					},
@@ -816,16 +1173,16 @@
 						}
 					},
 					axisLine: {
-						show: true,
-						lineStyle: {
-							color: ["#1e95ff"]
-						}
+						show: false
+					},
+					axisTick: {
+						show: false
 					}
 				}],
 				series: [{
 					name: '已完成',
 					type: 'bar',
-					barWidth: 8,
+					barWidth: 10,
 					stack: '总量',
 					hoverAnimation: true,
 					label: {
@@ -863,13 +1220,15 @@
 		loadFloorImage();
 		loadRegion();
 		getWorkOrder(true);
+		getFireWater();
+		getElectricFire();
 		getAlarmSummary();
 		getSafetyLevel();
-		getCarAccess();
-		getVisitorAccess();
+		//		getCarAccess();
+		//		getVisitorAccess();
+		loadData();
 		resetChartSize();
 		nextTick(function() {
-			setAlarmRecordTimer();
 			setWorkOrderTimer();
 		})
 		var dataLoop = setInterval(function() {

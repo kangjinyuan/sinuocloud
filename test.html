@@ -1,20 +1,45 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 	<head>
-		<meta charset="utf-8">
-		<title>new html</title>
-		<link rel="stylesheet" type="text/css" href="css/reset.css">
-		<link rel="stylesheet" type="text/css" href="css/common.css?v=88d3f5c183">
-		<script type="text/javascript" src="js/common.js?v=8bdd65fff2"></script>
+		<meta charset="UTF-8" />
+		<title>Document</title>
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/wave-progress.js"></script>
+		<style>
+			.box {
+				width: 300px;
+				height: 300px;
+				border-radius: 50%;
+			}
+			
+			.box canvas {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
 	</head>
 
-	<body>
-
-		hello world !
-		<section class="section-box-1"></section>
-		<section class="section-box-2"></section>
-
+	<body style="background-color: #000;">
+		<div class="box">
+			<canvas id="c"></canvas>
+		</div>
 	</body>
+	<script>
+		waveProgress({
+			id: "c",
+			waveWidth: 0.015,
+			waveHeight: 12,
+			xOffset: 0,
+			speed: 0.02,
+			startValue: 0,
+			value: 50,
+			colorAfter: 'rgba(28, 134, 209, 0.5)',
+			colorFront: "#1c86d1",
+			fontSize: "40",
+			textAlign: "center",
+			fillStyle: "#ffffff"
+		});
+	</script>
 
 </html>

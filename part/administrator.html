@@ -12,12 +12,12 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -37,19 +37,27 @@
 				</div>
 				<div class="mask-list c_b">
 					<div class="mask-list-name">用户名称：</div>
-					<div class="mask-list-value"><input type="text" name="" value="" id="name" class="required"></div>
+					<div class="mask-list-value">
+						<input type="text" name="" value="" id="name" class="required">
+					</div>
 				</div>
 				<div class="mask-list">
 					<div class="mask-list-name">手机号：</div>
-					<div class="mask-list-value"><input type="text" name="" value="" id="telephone" class="phone"></div>
+					<div class="mask-list-value">
+						<input type="text" name="" value="" id="telephone" class="regular-telephone">
+					</div>
 				</div>
 				<div class="mask-list">
 					<div class="mask-list-name">用户账号：</div>
-					<div class="mask-list-value"><input type="text" name="" value="" id="account" class="required"></div>
+					<div class="mask-list-value">
+						<input type="text" name="" value="" id="account" class="required">
+					</div>
 				</div>
 				<div class="mask-list" v-if="showPassword">
 					<div class="mask-list-name">密码：</div>
-					<div class="mask-list-value"><input type="password" name="" value="" id="password" class="required password"></div>
+					<div class="mask-list-value">
+						<input type="password" name="" value="" id="password" class="required regular-password">
+					</div>
 				</div>
 				<div class="mask-list">
 					<div class="mask-list-name">平台权限：</div>
@@ -57,9 +65,13 @@
 						<div class="mask-content-box mask-content-box-bg mask-content-box-428">
 							<ul class="mask-select-box">
 								<li v-for="t in contentList" v-if="roleType == 'admin' && t.parent == 2 && t.id != 3">
-									<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>{{t.name}}</li>
+									<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+									{{t.name}}
+								</li>
 								<li v-for="t in contentList" v-if="roleType != 'admin' && t.parent == 2 && t.id != 3 && t.id != 10">
-									<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>{{t.name}}</li>
+									<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+									{{t.name}}
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -71,7 +83,9 @@
 							<div class="mask-content-box mask-content-box-bg mask-content-box-428">
 								<ul class="mask-select-box">
 									<li v-for="t in contentList" v-if="t.parent == 1">
-										<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>{{t.name}}</li>
+										<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+										{{t.name}}
+									</li>
 								</ul>
 							</div>
 						</div>

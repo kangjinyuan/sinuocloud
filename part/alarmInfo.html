@@ -13,13 +13,13 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/swiper.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=88d3f5c183">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../js/swiper.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=b3167ffa28"></script>
-		<script src="../js/common.js?v=8bdd65fff2"></script>
+		<script src="../js/postUrl.js?v=ad4a8fa2e3"></script>
+		<script src="../js/common.js?v=0fa2d6115d"></script>
 	</head>
 
 	<body>
@@ -35,7 +35,9 @@
 						<div class="swiper-container" v-else>
 							<ul class="swiper-wrapper">
 								<li class="swiper-slide" v-for="image in parentData.catchImageList">
-									<div class="img-box"><img v-bind:src="image" onerror="this.src='../img/common/no-img.png'"></div>
+									<div class="img-box">
+										<img v-bind:src="image" onerror="this.src='../img/common/no-img.png'">
+									</div>
 								</li>
 							</ul>
 							<div class="swiper-pagination"></div>
@@ -46,9 +48,9 @@
 							<div class="mask-title-box">报警信息</div>
 							<div class="cut-line mask-cut-line-bg"></div>
 							<div class="mask-content-box">
-								<div class="mask-content-text">报警位置：{{parentData.alarmLocation?parentData.alarmLocation:'暂无报警位置'}}</div>
+								<div class="mask-content-text">报警位置：{{parentData.alarmLocation?parentData.alarmLocation:'无'}}</div>
 								<div class="mask-content-text">报警类型：{{parentData.alarmType}}</div>
-								<div class="mask-content-text">报警级别： <span v-if="parentData.eventLvl == 0">{{parentData.eventLvlText}}</span> <span class="grade-text-color0" v-else-if="parentData.eventLvl == 1">{{parentData.eventLvlText}}</span> <span class="grade-text-color1" v-else-if="parentData.eventLvl == 2">{{parentData.eventLvlText}}</span> <span class="grade-text-color2" v-else>{{parentData.eventLvlText}}</span></div>
+								<div class="mask-content-text">报警级别： <span v-bind:class="parentData.eventLvlClass">{{parentData.eventLvlText}}</span></div>
 								<div class="mask-content-text">报警时间：{{parentData.alarmTime}}</div>
 							</div>
 						</div>
@@ -58,7 +60,7 @@
 			<div class="btn-box">
 				<div class="btn-inner-box">
 					<div class="btn" onclick="workOrder();">生成工单</div>
-					<div class="btn" onclick="alarmHandle();" v-if="parentData.processStatus == 0">处理</div>
+					<div class="btn" onclick="alarmHandle();" v-if="parentData.processStatus == 0 && parentData.deviceTypeId == 8">处理</div>
 					<div class="btn" onclick="videoSurveillance();">现场视频</div>
 					<div class="btn" onclick="closeMask();">返回</div>
 				</div>
@@ -66,6 +68,23 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+		param.videoUrlList = [{
+			id: "1",
+			name: "商业五二层南口",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000008"
+		}, {
+			id: "2",
+			name: "商业二外南通道",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000054"
+		}, {
+			id: "3",
+			name: "监控室",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000055"
+		}, {
+			id: "4",
+			name: "大厅二层南通道向",
+			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000028"
+		}];
 		loadVue(".v-dom", param);
 
 		function videoSurveillance() {
@@ -96,8 +115,12 @@
 
 		function showVideoSurveillance(dataList) {
 			var parentData = setData.parentData;
-			parent.openMask("/part/videoSurveillance", ["90%", "90%"], function(layerDom, layerIframe) {
+			var videoUrlList = setData.videoUrlList;
+			parent.openMask("/part/videoSurveillance", ["60%", "82%"], function(layerDom, layerIframe) {
 				layerIframe.setData.parentData = parentData;
+				for(var i = 0; i < dataList.length; i++) {
+					dataList[i].videoUrl = videoUrlList[i].videoUrl;
+				}
 				layerIframe.setData.dataList = dataList;
 				layerIframe.tabCamera(dataList[0]);
 			})
@@ -106,16 +129,15 @@
 		function workOrder() {
 			var parentData = setData.parentData;
 			parent.openMask("/part/workOrder", ["460px", "380px"], function(layerDom, layerIframe) {
-				layerDom.find(".select-device-box").hide();
 				layerDom.find("#deviceName").val(parentData.deviceName);
 				layerDom.find("#deviceId").val(parentData.deviceId);
-				layerDom.find("#orderAddress").val(parentData.alarmLocation);
+				layerDom.find("#deviceAddress").val(parentData.alarmLocation);
 			});
 		}
 
 		function alarmHandle() {
 			var parentData = setData.parentData;
-			parent.openMask("/part/alarmHandle", ["300px", "160px"], function(layerDom, layerIframe) {
+			parent.openMask("/part/alarmHandle", ["300px", "200px"], function(layerDom, layerIframe) {
 				layerIframe.setData.parentData = parentData;
 			});
 		}
