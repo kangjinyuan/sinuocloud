@@ -4,13 +4,13 @@
         "childList":[
             {
             	"src":"img/icon/icon-surveillance.png",
-                "x":"200",
-                "y":"200"
+                "x":"1225",
+                "y":"1182"
             },
             {
             	"src":"img/icon/icon-surveillance.png",
-                "x":"200",
-                "y":"300"
+                "x":"1225",
+                "y":"1682"
             }
         ]
     },
@@ -19,13 +19,13 @@
         "childList":[
         	{
         		"src":"img/icon/icon-surveillance.png",
-                "x":"300",
-                "y":"200"
+                "x":"1625",
+                "y":"1182"
         	},
         	{
         		"src":"img/icon/icon-surveillance.png",
-                "x":"300",
-                "y":"400"
+                "x":"1625",
+                "y":"1682"
         	}
         ]
     },

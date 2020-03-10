@@ -287,21 +287,27 @@ function hikRequest(param, showLoading, callback) {
 	});
 }
 
-//格式化时间
-Date.prototype.Format = function(fmt) {
-	var o = {
-		"M+": this.getMonth() + 1, //月份 
-		"d+": this.getDate(), //日 
-		"h+": this.getHours(), //小时 
-		"m+": this.getMinutes(), //分 
-		"s+": this.getSeconds(), //秒 
-		"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-		"S": this.getMilliseconds() //毫秒 
+//webSocket通讯
+function connectSocket(param, connectCallback, subscribeCallback) {
+	var clientId = param.clientId;
+	var client = window[clientId] = Stomp.client(param.url);
+	client.heartbeat.outgoing = param.outgoing;
+	client.heartbeat.incoming = param.incoming;
+	var headers = {
+		login: param.login,
+		passcode: param.passcode,
+		'client-id': clientId
 	};
-	if(/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-	for(var k in o)
-		if(new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-	return fmt;
+	client.connect(headers, function(frame) {
+		connectCallback(frame);
+		client.subscribe(clientId, function(message) {
+			subscribeCallback(message);
+		});
+	}, function(error) {
+		client.disconnect(function() {
+			console.log("连接中断");
+		})
+	});
 }
 
 //格式化字符串时间
@@ -330,16 +336,51 @@ function resetSpecialTime(date, flag) {   
 	}
 }
 
+//格式化时间
+Date.prototype.Format = function(fmt) {
+	var o = {
+		"M+": this.getMonth() + 1, //月份           
+		"d+": this.getDate(), //日           
+		"h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时           
+		"H+": this.getHours(), //小时           
+		"m+": this.getMinutes(), //分           
+		"s+": this.getSeconds(), //秒           
+		"q+": Math.floor((this.getMonth() + 3) / 3), //季度           
+		"S": this.getMilliseconds() //毫秒           
+	};
+	var week = {
+		"0": "日",
+		"1": "一",
+		"2": "二",
+		"3": "三",
+		"4": "四",
+		"5": "五",
+		"6": "六"
+	};
+	if(/(y+)/.test(fmt)) {
+		fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	}
+	if(/(E+)/.test(fmt)) {
+		fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "星期" : "周") : "") + week[this.getDay() + ""]);
+	}
+	for(var k in o) {
+		if(new RegExp("(" + k + ")").test(fmt)) {
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		}
+	}
+	return fmt;
+}
+
 //重置时间
 function resetTime(date, flag) {
 	if(date) {
 		date = judeDate(date);
 		if(flag == 0) {
-			return date.Format("yyyy-MM-dd hh:mm:ss");
+			return date.Format("yyyy-MM-dd HH:mm:ss");
 		} else if(flag == 1) {
-			return date.Format("yyyy-MM-dd hh:mm");
+			return date.Format("yyyy-MM-dd HH:mm");
 		} else if(flag == 2) {
-			return date.Format("yyyy-MM-dd hh");
+			return date.Format("yyyy-MM-dd HH");
 		} else if(flag == 3) {
 			return date.Format("yyyy-MM-dd");
 		} else if(flag == 4) {
@@ -347,11 +388,11 @@ function resetTime(date, flag) {
 		} else if(flag == 5) {
 			return date.Format("yyyy");
 		} else if(flag == 6) {
-			return date.Format("yyyy年MM月dd日 hh时mm分ss");
+			return date.Format("yyyy年MM月dd日 HH时mm分ss");
 		} else if(flag == 7) {
-			return date.Format("yyyy年MM月dd日 hh时mm分");
+			return date.Format("yyyy年MM月dd日 HH时mm分");
 		} else if(flag == 8) {
-			return date.Format("yyyy年MM月dd日 hh时");
+			return date.Format("yyyy年MM月dd日 HH时");
 		} else if(flag == 9) {
 			return date.Format("yyyy年MM月dd日");
 		} else if(flag == 10) {
@@ -361,13 +402,15 @@ function resetTime(date, flag) {
 		} else if(flag == 12) {
 			return date.Format("MM-dd");
 		} else if(flag == 13) {
-			return date.Format("hh:mm:ss");
+			return date.Format("HH:mm:ss");
 		} else if(flag == 14) {
-			return date.Format("yyyyMMddhhmmss");
+			return date.Format("yyyyMMddHHmmss");
 		} else if(flag == 15) {
 			return date.Format("yyyyMMdd");
 		} else if(flag == 16) {
-			return date.Format("hh:mm");
+			return date.Format("HH:mm");
+		} else if(flag == 17) {
+			return date.Format("yyyy/MM/dd HH:mm:ss EEE");
 		}
 	} else {
 		return "";

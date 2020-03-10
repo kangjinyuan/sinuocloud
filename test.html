@@ -5,40 +5,32 @@
 		<meta charset="UTF-8" />
 		<title>Document</title>
 		<script src="js/jquery-1.9.1.min.js"></script>
-		<script src="js/wave-progress.js"></script>
-		<style>
-			.box {
-				width: 300px;
-				height: 300px;
-				border-radius: 50%;
-			}
-			
-			.box canvas {
-				width: 100%;
-				height: 100%;
-			}
-		</style>
+		<script src="js/stomp.js"></script>
+		<script src="js/common.js?v=18e3c83b9f"></script>
 	</head>
 
-	<body style="background-color: #000;">
-		<div class="box">
-			<canvas id="c"></canvas>
-		</div>
+	<body>
+		<div></div>
+
 	</body>
 	<script>
-		waveProgress({
-			id: "c",
-			waveWidth: 0.015,
-			waveHeight: 12,
-			xOffset: 0,
-			speed: 0.02,
-			startValue: 0,
-			value: 50,
-			colorAfter: 'rgba(28, 134, 209, 0.5)',
-			colorFront: "#1c86d1",
-			fontSize: "40",
-			textAlign: "center",
-			fillStyle: "#ffffff"
+		var time = 0;
+		var param = {
+			clientId: "test",
+			url: "ws://47.105.23.62:5674/ws",
+			outgoing: 1000,
+			incoming: 0,
+			login: "guest",
+			passcode: "guest",
+		}
+		var clientId = param.clientId;
+		connectSocket(param, function(res) {
+			setInterval(function() {
+				time++;
+				test.send(clientId, {}, "第" + time + "次通讯");
+			}, 10000);
+		}, function(res) {
+			console.log(res)
 		});
 	</script>
 

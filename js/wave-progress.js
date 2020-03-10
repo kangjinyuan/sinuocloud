@@ -64,6 +64,7 @@ function waveProgress(options) {
 	options.startValue = startValue;
 	options.xOffset = xOffset;
 	if(startValue != endValue) {
+		clearInterval(window['waveProgressTimer-' + id]);
 		window['waveProgressTimer-' + id] = setInterval(function() {
 			waveProgress(options);
 		}, 5);

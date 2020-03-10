@@ -16,6 +16,11 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 ::-moz-placeholder{color: rgba(255, 255, 255, 0.5) !important;}
 :-moz-placeholder{color: rgba(255, 255, 255, 0.5) !important;}
 :-ms-input-placeholder{color: rgba(255, 255, 255, 0.5) !important;}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar{width: 10px;border-radius: 5px;background-color: rgba(7,166,255,0.1);}
+::-webkit-scrollbar-track{background-color: rgba(7,166,255,0.1);}
+::-webkit-scrollbar-thumb{border-radius: 5px;background-color: rgba(7,166,255,0.8);}
+div,html,body,ul,table,input,textarea,select,option{scrollbar-color: #068cdb #042448;scrollbar-face-color: #068cdb;scrollbar-arrow-color: #068cdb;scrollbar-shadow-color: #042448;scrollbar-track-color: #042448;}
 /*a:link,a:visited,a:hover,a:active{text-decoration:none;} */
 /*==========================Reset_End===========================*/
 .f_l{
@@ -34,10 +39,3 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 	clear: both;
 }
 a,button,input,div,span,li{-webkit-tap-highlight-color:rgba(255,0,0,0);-moz-tap-highlight-color:rgba(255,0,0,0);-ms-tap-highlight-color:rgba(255,0,0,0);-o-tap-highlight-color:rgba(255,0,0,0);}
-
-@media screen and (min-width:750px){
-.app{width:100%; margin: 0 auto;}
-}
-@media (min-width:750px) and (max-width:2400px){
-.app{width:750px; margin: 0 auto;}
-}
