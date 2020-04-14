@@ -13,12 +13,13 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=46a09142d2"></script>
-		<script src="../js/common.js?v=18e3c83b9f"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
 	</head>
 
 	<body>
@@ -44,10 +45,10 @@
 				</div>
 			</div>
 			<div class="kjy-data-box">
-				<div class="decorate-list common-left-top-decorate position-left-top"></div>
-				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
-				<div class="decorate-list common-right-top-decorate position-right-top"></div>
-				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
 				<div class="full-box" v-if="dataList.length == 0">
 					<div class="no-data-box">
 						<div class="no-data-inner-box">
@@ -56,12 +57,12 @@
 						</div>
 					</div>
 				</div>
-				<div class="kjy-data-inner-box">
+				<div class="kjy-data-inner-box" v-else>
 					<div class="kjy-table">
 						<table>
 							<thead>
 								<tr>
-									<th class="padding-left-52">
+									<th class="padding-left-100">
 										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
 									<th>点位名称</th>
 									<th>二维码编码</th>
@@ -71,7 +72,7 @@
 							</thead>
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
-									<td class="padding-left-52">
+									<td class="padding-left-100">
 										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
 									<td v-bind:title="t.name">{{t.name}}</td>
 									<td>{{t.qrCode}}</td>
@@ -95,7 +96,7 @@
 
 		//新建或编辑
 		function checkPoint(obj) {
-			openMask("/part/checkPoint", ["424px", "320px"], function(layerDom, layerIframe) {
+			openMask("/parts/checkPoint", [suitRem(5.72), suitRem(5)], function(layerDom, layerIframe) {
 				if(obj) {
 					layerIframe.setData.parentData = obj;
 					layerIframe.loadContentList();
@@ -111,18 +112,18 @@
 		//删除数据
 		function del() {
 			if(idList.length == 0) {
-				layer.msg("请选择巡查点位");
+				top.layer.msg("请选择巡查点位");
 				return false;
 			}
 			openConfirm("确定删除所选巡查点位吗？", function() {
 				var param = {
 					idList: idList
 				}
-				request('POST', '/checkPoint/delete.do', param, true, function(res) {
+				request('POST', '/checkPoint/deleteList.do', param, true, function(res) {
 					loadData();
-					layer.closeAll('dialog');
+					top.layer.closeAll('dialog');
 				}, function(res) {
-					layer.msg("删除失败");
+					top.layer.msg("删除失败");
 				})
 			})
 		}
@@ -145,7 +146,7 @@
 					loadPage();
 				})
 			}, function() {
-				layer.msg("巡查点位加载失败");
+				top.layer.msg("巡查点位加载失败");
 			})
 		}
 

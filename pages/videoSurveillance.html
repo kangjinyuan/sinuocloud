@@ -12,16 +12,17 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../layui/css/layui.css">
 		<link href="../video/video.js/dist/video-js.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
 		<script src="../js/vue.min.js"></script>
 		<script src="../video/video.min.js"></script>
 		<script src="../video/videojs-flash.min.js"></script>
-		<!--<script src="../js/hls.min.js"></script>-->
-		<script src="../js/postUrl.js?v=46a09142d2"></script>
-		<script src="../js/common.js?v=18e3c83b9f"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
 	</head>
 
 	<body>
@@ -32,19 +33,19 @@
 			<div class="opera-list-box">
 				<div class="opera-list opera-left-box">
 					<div class="opera-list-inner-box">
-						<div class="decorate-list common-left-top-decorate position-left-top"></div>
-						<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
-						<div class="decorate-list common-right-top-decorate position-right-top"></div>
-						<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+						<div class="decorate-list decorate-left-top position-left-top"></div>
+						<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+						<div class="decorate-list decorate-right-top position-right-top"></div>
+						<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
 						<div class="search-box">
 							<div class="search-row-box">
-								<div class="search-value full-width">
-									<input type="text" name="" value="" id="regionName" placeholder="关键词" oninput="search();" class="full-width">
+								<div class="search-value full-width-box">
+									<input type="text" name="" value="" id="name" placeholder="关键词" oninput="search();" class="full-width">
 									<div class="icon icon-search position-right"></div>
 								</div>
 							</div>
 						</div>
-						<div class="full-box" v-if="allIsActive">
+						<div class="full-box" v-if="dataList.length == 0">
 							<div class="no-data-box">
 								<div class="no-data-inner-box">
 									<div class="icon icon-no-data"></div>
@@ -52,27 +53,15 @@
 								</div>
 							</div>
 						</div>
-						<div class="fold-box" v-else>
-							<div class="fold-list-box" v-for="t in dataList" v-if="t.cameraList.length > 0">
-								<div class="fold-title-box" v-on:click="switchActive(t);">
-									<div v-bind:class="['fold-title-text-box',t.isActive?'selected':'']">{{t.name}}</div>
-									<div v-bind:class="['icon',t.isActive?'icon-fold-open':'icon-fold-no-open']"></div>
-								</div>
-								<div class="fold-content-box" v-if="t.isActive">
-									<ul>
-										<li v-bind:class="cameraInfo.indexCode == t.indexCode?'selected':''" v-for="t in t.cameraList" v-on:click="tabCamera(t);">{{t.deviceName}}</li>
-									</ul>
-								</div>
-							</div>
-						</div>
+						<div class="fold-box" v-else></div>
 					</div>
 				</div>
 				<div class="opera-list opera-right-box">
 					<div class="opera-list-inner-box">
-						<div class="decorate-list common-left-top-decorate position-left-top"></div>
-						<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
-						<div class="decorate-list common-right-top-decorate position-right-top"></div>
-						<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+						<div class="decorate-list decorate-left-top position-left-top"></div>
+						<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+						<div class="decorate-list decorate-right-top position-right-top"></div>
+						<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
 						<div class="opera-video-box">
 							<div class="video-box">
 								<video id="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" autoplay="autoplay">
@@ -91,134 +80,84 @@
 		</div>
 	</body>
 	<script>
-		param.videoUrlList = [{
-			id: "1",
-			name: "商业五二层南口",
-			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000008"
-		}, {
-			id: "2",
-			name: "商业二外南通道",
-			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000054"
-		}, {
-			id: "3",
-			name: "监控室",
-			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000055"
-		}, {
-			id: "4",
-			name: "大厅二层南通道向",
-			videoUrl: "rtmp://116.255.198.211/lskjapp/0001431201000028"
-		}];
-		param.cameraInfo = {};
 		loadVue(".v-dom", param);
 
 		//加载区域	
 		function loadData() {
 			var param = {
-				path: "/api/resource/v1/regions/root",
-				param: {}
-			}
-			hikRequest(param, true, function(res) {
-				var indexCode = res.data.indexCode;
-				var param = {
-					path: "/api/irds/v2/region/nodesByParams",
-					param: {
-						resourceType: "region",
-						regionName: $("#regionName").val(),
-						parentIndexCodes: [
-							indexCode
-						],
-						pageNo: pageNo,
-						pageSize: 1000
-					}
+				pageNo: pageNo,
+				pageSize: "1000",
+				name: $("#name").val()
+			};
+			request('POST', '/regions/v1/findRegionsList', param, true, function(res) {
+				var dataList = res.data.dataList;
+				for(var i = 0; i < dataList.length; i++) {
+					dataList[i].title = dataList[i].regionName;
+					dataList[i].spread = true;
+					dataList[0].checked = false;
 				}
-				hikRequest(param, false, function(res) {
-					var regionList = res.data.list;
-					for(var i = 0; i < regionList.length; i++) {
-						regionList[i].isActive = true;
-						regionList[i].cameraList = [];
-					}
-					loadCamera(regionList);
-				})
+				setData.dataList = dataList;
+				loadDeviceVideo(dataList);
+			}, function(res) {
+				top.layer.msg("区域记录加载失败");
 			})
 		}
 
 		//加载监控点
-		function loadCamera(regionList) {
-			var videoUrlList = setData.videoUrlList;
+		function loadDeviceVideo(regionList) {
 			var param = {
 				pageNo: pageNo,
-				pageSize: 1000,
-				deviceLogo: "2"
+				pageSize: 1000
 			}
-			request("POST", "/device/v1/findDeviceList", param, true, function(res) {
+			request("POST", "/device/v1/findNetworkVideoList", param, true, function(res) {
 				var dataList = res.data.dataList;
-				for(var i = 0; i < regionList.length; i++) {
-					for(var j = 0; j < dataList.length; j++) {
-						if(regionList[i].indexCode == dataList[j].regionIndexCode) {
-							dataList[j].videoUrl = videoUrlList[j].videoUrl;
-							regionList[i].cameraList.push(dataList[j]);
+				for(var i = 0; i < dataList.length; i++) {
+					var id = dataList[i].id;
+					dataList[i].videoId = id;
+					dataList[i].id = "video" + id;
+					dataList[i].title = dataList[i].name;
+					dataList[i].parentId = dataList[i].regionId;
+					dataList[i].spread = false;
+					dataList[0].checked = false;
+				}
+				dataList[0].checked = true;
+				getPreviewUrl(dataList[0]);
+				dataList = regionList.concat(dataList);
+				var treeIndex = "deviceVideoTree";
+				var param = {
+					elem: '.fold-box',
+					id: treeIndex,
+					data: getTreeData(dataList, dataList[0].parentId),
+					showLine: false,
+					click: function(res) {
+						var dataInfo = res.data;
+						var children = dataInfo.children;
+						if(!children) {
+							for(var i = 0; i < dataList.length; i++) {
+								dataList[i].checked = false;
+								if(dataInfo.id == dataList[i].id) {
+									dataList[i].checked = true;
+									getPreviewUrl(dataInfo);
+								}
+								layui.tree.reload(treeIndex, param);
+							}
 						}
 					}
 				}
-				setData.dataList = regionList;
-				if(regionList[0].cameraList.length == 0) {
-					setData.allIsActive = true;
-					return false;
-				}
-				setData.allIsActive = false;
-				tabCamera(regionList[0].cameraList[0]);
+				layui.tree.render(param);
 			}, function(res) {
-				layer.msg("监控设备加载失败");
+				layer.msg("视频设备加载失败");
 			});
 		}
 
-		//切换监控点
-		function tabCamera(obj) {
-			setData.cameraInfo = obj;
-			getPreviewUrl();
-		}
-
-		//获取视频流
-		//		function getPreviewUrl() {
-		//			var cameraInfo = setData.cameraInfo;
-		//			var param = {
-		//				path: "/api/video/v1/cameras/previewURLs",
-		//				param: {
-		//					cameraIndexCode: cameraInfo.indexCode,
-		//					protocol: "hls"
-		//				}
-		//			}
-		//			hikRequest(param, true, function(res) {
-		//				var videoUrl = res.data.url;
-		//				if(Hls.isSupported()) {
-		//					var video = $("#video").get(0);
-		//					var hls = new Hls();
-		//					hls.loadSource(videoUrl);
-		//					hls.attachMedia(video);
-		//				}
-		//			})
-		//		}
-
-		function getPreviewUrl() {
-			var cameraInfo = setData.cameraInfo;
-			playerVideo("videoPlayer", cameraInfo.videoUrl);
+		function getPreviewUrl(videoInfo) {
+			playerVideo("videoPlayer", videoInfo.streamAddress);
 		}
 
 		//抓图
 		function manualCapture() {
-			var cameraInfo = setData.cameraInfo;
-			//			var param = {
-			//				path: "/api/video/v1/manualCapture",
-			//				param: {
-			//					cameraIndexCode: cameraInfo.indexCode
-			//				}
-			//			}
-			//			hikRequest(param, true, function(res) {
-			//				openMask("/part/videoImage", ["500px", "380px"], function(layerDom, layerIframe) {
-			//					layerIframe.setData.picUrl = res.data.picUrl;
-			//				});
-			//			})
-			layer.msg("该功能未开放");
+			//var videoInfo = setData.videoInfo;
+			top.layer.msg("该功能未开放");
 		}
 
 		loadData();

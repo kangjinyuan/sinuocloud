@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="search-box">
+				<div class="search-row-box">
+					<div class="search-list">
+						<div class="search-name">组织名称：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="organizationName" placeholder="组织名称">
+						</div>
+					</div>
+					<div class="search-list">
+						<div class="search-name">负责人：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="charger" placeholder="负责人">
+						</div>
+					</div>
+					<div class="search-btn-box">
+						<div class="btn" onclick="search();">查询</div>
+						<div class="btn" onclick="reloadPage();">重置</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="firePreventionPlan();">新建</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="no-data-inner-box">
+							<div class="icon icon-no-data"></div>
+							<div class="no-data-text">暂时没有防火预案哦</div>
+						</div>
+					</div>
+				</div>
+				<div class="kjy-data-inner-box" v-else>
+					<div class="kjy-table">
+						<table>
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>组织名称</th>
+									<th>组织义务</th>
+									<th>负责人</th>
+									<th>手机号</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td>{{t.organizationName}}</td>
+									<td>{{t.organizationObligation}}</td>
+									<td>{{t.charger}}</td>
+									<td>{{t.telephone}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="firePreventionPlan(t);">编辑</li>
+											<li v-on:click="del(t);">删除</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="page-box"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(".v-dom", param);
+
+		function firePreventionPlan(obj) {
+			openMask("/parts/firePreventionPlan", [suitRem(6.18), suitRem(5.98)], function(layerDom, layerIframe) {
+				layerIframe.loadNoticeWay();
+				if(obj) {
+					layerIframe.setData.parentData = obj;
+					layerDom.find("#organizationName").val(obj.organizationName);
+					layerDom.find("#organizationObligation").val(obj.organizationObligation);
+					layerDom.find("#charger").val(obj.charger);
+					layerDom.find("#chargerId").val(obj.chargerId);
+					layerDom.find("#telephone").val(obj.telephone);
+				}
+			});
+		}
+
+		//删除数据
+		function del(obj) {
+			openConfirm("确定删除该防火预案吗？", function() {
+				var param = {
+					id: obj.id
+				}
+				request('POST', '/administrator/delete.do', param, true, function(res) {
+					loadData();
+					top.layer.closeAll('dialog');
+				}, function(res) {
+					top.layer.msg("删除失败");
+				})
+			})
+		}
+
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20,
+				deviceName: $("#deviceName").val(),
+				deviceTypeId: $("#deviceTypeId").val(),
+				deviceRegion: $("#deviceRegion").val(),
+				deviceAddress: $("#deviceAddress").val(),
+				deviceStatus: $("#deviceStatus").val()
+			}
+			//			request("POST", "/device/v1/findDeviceList", param, true, function(res) {
+			//				var dataList = res.data.dataList;
+			var dataList = [{
+				id: "1",
+				organizationName: "消防1组",
+				organizationObligation: "灭火",
+				charger: "闪向科技",
+				chargerId: "2",
+				telephone: "15932119504",
+				noticeWay: ["1", "2"]
+			}, {
+				id: "2",
+				organizationName: "消防2组",
+				organizationObligation: "灭火",
+				charger: "闪向科技",
+				chargerId: "2",
+				telephone: "15932119504",
+				noticeWay: ["1", "2"]
+			}]
+			resetDataList(function() {
+				for(var i = 0; i < dataList.length; i++) {
+					dataList[i].animatedName = "fadeInUp";
+					if(dataList[i].status == "0") {
+						dataList[i].statusText = "离线";
+					} else if(dataList[i].status == "1") {
+						dataList[i].statusText = "在线";
+					} else if(dataList[i].status == "2") {
+						dataList[i].statusText = "故障";
+					}
+				}
+				setData.dataList = dataList;
+				loadPage();
+			})
+			//			}, function(res) {
+			//				top.layer.msg("防火预案加载失败");
+			//			});
+		}
+
+		loadData();
+	</script>
+
+</html>

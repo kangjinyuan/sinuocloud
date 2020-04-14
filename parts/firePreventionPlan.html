@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=46a09142d2"></script>
+		<script src="../js/common.js?v=c8bf69d921"></script>
+	</head>
+
+	<body>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-content-box">
+					<div class="mask-list">
+						<div class="mask-list-name">组织名称：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="organizationName" class="required" />
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">组织义务：</div>
+						<div class="mask-list-value">
+							<textarea name="" rows="" cols="" id="organizationObligation" class="required"></textarea>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">负责人：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="accountName" disabled="disabled" class="required">
+							<input type="hidden" name="" value="" id="accountId" class="required">
+						</div>
+						<div class="btn-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectAccount();">选择</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">手机号：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="telephone" class="regular-telephone">
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">通知方式：</div>
+						<div class="mask-list-value">
+							<ul class="mask-select-box">
+								<li v-for="t in contentList">
+									<div v-bind:class="['icon','position-left' ,'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+									{{t.name}}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(".v-dom", param);
+
+		function selectAccount() {
+			openMask("/parts/selectAccount", ["80%", "80%"], function(layerDom, layerIframe) {
+				var dataInfo = {
+					id: $("#accountId").val(),
+					name: $("#accountName").val()
+				}
+				layerIframe.dataInfo = dataInfo;
+				layerIframe.loadData();
+			});
+		}
+
+		//编辑
+		function save() {
+			var checkI = checkInput();
+			if(checkI == true) {
+				var parentData = setData.parentData;
+				var contentList = setData.contentList;
+				var noticeWay = [];
+				for(var i = 0; i < contentList.length; i++) {
+					if(contentList[i].isActive) {
+						noticeWay.push(contentList[i].id);
+					}
+				}
+				var param = {
+					organizationName: $("#organizationName").val(),
+					organizationObligation: $("#organizationObligation").val(),
+					charger: $("#charger").val(),
+					chargerId: $("#chargerId").val(),
+					telephone: $("#telephone").val(),
+					account: $("#account").val(),
+					privilegeList: privilegeList
+				};
+				if(parentData) {
+					param.id = parentData.id;
+				} else {
+					param.password = $("#password").val();
+				}
+				request('POST', '/administrator/saveOrUpdate.do', param, true, function(res) {
+					closeMask(function(parent) {
+						parent.layer.msg("操作成功");
+						parent.loadData();
+					});
+				}, function(res) {
+					layer.msg('操作失败');
+				})
+			}
+		}
+
+		function loadNoticeWay() {
+			setData.contentList = [{
+				id: "1",
+				name: "电话通知"
+			}, {
+				id: "2",
+				name: "短信通知"
+			}]
+			var parentData = setData.parentData;
+			var noticeWay = parentData.noticeWay;
+			var contentList = setData.contentList;
+			for(var i = 0; i < contentList.length; i++) {
+				contentList[i].isActive = false;
+				for(var j = 0; j < noticeWay.length; j++) {
+					if(noticeWay[j] == contentList[i].id) {
+						contentList[i].isActive = true;
+					}
+				}
+			}
+		}
+	</script>
+
+</html>

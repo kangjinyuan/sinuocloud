@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../layui/css/layui.css">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=46a09142d2"></script>
+		<script src="../js/common.js?v=c8bf69d921"></script>
+	</head>
+
+	<body>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-content-box">
+					<div class="mask-list">
+						<div class="mask-list-name">任务名称：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="taskTitle" value="" class="required">
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">巡查点位：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" disabled="disabled" placeholder="暂无巡查点位" v-if="contentList.length == 0" />
+							<ul class="range-box" v-else>
+								<li v-for="(t,i) in contentList">
+									{{t.name}}
+									<div class="icon icon-del-range" v-on:click="delContent(i);"></div>
+								</li>
+							</ul>
+						</div>
+						<div class="btn-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectCheckPoint();">选择</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">负责人：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="accountName" disabled="disabled" class="required">
+							<input type="hidden" name="" value="" id="accountId" class="required">
+						</div>
+						<div class="btn-box select-account-btn-box hide-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectAccount();">选择</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list c_b">
+						<div class="mask-list-name">计划开始：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="validStartTime" value="" placeholder="yyyy-mm-dd" class="required width-150">
+							<div class="icon icon-select-time position-right"></div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">计划结束：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="validEndTime" value="" placeholder="yyyy-mm-dd" class="required width-150">
+							<div class="icon icon-select-time position-right"></div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">周期类别：</div>
+						<div class="mask-list-value">
+							<select name="" required="required" required="required" id="taskMode" class="required" v-on:change="selectTaskMode();">
+								<option value="">请选择</option>
+								<option value="0">天</option>
+								<option value="1">周</option>
+								<option value="2">月</option>
+								<option value="3">季</option>
+								<option value="4">年</option>
+							</select>
+						</div>
+					</div>
+					<div class="mask-list" v-if="taskMode == '1'">
+						<div class="mask-list-name">每周开始日期：</div>
+						<div class="mask-list-value">
+							<select name="" required="required" id="triggerTime" class="required">
+								<option value="">请选择</option>
+								<option value="1">周一</option>
+								<option value="2">周二</option>
+								<option value="3">周三</option>
+								<option value="4">周四</option>
+								<option value="5">周五</option>
+								<option value="6">周六</option>
+								<option value="7">周日</option>
+							</select>
+						</div>
+					</div>
+					<div class="mask-list" v-else-if="taskMode == '2'">
+						<div class="mask-list-name">每月几号：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="triggerTime" class="required width-124 regular-num">
+						</div>
+						<div class="mask-unit-box">号</div>
+					</div>
+					<div class="mask-list" v-else-if="taskMode == '3'">
+						<div class="mask-list-name">每季第几天：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="triggerTime" class="required width-124 regular-num">
+						</div>
+						<div class="mask-unit-box">天</div>
+					</div>
+					<div class="mask-list" v-else-if="taskMode == '4'">
+						<div class="mask-list-name">每年开始日期：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="triggerTime" placeholder="yyyy-mm-dd" class="required width-150">
+							<div class="icon icon-select-time position-right"></div>
+						</div>
+					</div>
+					<div class="mask-list c_b">
+						<div class="mask-list-name">开始时间：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="beginTime" value="" placeholder="hh:mm:ss" class="required width-150">
+							<div class="icon icon-select-time position-right"></div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">结束时间：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="endTime" value="" placeholder="hh:mm:ss" class="required width-150">
+							<div class="icon icon-select-time position-right"></div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">持续天数：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="lastingDays" value="" placeholder="填写数字" class="required width-124 regular-num">
+						</div>
+						<div class="mask-unit-box">天</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.checkPointIdList = [];
+		param.taskMode = "";
+		loadVue(".v-dom", param);
+		$(function() {
+			setTime('#validStartTime', "date", "yyyy-MM-dd");
+			setTime('#validEndTime', "date", "yyyy-MM-dd");
+			setTime('#beginTime', "time", "HH:mm:ss");
+			setTime('#endTime', "time", "HH:mm:ss");
+		})
+
+		function selectTaskMode(callback) {
+			var taskMode = $("#taskMode").val();
+			setData.taskMode = taskMode;
+			nextTick(function() {
+				if(taskMode == "4") {
+					setTime('#triggerTime', "date", "yyyy-MM-dd");
+				}
+				if(callback) {
+					callback();
+				}
+			})
+		}
+
+		function selectCheckPoint() {
+			openMask("/parts/selectCheckPointRange", ["80%", "80%"], function(layerDom, layerIframe) {
+				layerIframe.setData.contentList = setData.contentList;
+				layerIframe.loadSelectDataList();
+			});
+		}
+
+		function selectAccount() {
+			openMask("/parts/selectAccount", ["80%", "80%"], function(layerDom, layerIframe) {
+				var dataInfo = {
+					id: $("#accountId").val(),
+					name: $("#accountName").val()
+				}
+				layerIframe.dataInfo = dataInfo;
+				layerIframe.loadData();
+			});
+		}
+
+		//编辑
+		function save() {
+			var checkI = checkInput();
+			if(checkI == true) {
+				var parentData = setData.parentData;
+				var checkPointIdList = [];
+				var contentList = setData.contentList;
+				for(var i = 0; i < contentList.length; i++) {
+					checkPointIdList.push(contentList[i].id);
+				}
+				if(checkPointIdList.length == 0) {
+					layer.msg("请选择巡查点位");
+					return false;
+				}
+				if(checkPointIdList.length > 10) {
+					layer.msg("巡查点位不能超过10个");
+					return false;
+				}
+				if($("#taskMode").val() == "0") {
+					var triggerTime = "";
+				} else {
+					var triggerTime = $("#triggerTime").val();
+				}
+				var param = {
+					taskTitle: $("#taskTitle").val(),
+					checkPointIdList: checkPointIdList,
+					chargerId: $("#accountId").val(),
+					charger: $("#accountName").val(),
+					validStartTime: resetTime($("#validStartTime").val(), 0),
+					validEndTime: resetTime($("#validEndTime").val(), 0),
+					taskMode: $("#taskMode").val(),
+					triggerTime: triggerTime,
+					beginTime: $("#beginTime").val(),
+					endTime: $("#endTime").val(),
+					lastingDays: $("#lastingDays").val(),
+				};
+				if(parentData) {
+					param.id = parentData.id;
+				}
+				request('POST', '/checkTask/saveOrUpdate.do', param, true, function(res) {
+					closeMask(function(parent) {
+						parent.layer.msg("操作成功");
+						parent.loadData();
+					});
+				}, function(res) {
+					layer.msg('操作失败');
+				})
+			}
+		}
+
+		function loadCheckPoint() {
+			var checkPointIdList = setData.checkPointIdList;
+			var param = {
+				idList: checkPointIdList
+			}
+			request("POST", "/checkPoint/queryList.do", param, true, function(res) {
+				setData.contentList = res.data.dataList;
+			}, function(res) {
+				layer.msg("巡查点位加载失败")
+			})
+		}
+	</script>
+
+</html>

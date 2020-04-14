@@ -1,64 +1,193 @@
 [
    {
-        "id":"0-0",
-        "childList":[
+        "id":"1-1",
+        "name":"一层",
+        "children":[
             {
             	"src":"img/icon/icon-surveillance.png",
-                "x":"1225",
-                "y":"1182"
+                "x":"520",
+                "y":"190"
             },
             {
             	"src":"img/icon/icon-surveillance.png",
-                "x":"1225",
-                "y":"1682"
+                "x":"1100",
+                "y":"190"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1720",
+                "y":"190"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"520",
+                "y":"620"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1150",
+                "y":"650"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"2200",
+                "y":"660"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"520",
+                "y":"1200"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1150",
+                "y":"1200"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1800",
+                "y":"1250"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1300",
+                "y":"1600"
             }
         ]
     },
     {
-        "id":"0-1",
-        "childList":[
+        "id":"1-2",
+        "name":"二层",
+        "children":[
         	{
-        		"src":"img/icon/icon-surveillance.png",
-                "x":"1625",
-                "y":"1182"
-        	},
-        	{
-        		"src":"img/icon/icon-surveillance.png",
-                "x":"1625",
-                "y":"1682"
-        	}
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"520",
+                "y":"190"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1100",
+                "y":"190"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1720",
+                "y":"190"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"520",
+                "y":"620"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1150",
+                "y":"650"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"2200",
+                "y":"660"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"520",
+                "y":"1200"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1150",
+                "y":"1200"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1800",
+                "y":"1250"
+            },
+            {
+            	"src":"img/icon/icon-surveillance.png",
+                "x":"1300",
+                "y":"1600"
+            }
         ]
     },
     {
-        "id":"0-2",
-        "childList":[]
+        "id":"1-3",
+        "name":"三层",
+        "children":[{
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"520",
+            "y":"190"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"1100",
+            "y":"190"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"1720",
+            "y":"190"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"520",
+            "y":"620"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"1150",
+            "y":"650"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"2200",
+            "y":"660"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"520",
+            "y":"1200"
+        },
+        {
+        	"src":"img/icon/icon-surveillance.png",
+            "x":"1150",
+            "y":"1200"
+        }]
     },
     {
-        "id":"0-3",
-        "childList":[]
+        "id":"1-4",
+        "name":"四层",
+        "children":[]
     },
     {
-        "id":"0-4",
-        "childList":[]
+        "id":"1-5",
+        "name":"五层",
+        "children":[]
     },
     {
-        "id":"0-5",
-        "childList":[]
+        "id":"1-6",
+        "name":"六层",
+        "children":[]
     },
     {
-        "id":"0-6",
-        "childList":[]
+        "id":"1-7",
+        "name":"七层",
+        "children":[]
     },
     {
-        "id":"0-7",
-        "childList":[]
+        "id":"1-8",
+        "name":"八层",
+        "children":[]
     },
     {
-        "id":"0-8",
-        "childList":[]
+        "id":"1-9",
+        "name":"九层",
+        "children":[]
     },
     {
-        "id":"0-10",
-        "childList":[]
+        "id":"1-10",
+        "name":"十层",
+        "children":[]
     }
 ]

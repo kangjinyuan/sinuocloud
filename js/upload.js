@@ -43,21 +43,20 @@ function uploadImgInit(callback) {
 								if(preview.attr("data-width") && preview.attr("data-height")) {
 									if(width / height != preview.attr("data-width") / preview.attr("data-height")) {
 										uploader.removeFile(file);
-										layer.msg("该图片不符合上传规则，请重新上传");
+										top.layer.msg("该图片不符合上传规则，请重新上传");
 										return false;
 									}
 								}
-								$("body").append("<div class='progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar layui-bg-black' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div>");
+								top.$("body").append("<div class='progress-box'><div class='layui-progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div></div>");
 							}
 						},
 						'UploadProgress': function(up, file) {
 							element.progress('progress', file.percent + '%');
 						},
 						'FileUploaded': function(up, file, info) {
-							layer.msg("上传成功", {
+							top.layer.msg("上传成功", {
 								time: 2000
 							}, function() {
-								$(".progress-box").remove();
 								var domain = up.getOption('domain');
 								var res = JSON.parse(info.response);
 								var sourceLink = domain + res.key;
@@ -67,15 +66,16 @@ function uploadImgInit(callback) {
 								} else {
 									preview.attr("src", sourceLink);
 								}
+								top.$(".progress-box").remove();
 							});
 						},
 						'Error': function(up, err, errTip) {
-							$(".progress-box").remove();
 							if(err.code == "-600") {
-								layer.msg("文件超过2M");
+								top.layer.msg("文件超过2M");
 							} else {
-								layer.msg("图片上传失败，请检查网络或重试");
+								top.layer.msg("图片上传失败，请检查网络或重试");
 							}
+							top.$(".progress-box").remove();
 						},
 						'UploadComplete': function() {
 							//队列文件处理完毕后,处理相关的事情
@@ -97,7 +97,7 @@ function uploadImgInit(callback) {
 			});
 		})
 	}, function(res) {
-		layer.msg("七牛token获取失败，请检查网络或者重试");
+		top.layer.msg("七牛token获取失败，请检查网络或者重试");
 	})
 }
 
@@ -136,23 +136,23 @@ function appUploadImgInit(callback) {
 							});
 						},
 						'BeforeUpload': function(up, file) {
-							var loadding = layer.load(1, {
+							top.layer.load(1, {
 								shade: [0.2, '#fafafa'],
 								area: ['37px', '37px']
 							});
 						},
 						'UploadProgress': function(up, file) {},
 						'FileUploaded': function(up, file, info) {
-							layer.closeAll('loading');
+							top.layer.closeAll('loading');
 							var domain = up.getOption('domain');
 							var res = JSON.parse(info.response);
 							var sourceLink = domain + res.key;
 							setData.imageList.push(sourceLink);
-							layer.msg("上传成功");
+							top.layer.msg("上传成功");
 						},
 						'Error': function(up, err, errTip) {
-							layer.closeAll('loading');
-							layer.msg("图片上传失败，请检查网络或重试");
+							top.layer.closeAll('loading');
+							top.layer.msg("图片上传失败，请检查网络或重试");
 						},
 						'UploadComplete': function() {
 							//队列文件处理完毕后,处理相关的事情
@@ -177,7 +177,7 @@ function appUploadImgInit(callback) {
 			});
 		})
 	}, function(res) {
-		layer.msg("七牛token获取失败，请检查网络或者重试");
+		top.layer.msg("七牛token获取失败，请检查网络或者重试");
 	})
 }
 
@@ -224,29 +224,29 @@ function uploadVideoInit(callback) {
 							});
 						},
 						'BeforeUpload': function(up, file) {
-							$("body").append("<div class='progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar layui-bg-black' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div>");
+							top.$("body").append("<div class='progress-box'><div class='layui-progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div></div>");
 						},
 						'UploadProgress': function(up, file) {
 							element.progress('progress', file.percent + '%');
 						},
 						'FileUploaded': function(up, file, info) {
-							layer.msg("上传成功", {
+							top.layer.msg("上传成功", {
 								time: 2000
 							}, function() {
-								$(".progress-box").remove();
 								var domain = up.getOption('domain');
 								var res = JSON.parse(info.response);
 								var sourceLink = domain + res.key;
 								preview.attr("src", sourceLink);
+								top.$(".progress-box").remove();
 							});
 						},
 						'Error': function(up, err, errTip) {
-							$(".progress-box").remove();
 							if(err.code == "-600") {
-								layer.msg("文件超过" + fileSize);
+								top.layer.msg("文件超过" + fileSize);
 							} else {
-								layer.msg("视频上传失败，请检查网络或重试");
+								top.layer.msg("视频上传失败，请检查网络或重试");
 							}
+							top.$(".progress-box").remove();
 						},
 						'UploadComplete': function() {
 							//队列文件处理完毕后,处理相关的事情
@@ -268,7 +268,7 @@ function uploadVideoInit(callback) {
 			});
 		})
 	}, function(res) {
-		layer.msg("七牛token获取失败，请检查网络或者重试");
+		top.layer.msg("七牛token获取失败，请检查网络或者重试");
 	})
 }
 
@@ -308,29 +308,29 @@ function uploadFileInit(callback) {
 							});
 						},
 						'BeforeUpload': function(up, file) {
-							$("body").append("<div class='progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar layui-bg-black' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div>");
+							top.$("body").append("<div class='progress-box'><div class='layui-progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div></div>");
 						},
 						'UploadProgress': function(up, file) {
 							element.progress('progress', file.percent + '%');
 						},
 						'FileUploaded': function(up, file, info) {
-							layer.msg("上传成功", {
+							top.layer.msg("上传成功", {
 								time: 2000
 							}, function() {
-								$(".progress-box").remove();
 								var domain = up.getOption('domain');
 								var res = JSON.parse(info.response);
 								var sourceLink = domain + res.key;
 								preview.val(sourceLink);
+								top.$(".progress-box").remove();
 							});
 						},
 						'Error': function(up, err, errTip) {
-							$(".progress-box").remove();
 							if(err.code == "-600") {
-								layer.msg("文件超过" + fileSize);
+								top.layer.msg("文件超过" + fileSize);
 							} else {
-								layer.msg("文件上传失败，请检查网络或重试");
+								top.layer.msg("文件上传失败，请检查网络或重试");
 							}
+							top.$(".progress-box").remove();
 						},
 						'UploadComplete': function() {
 							//队列文件处理完毕后,处理相关的事情
@@ -352,6 +352,6 @@ function uploadFileInit(callback) {
 			});
 		})
 	}, function(res) {
-		layer.msg("七牛token获取失败，请检查网络或者重试");
+		top.layer.msg("七牛token获取失败，请检查网络或者重试");
 	})
 }

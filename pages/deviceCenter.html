@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box kjy-content-box v-dom" v-cloak>
+			<div class="kjy-title-box">
+				<div class="kjy-title-text">我的设备</div>
+			</div>
+			<ul class="tab-list-box">
+				<li v-for="t in menuList" v-bind:class="selected == t.id?'selected':''" v-on:click="setPath(t.id);">{{t.name}}</li>
+			</ul>
+			<div class="tab-content-box"><iframe v-bind:src="path" frameborder="0" marginheight="0" marginwidth="0" scrolling="yes"></iframe></div>
+		</div>
+	</body>
+	<script>
+		loadVue(".v-dom", param);
+	</script>
+
+</html>

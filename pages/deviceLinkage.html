@@ -13,12 +13,13 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=46a09142d2"></script>
-		<script src="../js/common.js?v=18e3c83b9f"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
 	</head>
 
 	<body>
@@ -28,7 +29,7 @@
 					<div class="search-list">
 						<div class="search-name">消防设备：</div>
 						<div class="search-value">
-							<input type="text" name="" value="" id="fireDeviceName" placeholder="消防设备">
+							<input type="text" name="" value="" id="deviceName" placeholder="消防设备">
 						</div>
 					</div>
 					<div class="search-btn-box">
@@ -44,15 +45,15 @@
 				</div>
 			</div>
 			<div class="kjy-data-box">
-				<div class="decorate-list common-left-top-decorate position-left-top"></div>
-				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
-				<div class="decorate-list common-right-top-decorate position-right-top"></div>
-				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
 				<div class="full-box" v-if="dataList.length == 0">
 					<div class="no-data-box">
 						<div class="no-data-inner-box">
 							<div class="icon icon-no-data"></div>
-							<div class="no-data-text">暂时没有联动记录哦</div>
+							<div class="no-data-text">暂时没有视频联动记录哦</div>
 						</div>
 					</div>
 				</div>
@@ -61,25 +62,19 @@
 						<table>
 							<thead>
 								<tr>
-									<th class="padding-left-52">
+									<th class="padding-left-100">
 										<div v-bind:class="['icon','icon-check-box',allIsActive?'icon-checked':'']" v-on:click="selectAllData()"></div>序号</th>
 									<th>消防设备</th>
-									<th>设备类型</th>
-									<th>设备地址</th>
-									<th>用户编码</th>
 									<th>监控点</th>
 									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
-									<td class="padding-left-52">
+									<td class="padding-left-100">
 										<div v-bind:class="['icon','icon-check-box',t.isActive?'icon-checked':'']" v-on:click="selectOneData(t)"></div>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-									<td v-bind:title="t.fireDeviceName">{{t.fireDeviceName}}</td>
-									<td>{{t.deviceType}}</td>
-									<td v-bind:title="t.deviceAddress?t.deviceAddress:'无'">{{t.deviceAddress?t.deviceAddress:'无'}}</td>
-									<td>{{t.fireDeviceIndexCode?t.fireDeviceIndexCode:'无'}}</td>
-									<td v-bind:title="t.cameraDeviceName">{{t.cameraDeviceName}}</td>
+									<td v-bind:title="t.deviceName">{{t.deviceName}}</td>
+									<td v-bind:title="t.videoDeviceName">{{t.videoDeviceName}}</td>
 									<td>
 										<ul class="opera-box">
 											<li v-on:click="deviceLinkage(t);">编辑</li>
@@ -99,20 +94,21 @@
 		loadVue(".v-dom", param);
 
 		function deviceLinkage(obj) {
-			openMask("/part/deviceLinkage", ["520px", "360px"], function(layerDom, layerIframe) {
+			openMask("/parts/deviceLinkage", [suitRem(8.1), suitRem(6)], function(layerDom, layerIframe) {
 				var videoLinkageType = setData.videoLinkageType;
 				for(var i = 0; i < videoLinkageType.length; i++) {
-					resetData(1, videoLinkageType[i]);
+					resetData(videoLinkageType[i], 1);
 				}
 				layerIframe.setData.videoLinkageType = videoLinkageType;
 				if(obj) {
 					layerIframe.setData.parentData = obj;
-					layerIframe.loadDevice();
+					layerIframe.loadDeviceVideo();
 					layerIframe.loadVideoLinkageType();
-					layerDom.find("#deviceName").val(obj.fireDeviceName);
-					layerDom.find("#indexCode").val(obj.fireDeviceIndexCode);
-					layerDom.find("#deviceTypeName").val(obj.deviceType);
-					layerDom.find("#deviceAddress").val(obj.deviceAddress);
+					layerDom.find("#deviceId").val(obj.deviceId);
+					layerDom.find("#deviceName").val(obj.deviceName);
+					layerDom.find("#deviceLocation").val(obj.deviceLocation);
+					layerDom.find("#deviceType").val(obj.deviceType);
+					layerDom.find("#deviceSN").val(obj.deviceSN);
 				} else {
 					layerDom.find(".select-device-btn-box").show();
 				}
@@ -122,35 +118,33 @@
 		//删除数据
 		function del() {
 			if(idList.length == 0) {
-				layer.msg("请选择视频联动");
+				top.layer.msg("请选择视频联动");
 				return false;
 			}
-			openConfirm("确定删除所选视频联动？", function() {
+			openConfirm("确定删除所选视频联动吗？", function() {
 				var param = {
 					idList: idList
 				}
 				request('POST', '/event/v1/deleteVideoLinkage', param, true, function(res) {
 					loadData();
-					layer.closeAll('dialog');
+					top.layer.closeAll('dialog');
 				}, function(res) {
-					layer.msg("删除失败");
+					top.layer.msg("删除失败");
 				})
 			})
 		}
 
-		function resetData(flag, obj) {
-			if(flag == 0) {
+		function resetData(obj, type) {
+			if(type == 0) {
 				obj.isActive = false;
 				obj.animatedName = "fadeInUp";
-				var cameraDeviceList = obj.cameraDeviceList;
-				var cameraDeviceName = [];
-				for(var j = 0; j < cameraDeviceList.length; j++) {
-					cameraDeviceList[j].deviceName = cameraDeviceList[j].cameraDeviceName;
-					cameraDeviceList[j].indexCode = cameraDeviceList[j].cameraDeviceIndexCode;
-					cameraDeviceName.push(cameraDeviceList[j].cameraDeviceName);
+				var videoDeviceList = obj.videoDeviceList;
+				var videoDeviceName = [];
+				for(var i = 0; i < videoDeviceList.length; i++) {
+					videoDeviceName.push(videoDeviceList[i].name);
 				}
-				obj.cameraDeviceName = cameraDeviceName.join(",");
-			} else if(flag == 1) {
+				obj.videoDeviceName = videoDeviceName.join(",");
+			} else if(type == 1) {
 				obj.isActive = false;
 				if(obj.id == 1 || obj.id == 2) {
 					obj.isActive = true;
@@ -162,31 +156,29 @@
 			var param = {
 				pageNo: pageNo,
 				pageSize: 20,
-				fireDeviceName: $("#fireDeviceName").val()
+				deviceName: $("#deviceName").val()
 			};
 			request("POST", "/event/v1/findVideoLinkageList", param, true, function(res) {
 				var dataList = res.data.dataList;
 				resetDataList(function() {
 					for(var i = 0; i < dataList.length; i++) {
-						resetData(0, dataList[i]);
+						resetData(dataList[i], 0);
 					}
 					setData.dataList = dataList;
 					setData.allIsActive = false;
 					loadPage();
 				})
+			}, function(res) {
+				top.layer.msg("视频联动记录加载失败");
 			});
 		}
 
 		function loadVideoLinkageType() {
-			var param = {};
-			request("POST", "/event/v1/findVideoLinkageType", param, true, function(res) {
-				var dataList = res.data;
-				for(var i = 0; i < dataList.length; i++) {
-					resetData(1, dataList[i]);
+			getJson("/json/videoLinkageType", function(res) {
+				for(var i = 0; i < res.length; i++) {
+					resetData(res[i], 1);
 				}
-				setData.videoLinkageType = dataList;
-			}, function(res) {
-				layer.msg("联动类型加载失败");
+				setData.videoLinkageType = res;
 			});
 		}
 

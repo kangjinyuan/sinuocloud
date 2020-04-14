@@ -1,4 +1,8 @@
-var accountInfo = window.localStorage.getItem("accountInfo") ? JSON.parse(window.localStorage.getItem("accountInfo")) : getQueryString("accountInfo");
+//用户信息
+var accountInfo = window.localStorage.getItem("accountInfo") ? JSON.parse(window.localStorage.getItem("accountInfo")) : getUrlParam("accountInfo");
+
+//路由id
+var routeId = getUrlParam("routeId", top.window.location.href);
 
 //	数字正则表达式
 var regular_num = /^[0-9.-]*$/;
@@ -18,10 +22,12 @@ var regular_idNumber = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01
 //	code正则表达式
 var regular_code = /^[A-Za-z0-9]*$/;
 
+//vue对象变量,弹框数组变量
 var setData, maskArray = [];
 
-//初始化vue
+//初始化vue参数
 var param = {
+	window: {},
 	menuList: [],
 	selected: "",
 	path: "",
@@ -82,23 +88,26 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 	} else {
 		var isPage = false;
 	}
-	if(method == "POST") {
+	var groupId = getUrlParam("groupId");
+	if(groupId) {
+		param.groupId = groupId;
+	} else {
 		if(accountInfo) {
 			param.accessToken = accountInfo.accessToken;
+			param.groupId = accountInfo.groupId;
+			param.projectId = accountInfo.projectId;
 		}
+	}
+	if(method == "POST") {
 		param = JSON.stringify(param);
 	}
 	if(showLoading) {
-		var loadding = layer.load(1, {
+		top.layer.load(1, {
 			shade: [0.2, '#333'],
 			area: ['37px', '37px']
 		});
 	}
-	if(requestUrl.indexOf("?") > 0) {
-		requestUrl = requestUrl + "&timestamp=" + timestamp;
-	} else {
-		requestUrl = requestUrl + "?timestamp=" + timestamp;
-	}
+	requestUrl = editUrlParam("timestamp", timestamp, requestUrl);
 	$.ajax({
 		type: method,
 		url: url + requestUrl,
@@ -120,19 +129,19 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 				}
 			} else if(res.code == "0007" || res.code == "0006") {
 				window.localStorage.setItem("accountInfo", "");
-				top.location.href = host + "/sinuocloud/login.html";
+				top.location.href = host + "/sinuocloud/login.html?groupId=" + accountInfo.groupId;
 			} else if(res.code == "5000") {
-				layer.msg("服务器内部错误");
+				top.layer.msg("服务器内部错误");
 			} else {
 				noCallback(res);
 			}
 			if(showLoading) {
-				layer.closeAll('loading');
+				top.layer.closeAll('loading');
 			}
 		},
 		error: function(res) {
 			if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
-				window.location.href = host + '/sinuocloud/part/err.html';
+				window.location.href = host + '/sinuocloud/parts/err.html';
 			}
 		}
 	});
@@ -153,16 +162,12 @@ function shanxiangRequest(method, requestUrl, param, showLoading, okCallback, no
 		param = JSON.stringify(param);
 	}
 	if(showLoading) {
-		var loadding = layer.load(1, {
+		top.layer.load(1, {
 			shade: [0.2, '#333'],
 			area: ['37px', '37px']
 		});
 	}
-	if(requestUrl.indexOf("?") > 0) {
-		requestUrl = requestUrl + "&timestamp=" + timestamp;
-	} else {
-		requestUrl = requestUrl + "?timestamp=" + timestamp;
-	}
+	requestUrl = editUrlParam("timestamp", timestamp, requestUrl);
 	$.ajax({
 		type: method,
 		url: hikUrl + requestUrl,
@@ -184,19 +189,19 @@ function shanxiangRequest(method, requestUrl, param, showLoading, okCallback, no
 				}
 			} else if(res.code == "0007" || res.code == "0006") {
 				window.localStorage.setItem("accountInfo", "");
-				top.location.href = host + "/sinuocloud/login.html";
+				top.location.href = host + "/sinuocloud/login.html?groupId=" + accountInfo.groupId;
 			} else if(res.code == "5000") {
-				layer.msg("服务器内部错误");
+				top.layer.msg("服务器内部错误");
 			} else {
 				noCallback(res);
 			}
 			if(showLoading) {
-				layer.closeAll('loading');
+				top.layer.closeAll('loading');
 			}
 		},
 		error: function(res) {
 			if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
-				window.location.href = host + '/sinuocloud/part/err.html';
+				window.location.href = host + '/sinuocloud/parts/err.html';
 			}
 		}
 	});
@@ -217,16 +222,12 @@ function sinuoRequest(method, requestUrl, param, showLoading, okCallback, noCall
 		param = JSON.stringify(param);
 	}
 	if(showLoading) {
-		var loadding = layer.load(1, {
+		top.layer.load(1, {
 			shade: [0.2, '#333'],
 			area: ['37px', '37px']
 		});
 	}
-	if(requestUrl.indexOf("?") > 0) {
-		requestUrl = requestUrl + "&timestamp=" + timestamp;
-	} else {
-		requestUrl = requestUrl + "?timestamp=" + timestamp;
-	}
+	requestUrl = editUrlParam("timestamp", timestamp, requestUrl);
 	$.ajax({
 		type: method,
 		url: sinuoUrl + requestUrl,
@@ -253,12 +254,12 @@ function sinuoRequest(method, requestUrl, param, showLoading, okCallback, noCall
 				noCallback(res);
 			}
 			if(showLoading) {
-				layer.closeAll('loading');
+				top.layer.closeAll('loading');
 			}
 		},
 		error: function(res) {
 			if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
-				window.location.href = host + '/sinuocloud/part/err.html';
+				window.location.href = host + '/sinuocloud/parts/err.html';
 			}
 		}
 	});
@@ -283,7 +284,55 @@ function hikRequest(param, showLoading, callback) {
 			resetPage();
 		}
 	}, function(res) {
-		layer.msg("网络异常");
+		top.layer.msg("网络异常");
+	});
+}
+
+function importRequest(elem, method, requestUrl, param, okCallback, noCallback) {
+	if(method == "POST") {
+		param.accessToken = accountInfo.accessToken;
+		param.groupId = accountInfo.groupId;
+		param.projectId = accountInfo.id;
+	}
+	layui.use(['upload', 'element', 'layer'], function() {
+		var upload = layui.upload,
+			element = top.window.layui.element;
+		upload.render({
+			elem: elem,
+			method: method,
+			url: url + requestUrl,
+			data: param,
+			accept: 'file',
+			acceptMime: "file/*",
+			size: 10240,
+			before: function(res) {
+				top.$("body").append("<div class='progress-box'><div class='layui-progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div></div>");
+				var progress = 0;
+				timer = setInterval(function() {
+					progress = progress + Math.random() * 10 | 0;
+					if(progress > 95) {
+						progress = 95;
+						clearInterval(timer);
+					}
+					element.progress('progress', progress + '%');
+				}, 300 + Math.random() * 1000);
+			},
+			done: function(res) {
+				if(res.code == "0000") {
+					clearInterval(timer);
+					element.progress('progress', '100%');
+					okCallback(res);
+				} else {
+					noCallback(res);
+				}
+				top.$(".progress-box").remove();
+			},
+			error: function(res) {
+				if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
+					window.location.href = host + '/sinuocloud/parts/err.html';
+				}
+			}
+		});
 	});
 }
 
@@ -473,7 +522,7 @@ function loadPart(url, dom, callback) {
 
 //加载翻页
 function loadPage() {
-	loadPart("/part/page", ".page-box", function(res) {
+	loadPart("/parts/page", ".page-box", function(res) {
 		loadVue(".v-page", param);
 	})
 }
@@ -556,20 +605,23 @@ function switchActive(obj) {
 //弹出框展示
 function openMask(url, area, callback) {
 	var timestamp = new Date().getTime();
+	var maskArray = top.maskArray;
 	var content = host + "/sinuocloud" + url + ".html?timestamp=" + timestamp;
-	layer.open({
+	top.layer.open({
 		type: 2,
 		title: false,
 		shadeClose: true,
 		closeBtn: false,
 		shade: [0.8, '#01121a'],
 		shift: 1,
-		area: area,
+		area: ["100%", "100%"],
 		content: [content, "no"],
 		skin: "layui-layer-transparent",
 		success: function(layero, index) {
-			var layerDom = layer.getChildFrame('body', index);
+			var layerDom = top.layer.getChildFrame('body', index);
+			layerDom.find(".mask-box").width(area[0]).height(area[1]);
 			var layerIframe = layero.find('iframe')[0].contentWindow;
+			layerIframe.parent = window;
 			var indexList = [];
 			for(var i = 0; i < maskArray.length; i++) {
 				indexList.push(maskArray[i].index);
@@ -577,6 +629,7 @@ function openMask(url, area, callback) {
 			if($.inArray(index, indexList) == -1) {
 				var obj = {
 					index: index,
+					layerDom: layerDom,
 					layerIframe: layerIframe
 				}
 				maskArray.push(obj);
@@ -593,8 +646,9 @@ function openMask(url, area, callback) {
 
 //获取弹出框内容
 function getMaskData(callback) {
+	var maskArray = top.maskArray;
 	var index = maskArray.length - 2;
-	var layerDom = layer.getChildFrame('body', maskArray[index].index);
+	var layerDom = maskArray[index].layerDom;
 	var layerIframe = maskArray[index].layerIframe;
 	if(callback) {
 		callback(layerDom, layerIframe);
@@ -602,13 +656,19 @@ function getMaskData(callback) {
 }
 
 //关闭弹框
-function closeMask() {
-	parent.layer.close(parent.maskArray[parent.maskArray.length - 1].index);
+function closeMask(callback) {
+	var maskArray = top.maskArray;
+	var index = maskArray.length - 1;
+	var parent = maskArray[index].layerIframe.parent;
+	if(callback) {
+		callback(parent);
+	}
+	top.layer.close(maskArray[index].index);
 }
 
 //打开信息框
 function openConfirm(confirmText, callback) {
-	layer.confirm(confirmText, {
+	top.layer.confirm(confirmText, {
 		title: false,
 		closeBtn: false,
 		btn: ['确定', '取消'],
@@ -623,13 +683,34 @@ function openConfirm(confirmText, callback) {
 //退出
 function quit() {
 	window.localStorage.setItem("accountInfo", "");
-	window.location.href = "login.html";
+	top.location.href = "login.html?groupId=" + accountInfo.groupId;
 }
 
+//添加或者修改 url中参数的值
+function editUrlParam(key, value, url) {
+	url = url || window.location.href;
+	if(url.indexOf(key) > 0) {
+		var urlValue = getUrlParam(key, url);
+		if(urlValue) {
+			url = url.replace(key + '=' + urlValue, key + '=' + value);
+		} else {
+			url = url.replace(key + '=', key + '=' + value);
+		}
+	} else {
+		if(url.indexOf("?") > 0) {
+			url = url + "&" + key + "=" + value;
+		} else {
+			url = url + "?" + key + "=" + value;
+		}
+	}
+	return url;
+};
+
 //获取地址栏参数
-function getQueryString(key) {
+function getUrlParam(key, url) {
+	url = url || window.location.search;
 	var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
-	var result = window.location.search.substr(1).match(reg);
+	var result = url.substr(1).match(reg);
 	return result ? decodeURIComponent(result[2]) : null;
 }
 
@@ -679,39 +760,27 @@ function resetPage() {
 //检索
 function search() {
 	pageNo = 1;
-	if(setData.parentData) {
-		loadData(setData.parentData);
-	} else {
-		loadData();
-	}
+	loadData();
 }
 
 //首页
 function firstPage() {
 	pageNo = 1;
 	if(setData.totalPage <= 1) {
-		layer.msg("页数已到最小");
+		top.layer.msg("页数已到最小");
 		return false;
 	}
-	if(setData.parentData) {
-		loadData(setData.parentData);
-	} else {
-		loadData();
-	}
+	loadData();
 }
 
 //末页
 function lastPage() {
 	pageNo = setData.totalPage;
 	if(pageNo == setData.pageNo) {
-		layer.msg("页数已到最大");
+		top.layer.msg("页数已到最大");
 		return false;
 	}
-	if(setData.parentData) {
-		loadData(setData.parentData);
-	} else {
-		loadData();
-	}
+	loadData();
 }
 
 //上一页
@@ -720,14 +789,10 @@ function beforePage() {
 	pageNo--;
 	if(pageNo < 1) {
 		pageNo = 1;
-		layer.msg("页数已到最小");
+		top.layer.msg("页数已到最小");
 		return false;
 	}
-	if(setData.parentData) {
-		loadData(setData.parentData);
-	} else {
-		loadData();
-	}
+	loadData();
 }
 
 //下一页
@@ -736,24 +801,16 @@ function nextPage() {
 	pageNo++;
 	if(pageNo > setData.totalPage) {
 		pageNo = setData.totalPage;
-		layer.msg("页数已到最大");
+		top.layer.msg("页数已到最大");
 		return false;
 	}
-	if(setData.parentData) {
-		loadData(setData.parentData);
-	} else {
-		loadData();
-	}
+	loadData();
 }
 
 //跳转页面
 function jumpPage(jumpPageNo) {
 	pageNo = jumpPageNo;
-	if(setData.parentData) {
-		loadData(setData.parentData);
-	} else {
-		loadData();
-	}
+	loadData();
 }
 
 //时间控件
@@ -766,22 +823,6 @@ function setTime(dom, type, format) {
 				type: type,
 				trigger: 'click',
 				format: format
-			});
-		});
-	});
-}
-
-//批量设置时间控件
-function setTimeList(dom, type, format) {
-	layui.use('laydate', function() {
-		var laydate = layui.laydate;
-		lay(dom).each(function() {
-			laydate.render({
-				elem: this,
-				type: type,
-				trigger: 'click',
-				format: format,
-				theme: '#001e37'
 			});
 		});
 	});
@@ -882,51 +923,49 @@ function downloadScanCode(canvasDom, downloadDom) {
 }
 
 //无缝滚动
-function seamlessRolling(dom) {
+function seamlessRolling(id, milliseconds) {
+	var dom = $("#" + id);
 	var height = dom.outerHeight(true);
-	var parentHeight = dom.parent().outerHeight(true);
-	var H = dom.children().outerHeight(true);
-	if(height > parentHeight) {
-		var top = dom.position().top;
-		if(top <= (parentHeight - height)) {
-			top = 0;
-			dom.css("top", "0");
-			return false;
-		}
-		dom.stop().animate({
-			top: top - H
-		}, 400);
+	var childHeight = dom.children().outerHeight(true);
+	var H = Math.ceil(dom.children().children().outerHeight(true));
+	if(height < childHeight) {
+		clearInterval(window[id]);
+		window[id] = setInterval(function() {
+			var top = Math.ceil(dom.scrollTop());
+			if(top >= (childHeight - height)) {
+				top = 0;
+				dom.scrollTop(top);
+			}
+			dom.stop().animate({
+				scrollTop: top + H
+			}, 500);
+		}, milliseconds);
 	}
 }
 
 //点击滚动
-function clickRolling(dom, type) {
-	var dom = $("." + dom);
-	var height = dom.height();
-	var parentHeight = dom.parent().height();
-	var dataLength = dom.children().length;
-	var H = dom.children().height();
-	var top = dom.position().top;
-	if(height > parentHeight) {
+function clickRolling(id, type) {
+	var dom = $("#" + id);
+	var height = dom.outerHeight(true);
+	var childHeight = dom.children().outerHeight(true);
+	var H = Math.ceil(dom.children().children().outerHeight(true));
+	var top = Math.ceil(dom.scrollTop());
+	if(height < childHeight) {
 		if(type == 0) {
-			if(top > (parentHeight - height)) {
-				dom.stop().animate({
-					top: top - H
-				}, 500);
-			}
+			dom.stop().animate({
+				scrollTop: top + H
+			}, 500);
 		} else if(type == 1) {
-			if(top < 0) {
-				dom.stop().animate({
-					top: top + H
-				}, 500);
-			}
+			dom.stop().animate({
+				scrollTop: top - H
+			}, 500);
 		}
 	}
 }
 
 //监听window改变
 function bindWindowChange(callback) {
-	$(window).resize(function() {
+	top.$(window).resize(function() {
 		callback();
 	})
 }
@@ -947,44 +986,46 @@ function getIndexArray(dataList, index, slotType) {
 }
 
 //获取JSON
-function getJson(flag, callback) {
+function getJson(part, callback) {
 	var timestamp = new Date().getTime();
-	if(flag == "0") {
-		var jsonName = "service";
-	} else if(flag == "1") {
-		var jsonName = "equipment";
-	} else if(flag == "2") {
-		var jsonName = "privilege";
-	}
-	var requestUrl = host + "/sinuocloud/json/" + jsonName + ".json?timestamp=" + timestamp
+	var requestUrl = host + "/sinuocloud" + part + ".json?timestamp=" + timestamp;
 	$.getJSON(requestUrl, function(res) {
-		var dataList = res;
-		dataList.sort(resetSort("sort", 1));
-		callback(dataList);
+		callback(res);
 	})
 }
 
-//切换页面
+//设置页面地址
 function setPath(id) {
 	var timestamp = new Date().getTime();
 	var menuList = setData.menuList;
 	for(var i = 0; i < menuList.length; i++) {
 		if(id == menuList[i].id) {
+			setData.selected = id;
 			if(menuList[i].path == "") {
-				layer.msg("该功能暂未开放");
+				top.layer.msg("该功能暂未开放");
 				return false;
 			}
-			var childList = menuList[i].childList;
 			var path = host + "/sinuocloud" + menuList[i].path + ".html?timestamp=" + timestamp;
-			if(childList.length > 0) {
-				var iframe = $(".main-box iframe");
-				iframe.load(function() {
-					var iframeWindow = iframe[0].contentWindow;
-					iframeWindow.setData.menuList = childList;
-					iframeWindow.setPath(childList[0].id);
-				})
+			var children = menuList[i].children;
+			var parent = menuList[i].parent;
+			$("iframe").get(0).onload = function() {
+				var iframeWindow = $("iframe")[0].contentWindow;
+				if(parent == 2) {
+					var newRouteId = id;
+				} else {
+					var newRouteId = parent + "-" + id;
+				}
+				top.window.history.pushState(null, null, editUrlParam("routeId", newRouteId, top.window.location.href));
+				routeId = routeId ? routeId : getUrlParam("routeId", top.window.location.href);
+				var routeIdList = routeId.split("-");
+				routeId = newRouteId.toString();
+				if(iframeWindow.setData != undefined) {
+					if(children) {
+						iframeWindow.setData.menuList = children;
+						iframeWindow.setPath(routeIdList[1] ? routeIdList[1] : children[0].id);
+					}
+				}
 			}
-			setData.selected = id;
 			setData.path = path;
 		}
 	}
@@ -1003,8 +1044,14 @@ function getPrivilege(param, callback) {
 			callback(dataList);
 		}
 	}, function(res) {
-		layer.msg("权限获取失败");
+		top.layer.msg("权限获取失败");
 	})
+}
+
+function getDeviceType(callback) {
+	getJson("/json/deviceType", function(res) {
+		callback(res);
+	});
 }
 
 //置空dataList
@@ -1035,6 +1082,7 @@ function formatZero(num, len) {
 	return(Array(len).join(0) + num).slice(-len);
 }
 
+//播放视频
 function playerVideo(id, src) {
 	videojs.options.flash.swf = host + '/sinuocloud/video/video-js.swf';
 	var videoPlayer = videojs(id);
@@ -1044,9 +1092,46 @@ function playerVideo(id, src) {
 	videoPlayer.play();
 }
 
+//暂停视频
 function disposeVideo(id) {
 	var videoPlayer = videojs(id);
 	videoPlayer.dispose();
+}
+
+//禁止浏览器后退
+function disPopstate() {
+	var window = top.window;
+	window.onpopstate = function() {
+		window.history.forward(1);
+	}
+	window.history.forward(1);
+}
+
+//定时任务
+var timeTaskIndex = 0;
+
+function timeTask(milliseconds, callback) {
+	timeTaskIndex++;
+	window["timeTask" + timeTaskIndex] = setInterval(function() {
+		callback();
+	}, milliseconds);
+}
+
+//树状数据结构
+function getTreeData(dataList, parentId) {
+	var result = [],
+		temp;
+	parentId = parentId || "0";
+	for(var i = 0; i < dataList.length; i++) {
+		if(dataList[i].parentId == parentId) {
+			temp = getTreeData(dataList, dataList[i].id);
+			if(temp.length > 0) {
+				dataList[i].children = temp;
+			}
+			result.push(dataList[i]);
+		}
+	}
+	return result;
 }
 
 //正则验证
@@ -1055,7 +1140,7 @@ function checkInput() {
 	for(var i = 0; i < $(".required").length; i++) {
 		if($(".required").eq(i).val() == "") {
 			var required = $(".required").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 为必填项 请核对");
+			top.layer.msg(required + " 为必填项 请核对");
 			return false;
 		}
 	}
@@ -1064,7 +1149,7 @@ function checkInput() {
 	for(var i = 0; i < $(".required-img").length; i++) {
 		if($(".required-img").eq(i).attr("src") == "" || $(".required-img").eq(i).attr("src") == "../img/common/no-img.png") {
 			var required = $(".required-img").eq(i).parent().parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 为必填项 请核对");
+			top.layer.msg(required + " 为必填项 请核对");
 			return false;
 		}
 	}
@@ -1073,7 +1158,7 @@ function checkInput() {
 	for(var i = 0; i < $(".len15").length; i++) {
 		if($(".len15").eq(i).val().length > 15) {
 			var required = $(".len15").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + "长度不能超过15");
+			top.layer.msg(required + "长度不能超过15");
 			return false;
 		}
 	}
@@ -1082,7 +1167,7 @@ function checkInput() {
 	for(var i = 0; i < $(".len6").length; i++) {
 		if($(".len6").eq(i).val().length > 6) {
 			var required = $(".len6").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + "长度不能超过6");
+			top.layer.msg(required + "长度不能超过6");
 			return false;
 		}
 	}
@@ -1091,7 +1176,7 @@ function checkInput() {
 	for(var i = 0; i < $(".len30").length; i++) {
 		if($(".len30").eq(i).val().length > 30) {
 			var required = $(".len30").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + "长度不能超过30");
+			top.layer.msg(required + "长度不能超过30");
 			return false;
 		}
 	}
@@ -1100,7 +1185,7 @@ function checkInput() {
 	for(var i = 0; i < $(".len200").length; i++) {
 		if($(".len200").eq(i).val().length > 200) {
 			var required = $(".len200").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + "长度不能超过200");
+			top.layer.msg(required + "长度不能超过200");
 			return false;
 		}
 	}
@@ -1109,7 +1194,7 @@ function checkInput() {
 	for(var i = 0; i < $(".pwd6").length; i++) {
 		if($(".pwd6").eq(i).val().length != 6) {
 			var required = $(".pwd6").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 长度为6位 请核对");
+			top.layer.msg(required + " 长度为6位 请核对");
 			return false;
 		}
 	}
@@ -1117,7 +1202,7 @@ function checkInput() {
 	for(var i = 0; i < $(".regular-num").length; i++) {
 		if(!regular_num.test($(".regular-num").eq(i).val())) {
 			var required = $(".regular-num").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式错误 请核对");
+			top.layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
@@ -1125,7 +1210,7 @@ function checkInput() {
 	if($(".regular-telephone").val() != "" && $(".regular-telephone").val() != undefined) {
 		if(!regular_telephone.test($(".regular-telephone").val())) {
 			var required = $(".regular-telephone").parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式错误 请核对");
+			top.layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
@@ -1133,7 +1218,7 @@ function checkInput() {
 	for(var i = 0; i < $(".regular-password").length; i++) {
 		if(!regular_password.test($(".regular-password").eq(i).val())) {
 			var required = $(".regular-password").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式为4-16位数字或字母，区分大小写");
+			top.layer.msg(required + " 格式为4-16位数字或字母，区分大小写");
 			return false;
 		}
 	}
@@ -1141,7 +1226,7 @@ function checkInput() {
 	if($(".regular-email").val() != "" && $(".regular-email").val() != undefined) {
 		if(!regular_email.test($(".regular-email").val())) {
 			var required = $(".regular-email").parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式错误 请核对");
+			top.layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
@@ -1149,7 +1234,7 @@ function checkInput() {
 	if($(".regular-id-number").val() != "" && $(".regular-id-number").val() != undefined) {
 		if(!regular_idNumber.test($(".regular-id-number").val())) {
 			var required = $(".regular-id-number").parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式错误 请核对");
+			top.layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
@@ -1157,7 +1242,7 @@ function checkInput() {
 	if($(".regular-room-address").val() != "" && $(".regular-room-address").val() != undefined) {
 		if(!regular_roomAddress.test($(".regular-room-address").val())) {
 			var required = $(".regular-room-address").parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式错误 请核对");
+			top.layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}
@@ -1165,7 +1250,7 @@ function checkInput() {
 	for(var i = 0; i < $(".regular-code").length; i++) {
 		if(!regular_code.test($(".regular-code").eq(i).val())) {
 			var required = $(".regular-code").eq(i).parent().siblings(".mask-list-name").text();
-			layer.msg(required + " 格式错误 请核对");
+			top.layer.msg(required + " 格式错误 请核对");
 			return false;
 		}
 	}

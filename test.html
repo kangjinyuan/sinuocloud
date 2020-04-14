@@ -4,34 +4,112 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Document</title>
+		<link rel="stylesheet" href="css/reset.css" />
+		<link rel="stylesheet" href="layui/css/layui.css">
+		<link rel="stylesheet" href="css/common.css?v=46f3e3365b" />
 		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="layui/layui.all.js"></script>
 		<script src="js/stomp.js"></script>
-		<script src="js/common.js?v=18e3c83b9f"></script>
+		<script src="js/suitWeb.js"></script>
+		<script src="js/vue.min.js"></script>
+		<script src="js/common.js?v=30133f77f6"></script>
 	</head>
 
 	<body>
-		<div></div>
-
+		<div class="v-dom">
+			<ul v-for="t in dataList">
+				<li v-for="t in t.children">
+					<ul v-for="t in t.children">
+						<li>{{t.name}}</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
 	</body>
 	<script>
-		var time = 0;
-		var param = {
-			clientId: "test",
-			url: "ws://47.105.23.62:5674/ws",
-			outgoing: 1000,
-			incoming: 0,
-			login: "guest",
-			passcode: "guest",
+		loadVue(".v-dom", param);
+		//		var time = 0;
+		//		var param = {
+		//			clientId: "test",
+		//			url: "ws://47.105.23.62:5674/ws",
+		//			outgoing: 1000,
+		//			incoming: 0,
+		//			login: "guest",
+		//			passcode: "guest",
+		//		}
+		//		var clientId = param.clientId;
+		//		connectSocket(param, function(res) {
+		//			setInterval(function() {
+		//				time++;
+		//				test.send(clientId, {}, "第" + time + "次通讯");
+		//			}, 10000);
+		//		}, function(res) {
+		//			console.log(res)
+		//		});
+
+		var dataList = [{
+			id: "1",
+			name: "根节点"
+		}, {
+			id: "2",
+			name: "一号楼",
+			parent: "1"
+		}, {
+			id: "3",
+			name: "二号楼",
+			parent: "1"
+		}, {
+			id: "4",
+			name: "三号楼",
+			parent: "1"
+		}, {
+			id: "5",
+			name: "一单元",
+			parent: "2"
+		}, {
+			id: "6",
+			name: "二单元",
+			parent: "2"
+		}, {
+			id: "7",
+			name: "一单元",
+			parent: "3"
+		}, {
+			id: "8",
+			name: "二单元",
+			parent: "3"
+		}, {
+			id: "9",
+			name: "一层",
+			parent: "5"
+		}, {
+			id: "10",
+			name: "二层",
+			parent: "5"
+		}, {
+			id: "11",
+			name: "三层",
+			parent: "5"
+		}]
+		setData.dataList = getTreeData(dataList);
+		console.log(getTreeData(dataList))
+
+		function loadProgress() {
+			layui.use(['element', 'layer'], function() {
+				var upload = layui.upload,
+					element = top.window.layui.element;
+				top.$("body").append("<div class='progress-box'><div class='layui-progress-box'><div class='layui-progress' lay-showpercent='true' lay-filter='progress'><div class='layui-progress-bar' lay-percent='0%'><span class='layui-progress-text'></span></div></div></div></div>");
+				var progress = 0;
+				timer = setInterval(function() {
+					progress = progress + Math.random() * 10 | 0;
+					if(progress > 95) {
+						progress = 95;
+						clearInterval(timer);
+					}
+					element.progress('progress', progress + '%');
+				}, 300 + Math.random() * 1000);
+			});
 		}
-		var clientId = param.clientId;
-		connectSocket(param, function(res) {
-			setInterval(function() {
-				time++;
-				test.send(clientId, {}, "第" + time + "次通讯");
-			}, 10000);
-		}, function(res) {
-			console.log(res)
-		});
 	</script>
 
 </html>

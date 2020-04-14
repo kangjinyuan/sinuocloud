@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="search-box">
+				<div class="search-row-box">
+					<div class="search-list">
+						<div class="search-name">设备地址：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="deviceAddress" placeholder="设备地址">
+						</div>
+					</div>
+					<div class="search-btn-box">
+						<div class="btn" onclick="search();">查询</div>
+						<div class="btn" onclick="reloadPage();">重置</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="deviceVideo();">新建</div>
+					<div class="btn" onclick="importDevice();">导入</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="no-data-inner-box">
+							<div class="icon icon-no-data"></div>
+							<div class="no-data-text">暂时没有视频设备哦</div>
+						</div>
+					</div>
+				</div>
+				<div class="kjy-data-inner-box" v-else>
+					<div class="kjy-table">
+						<table>
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>设备名称</th>
+									<th>设备地址</th>
+									<th>历史记录</th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td v-bind:title="t.name">{{t.name}}</td>
+									<td v-bind:title="t.address">{{t.address}}</td>
+									<td>无</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="page-box"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.deviceTypeInfo = {};
+		loadVue(".v-dom", param);
+
+		function importDevice() {
+			top.layer.msg("该功能未开放");
+		}
+
+		function deviceVideo() {
+			openMask("/parts/deviceVideo", [suitRem(6.2), suitRem(6.5)]);
+		}
+
+		function loadData() {
+			var deviceTypeInfo = setData.deviceTypeInfo;
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20,
+				deviceAddress: $("#deviceAddress").val()
+			}
+			request("POST", deviceTypeInfo.deviceRequestUrl, param, true, function(res) {
+				var dataList = res.data.dataList;
+				resetDataList(function() {
+					for(var i = 0; i < dataList.length; i++) {
+						dataList[i].animatedName = "fadeInUp";
+						if(dataList[i].status == "0") {
+							dataList[i].statusText = "离线";
+						} else if(dataList[i].status == "1") {
+							dataList[i].statusText = "正常";
+						}
+					}
+					setData.dataList = dataList;
+					loadPage();
+				})
+			}, function(res) {
+				top.layer.msg("视频设备加载失败");
+			});
+		}
+
+		getDeviceType(function(res) {
+			for(var i = 0; i < res.length; i++) {
+				if(res[i].id == "6") {
+					setData.deviceTypeInfo = res[i];
+					loadData();
+				}
+			}
+		});
+	</script>
+
+</html>

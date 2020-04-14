@@ -12,55 +12,55 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="css/reset.css" />
-		<link rel="stylesheet" href="css/login.css?v=a0ade3ee39" />
+		<link rel="stylesheet" href="css/common.css?v=46f3e3365b" />
+		<link rel="stylesheet" href="css/login.css?v=a0f9caae1a" />
 		<script src="js/jquery-1.9.1.min.js"></script>
 		<script src="layui/layui.all.js"></script>
-		<script src="js/postUrl.js?v=46a09142d2"></script>
-		<script src="js/common.js?v=18e3c83b9f"></script>
+		<script src="js/suitWeb.js"></script>
+		<script src="js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="js/common.js?v=30133f77f6"></script>
 		<script src="js/login.js?v=24c9919323"></script>
 	</head>
 
 	<body>
 		<div class="login-box">
-			<div class="column-list-box illustration-bg"></div>
-			<div class="column-list-box">
-				<div class="login-inner-box">
-					<div class="login-title-box">
-						<div class="login-title-text">思诺云AGS管理系统-单位版</div>
-						<div class="login-title-dir">河南思诺智慧科技</div>
-					</div>
-					<div class="login-content-box">
-						<div class="login-content-inner-box">
-							<div class="login-content-title-box">用户登录</div>
-							<div class="login-list-box">
-								<div class="login-list">
-									<div class="login-list-inner-box">
-										<div class="icon icon-account"></div>
-										<div class="login-input-box">
-											<input type="text" value="" name="" id="account" autocomplete="off" placeholder="请输入用户名" />
-										</div>
+			<div class="decorate-box"></div>
+			<div class="login-inner-box position-transform-vertical">
+				<div class="login-title-box">
+					<div class="login-title-text">思诺云AGS管理系统-单位版</div>
+					<div class="login-title-dir">河南思诺智慧科技</div>
+				</div>
+				<div class="login-content-box">
+					<div class="login-content-inner-box">
+						<div class="login-content-title-box">用户登录</div>
+						<div class="login-list-box">
+							<div class="login-list">
+								<div class="login-list-inner-box">
+									<div class="icon icon-account"></div>
+									<div class="login-input-box">
+										<input type="text" value="" name="" id="account" autocomplete="off" placeholder="请输入用户名" />
 									</div>
-								</div>
-								<div class="login-list">
-									<div class="login-list-inner-box">
-										<div class="icon icon-password"></div>
-										<div class="login-input-box">
-											<input type="password" value="" name="" id="password" autocomplete="off" placeholder="请输入登录密码" />
-										</div>
-									</div>
-								</div>
-								<div class="login-list">
-									<div class="login-list-inner-box login-inputCode-box f_l">
-										<div class="icon icon-token"></div>
-										<div class="login-input-box">
-											<input type="text" value="" name="" id="inputCode" placeholder="请输入验证码" />
-										</div>
-									</div>
-									<div class="login-list-inner-box login-inputCode-text-box f_r" id="checkCode" onclick="createCode()"></div>
 								</div>
 							</div>
-							<div class="login-btn login-disabled-btn" onclick="login();">登录</div>
+							<div class="login-list">
+								<div class="login-list-inner-box">
+									<div class="icon icon-password"></div>
+									<div class="login-input-box">
+										<input type="password" value="" name="" id="password" autocomplete="off" placeholder="请输入登录密码" />
+									</div>
+								</div>
+							</div>
+							<div class="login-list">
+								<div class="login-list-inner-box login-input-token-box f_l">
+									<div class="icon icon-token"></div>
+									<div class="login-input-box">
+										<input type="text" value="" name="" id="inputCode" placeholder="请输入验证码" />
+									</div>
+								</div>
+								<div class="login-list-inner-box login-input-token-text-box f_r" id="checkCode" onclick="createCode()"></div>
+							</div>
 						</div>
+						<div class="login-btn login-disabled-btn" onclick="login();">登录</div>
 					</div>
 				</div>
 			</div>

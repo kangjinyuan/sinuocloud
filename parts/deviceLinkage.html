@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../layui/css/layui.css">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=46a09142d2"></script>
+		<script src="../js/common.js?v=c8bf69d921"></script>
+	</head>
+
+	<body>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-content-box">
+					<div class="mask-list">
+						<div class="mask-list-name">消防设备：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="deviceName" disabled="disabled" class="required">
+							<input type="hidden" name="" value="" id="deviceId" class="required">
+							<input type="hidden" name="" value="" id="deviceSN">
+							<input type="hidden" name="" value="" id="deviceType" class="required">
+							<input type="hidden" name="" value="" id="deviceAddress">
+						</div>
+						<div class="btn-box select-device-btn-box hide-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectDevice();">选择</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">监控点：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" disabled="disabled" placeholder="暂无监控点" v-if="contentList.length == 0" />
+							<ul class="range-box" v-else>
+								<li v-for="(t,i) in contentList">{{t.name}}
+									<div class="icon icon-del-range" v-on:click="delContent(i);"></div>
+								</li>
+							</ul>
+						</div>
+						<div class="btn-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectDeviceRange();">选择</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">联动类型：</div>
+						<div class="mask-list-value">
+							<ul class="mask-select-box">
+								<li v-for="t in videoLinkageType">
+									<div v-bind:class="['icon','position-left', 'icon-check-box',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+									{{t.name}}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.videoLinkageType = [];
+		param.deviceType = [];
+		loadVue(".v-dom", param);
+
+		function selectDevice() {
+			var deviceType = setData.deviceType;
+			var showDeviceType = [];
+			for(var i = 0; i < deviceType.length; i++) {
+				if(deviceType[i].id != "6") {
+					showDeviceType.push(deviceType[i]);
+				}
+			}
+			openMask("/parts/selectDevice", ["80%", "80%"], function(layerDom, layerIframe) {
+				var dataInfo = {
+					id: $("#deviceId").val(),
+					name: $("#deviceName").val(),
+					sn: $("#deviceSN").val(),
+					location: $("#deviceAddress").val()
+				}
+				layerIframe.dataInfo = dataInfo;
+				layerIframe.setData.deviceType = showDeviceType;
+				layerIframe.setData.deviceTypeId = showDeviceType[0].id;
+				layerIframe.loadData();
+			});
+		}
+
+		function selectDeviceRange() {
+			var deviceType = setData.deviceType;
+			var showDeviceType = [];
+			for(var i = 0; i < deviceType.length; i++) {
+				if(deviceType[i].id == "6") {
+					showDeviceType.push(deviceType[i]);
+				}
+			}
+			openMask("/parts/selectDeviceRange", ["80%", "80%"], function(layerDom, layerIframe) {
+				layerIframe.setData.contentList = setData.contentList;
+				layerIframe.loadSelectDataList();
+				layerIframe.setData.deviceType = showDeviceType;
+				layerIframe.setData.deviceTypeId = "6";
+				layerIframe.loadData();
+			});
+		}
+
+		//编辑
+		function save() {
+			var checkI = checkInput();
+			if(checkI == true) {
+				var parentData = setData.parentData;
+				var contentList = setData.contentList;
+				if(contentList.length == 0) {
+					layer.msg("请选择监控点");
+					return false;
+				}
+				if(contentList.length > 4) {
+					layer.msg("监控点不能超过4个");
+					return false;
+				}
+				var videoDevice = [];
+				for(var i = 0; i < contentList.length; i++) {
+					var obj = {
+						id: contentList[i].id,
+						name: contentList[i].name,
+						address: contentList[i].name,
+						streamAddress: contentList[i].streamAddress
+					}
+					videoDevice.push(obj);
+				}
+				var videoLinkageType = setData.videoLinkageType;
+				var linkageType = [];
+				for(var i = 0; i < videoLinkageType.length; i++) {
+					if(videoLinkageType[i].isActive) {
+						var obj = {
+							id: videoLinkageType[i].id,
+							name: videoLinkageType[i].name
+						}
+						linkageType.push(obj);
+					}
+				}
+				if(linkageType.length == 0) {
+					layer.msg("请选择联动类型");
+					return false;
+				}
+				var param = {
+					videoDevice: JSON.stringify(videoDevice),
+					linkageType: JSON.stringify(linkageType)
+				}
+				if(parentData) {
+					var requestUrl = "/event/v1/modifyVideoLinkage";
+					param.videoLinkageId = parentData.id;
+				} else {
+					var requestUrl = "/event/v1/addVideoLinkage";
+					param.deviceId = $("#deviceId").val();
+					param.deviceName = $("#deviceName").val();
+					param.deviceSN = $("#deviceSN").val();
+					param.deviceType = $("#deviceType").val();
+					param.deviceLocation = $("#deviceAddress").val();
+				}
+				request('POST', requestUrl, param, true, function(res) {
+					closeMask(function(parent) {
+						parent.layer.msg("操作成功");
+						parent.loadData();
+					});
+				}, function(res) {
+					layer.msg('操作失败，请检查网络或重试');
+				})
+			}
+		}
+
+		function loadDeviceVideo() {
+			var videoDeviceList = setData.parentData.videoDeviceList;
+			var contentList = [];
+			for(var i = 0; i < videoDeviceList.length; i++) {
+				contentList.push(videoDeviceList[i]);
+			}
+			setData.contentList = contentList;
+		}
+
+		function loadVideoLinkageType() {
+			var videoLinkageType = setData.videoLinkageType;
+			var videoLinkageTypeList = setData.parentData.videoLinkageTypeList;
+			for(var i = 0; i < videoLinkageType.length; i++) {
+				videoLinkageType[i].isActive = false;
+				for(var j = 0; j < videoLinkageTypeList.length; j++) {
+					if(videoLinkageType[i].id == videoLinkageTypeList[j].id) {
+						videoLinkageType[i].isActive = true;
+					}
+				}
+			}
+		}
+
+		getDeviceType(function(res) {
+			setData.deviceType = res;
+		});
+	</script>
+
+</html>

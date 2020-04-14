@@ -12,14 +12,16 @@
 		<meta http-equiv="Expires" content="0">
 		<link rel="shortcut icon" href="img/common/logo.png" type="image/x-icon" />
 		<link rel="stylesheet" href="css/reset.css" />
-		<link rel="stylesheet" href="css/common.css?v=10ba9b2e4b" />
-		<link rel="stylesheet" href="css/main.css?v=f46b670897" />
+		<link rel="stylesheet" href="layui/css/layui.css">
+		<link rel="stylesheet" href="css/common.css?v=46f3e3365b" />
+		<link rel="stylesheet" href="css/main.css?v=12383e9638" />
 		<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-		<script src="js/vue.min.js"></script>
+		<script src="js/suitWeb.js"></script>
 		<script src="layui/layui.all.js"></script>
-		<script src="js/postUrl.js?v=46a09142d2"></script>
-		<script src="js/common.js?v=18e3c83b9f"></script>
-		<script src="js/init.js?v=cc75cf2b15"></script>
+		<script src="js/vue.min.js"></script>
+		<script src="js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="js/common.js?v=30133f77f6"></script>
+		<script src="js/init.js?v=e813fc7d36"></script>
 
 	</head>
 
@@ -43,11 +45,10 @@
 						</ul>
 					</div>
 					<div class="user-info-box f_r">
-						<div class="header-animate header-animate3-bg">
-							<div class="header-animate header-animate3 position-bottom"></div>
-						</div>
+						<div class="header-animate header-animate3 rotate-animate"></div>
 						<div class="user-info-inner-box">
-							<span>{{currentTime}}</span>您好，{{accountInfo.name}}
+							<div class="user-info-date-box">{{currentTime}}</div>
+							<div class="user-info-name-box">您好，{{accountInfo.name}}</div>
 							<div class="quit position-right" onclick="quit();"></div>
 						</div>
 					</div>

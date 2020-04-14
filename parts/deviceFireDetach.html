@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=46a09142d2"></script>
+		<script src="../js/common.js?v=c8bf69d921"></script>
+	</head>
+
+	<body>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-content-box">
+					<div class="mask-list">
+						<div class="mask-list-name">设备名称：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="name" value="" class="required">
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">设备地址：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="location" value="">
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">设备编号：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="sn" value="" class="required">
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">品牌类型：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" id="brandType" value="">
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">所属区域：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="regionName" disabled="disabled">
+							<input type="hidden" name="" value="" id="regionId">
+							<input type="hidden" name="" value="" id="regionCode">
+						</div>
+						<div class="btn-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectRegion();">选择</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(".v-dom", param);
+
+		function selectRegion() {
+			openMask("/parts/selectRegion", ["80%", "80%"], function(layerDom, layerIframe) {
+				var dataInfo = {
+					id: $("#regionId").val(),
+					regionCode: $("#regionCode").val(),
+					regionName: $("#regionName").val()
+				}
+				layerIframe.dataInfo = dataInfo;
+				layerIframe.loadData();
+			});
+		}
+
+		//编辑
+		function save() {
+			var checkI = checkInput();
+			if(checkI == true) {
+				var param = {
+					name: $("#name").val(),
+					location: $("#location").val(),
+					sn: $("#sn").val(),
+					brandType: $("#brandType").val(),
+					regionCode: $("#regionCode").val()
+				};
+				request('POST', '/device/v1/addFireDetachDevice', param, true, function(res) {
+					closeMask(function(parent) {
+						parent.layer.msg("操作成功");
+						parent.loadData();
+					});
+				}, function(res) {
+					layer.msg('操作失败');
+				})
+			}
+		}
+	</script>
+
+</html>

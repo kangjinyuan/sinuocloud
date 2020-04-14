@@ -10,8 +10,8 @@ var $ = gulpLoadPlugins({
 	}
 });
 
-var cssList = ["css/app.css", "css/common.css", "css/login.css", "css/main.css"];
-var jsList = ["js/app.js", "js/common.js", "js/init.js", "js/login.js", "js/selectData.js", "js/upload.js", "js/postUrl.js", "js/editInit.js", "js/ChinaNumToEnglishNum.js"];
+var cssList = ["css/app.css", "css/common.css", "css/login.css", "css/main.css", "css/index.css"];
+var jsList = ["js/app.js", "js/common.js", "js/init.js", "js/login.js", "js/selectData.js", "js/upload.js", "js/requestUrl.js", "js/editInit.js", "js/chinaNumToEnglishNum.js"];
 
 function resetFile(taskName, srcList, fileType) {
 	gulp.task(taskName, function(done) {

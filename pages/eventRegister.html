@@ -13,12 +13,13 @@
 		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=46a09142d2"></script>
-		<script src="../js/common.js?v=18e3c83b9f"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
 	</head>
 
 	<body>
@@ -29,7 +30,7 @@
 						<div class="search-name">事件类型：</div>
 						<div class="search-value">
 							<select name="" required="required" id="eventTypeId" v-on:change="search();">
-								<option value="">事件类型</option>
+								<option value="">全部</option>
 								<option v-bind:value="t.eventTypeId" v-for="t in eventType">{{t.eventName}}</option>
 							</select>
 						</div>
@@ -44,7 +45,7 @@
 						<div class="search-name">是否启用：</div>
 						<div class="search-value">
 							<select name="" required="required" id="status" v-on:change="search();">
-								<option value="">是否启用</option>
+								<option value="">全部</option>
 								<option value="1">是</option>
 								<option value="0">否</option>
 							</select>
@@ -62,10 +63,10 @@
 				</div>
 			</div>
 			<div class="kjy-data-box">
-				<div class="decorate-list common-left-top-decorate position-left-top"></div>
-				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
-				<div class="decorate-list common-right-top-decorate position-right-top"></div>
-				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
 				<div class="full-box" v-if="dataList.length == 0">
 					<div class="no-data-box">
 						<div class="no-data-inner-box">
@@ -127,15 +128,15 @@
 				status: status
 			}
 			request("POST", "/event/v1/modifyEventStatus", param, true, function(res) {
-				layer.msg("操作成功");
+				top.layer.msg("操作成功");
 				loadData();
 			}, function(res) {
-				layer.msg("操作失败");
+				top.layer.msg("操作失败");
 			})
 		}
 
 		function eventRegister(obj) {
-			openMask("/part/eventRegister", ["512px", "360px"], function(layerDom, layerIframe) {
+			openMask("/parts/eventRegister", [suitRem(6.88), suitRem(6)], function(layerDom, layerIframe) {
 				var eventType = setData.eventType;
 				for(var i = 0; i < eventType.length; i++) {
 					resetData(1, eventType[i]);
@@ -156,7 +157,7 @@
 							layerDom.find(".end-time").eq(i).val(armingCycle[i].endTime);
 						}
 					});
-				}else{
+				} else {
 					layerDom.find(".select-monitor-btn-box").show();
 				}
 			});
@@ -164,15 +165,15 @@
 
 		//删除数据
 		function del(obj) {
-			openConfirm("确定删除该事件？", function() {
+			openConfirm("确定删除该事件吗？", function() {
 				var param = {
 					createEventId: obj.createEventId
 				}
 				request('POST', '/event/v1/deleteEvent', param, true, function(res) {
 					loadData();
-					layer.closeAll('dialog');
+					top.layer.closeAll('dialog');
 				}, function(res) {
-					layer.msg("删除失败");
+					top.layer.msg("删除失败");
 				})
 			})
 		}
@@ -240,7 +241,7 @@
 					loadPage();
 				})
 			}, function(res) {
-				layer.msg("事件记录加载失败");
+				top.layer.msg("事件记录加载失败");
 			});
 		}
 
@@ -253,12 +254,12 @@
 				}
 				setData.eventType = dataList;
 			}, function(res) {
-				layer.msg("事件类型加载失败");
+				top.layer.msg("事件类型加载失败");
 			});
 		}
 
-		loadEventType();
-		loadData();
+		//		loadEventType();
+		//		loadData();
 	</script>
 
 </html>

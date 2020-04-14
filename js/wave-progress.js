@@ -1,4 +1,19 @@
-function waveProgress(options) {
+function waveProgress(param) {
+	var options = {
+		waveWidth: 0.05, //波浪宽
+		waveHeight: 8, //波浪高
+		xOffset: 0,
+		speed: 0.02, //波浪速度
+		startValue: 0, //开始值
+		endValue: 60, //结束值
+		fillText: 60, //填充文案
+		afterColor: ["rgba(51, 217, 251, 0.3)", "rgba(7, 166, 255, 0.3)"], //波浪后置色
+		frontColor: ["rgba(51, 217, 251, 0.9)", "rgba(7, 166, 255, 0.9)"], //波浪前置色
+		fontSize: 12, //字体大小
+		textAlign: "center", //字体位置
+		fillStyle: "#ffffff" //字体颜色
+	}
+	$.extend(options, param);
 	var id = options.id;
 	var canvas = document.getElementById(id);
 	var ctx = canvas.getContext('2d');
@@ -62,7 +77,7 @@ function waveProgress(options) {
 	drawText();
 	xOffset += options.speed;
 	options.startValue = startValue;
-	options.xOffset = xOffset;
+	param.xOffset = xOffset;
 	if(startValue != endValue) {
 		clearInterval(window['waveProgressTimer-' + id]);
 		window['waveProgressTimer-' + id] = setInterval(function() {

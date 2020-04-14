@@ -1,57 +1,41 @@
 var windowHeight;
 $(function() {
-	param.currentTime = "";
+	param.currentTime = resetTime(new Date(), 0);
 	loadVue(".v-dom", param);
 	loadData();
 	loadTime();
-	resetSize();
+	disPopstate();
 })
-
-window.onresize = function() {
-	resetSize();
-}
-
-function resetSize() {
-	windowHeight = $(document).height();
-	$(".main-box").height(windowHeight - 80);
-}
 
 //加载菜单数据
 function loadData() {
 	var privilegeList = accountInfo.privilegeList;
-	var menuList = [];
-	var param = {
-		idList: [],
-		parent: ""
-	}
+	var param = {}
 	getPrivilege(param, function(res) {
-		var dataList = res;
+		for(var i = 0; i < res.length; i++) {
+			res[i].parentId = res[i].parent;
+		}
+		res = getTreeData(res, 2);
+		var dataList = [];
 		if(privilegeList.length == 0) {
-			for(var i = 0; i < dataList.length; i++) {
-				dataList[i].childList = [];
-				if(dataList[i].parent == 2) {
-					menuList.push(dataList[i]);
-				}
-			}
+			dataList = res;
 		} else {
-			for(var i = 0; i < dataList.length; i++) {
-				dataList[i].childList = [];
+			for(var i = 0; i < res.length; i++) {
 				for(var j = 0; j < privilegeList.length; j++) {
-					if(dataList[i].id == privilegeList[j] && dataList[i].parent == 2) {
-						menuList.push(dataList[i]);
+					if(res[i].id == privilegeList[j]) {
+						dataList.push(res[i]);
 					}
 				}
 			}
 		}
 		for(var i = 0; i < dataList.length; i++) {
-			for(var j = 0; j < menuList.length; j++) {
-				if(dataList[i].parent == menuList[j].id) {
-					menuList[j].childList.push(dataList[i]);
-				}
+			if(dataList[i].children) {
+				dataList[i].children.sort(resetSort("sort", 1));
 			}
 		}
-		setData.menuList = menuList;
-		setPath(menuList[0].id);
+		setData.menuList = dataList;
+		var id = routeId ? routeId.split("-")[0] : dataList[0].id;
+		setPath(id);
 		nextTick(function() {
 			var width = 100 / $(".nav-box li").length + "%";
 			$(".nav-box li").css("width", width);

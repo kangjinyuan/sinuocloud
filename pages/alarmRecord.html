@@ -14,12 +14,13 @@
 		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="../layui/css/layui.css">
 		<link rel="stylesheet" href="../css/animate.min.css">
-		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
 		<script src="../js/jquery-1.9.1.min.js"></script>
 		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
 		<script src="../js/vue.min.js"></script>
-		<script src="../js/postUrl.js?v=46a09142d2"></script>
-		<script src="../js/common.js?v=18e3c83b9f"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
 	</head>
 
 	<body>
@@ -27,28 +28,27 @@
 			<div class="kjy-title-box">
 				<div class="kjy-title-text">报警记录</div>
 			</div>
-			<div class="search-box">
+			<div class="search-box" v-if="queryArray.length > 0">
 				<div class="search-row-box">
 					<div class="search-name">设备类型：</div>
 					<ul class="search-value-list-box">
-						<li v-bind:class="queryArray[0] == t.id?'selected':''" v-for="t in deviceType" v-on:click="selectAlarmType(0,t);">{{t.name}}</li>
+						<li v-bind:class="queryArray[0].id == t.id?'selected':''" v-for="t in deviceType" v-on:click="getQuaryArray(t,0);">{{t.name}}</li>
 					</ul>
 				</div>
 				<div class="search-row-box">
 					<div class="search-name">报警类型：</div>
 					<ul class="search-value-list-box">
 						<ul class="search-value-list-box">
-							<li v-bind:class="queryArray[1] == t.typeCode?'selected':''" v-for="t in alarmType" v-on:click="selectAlarmType(1,t);">{{t.name}}</li>
+							<li v-bind:class="queryArray[1].id == t.id?'selected':''" v-for="t in alarmType" v-on:click="getQuaryArray(t,1);">{{t.name}}</li>
 						</ul>
 					</ul>
 				</div>
 				<div class="search-row-box">
-					<div class="search-list">
+					<div class="search-list" v-if="queryArray[0].id == '1'">
 						<div class="search-name">报警级别：</div>
 						<div class="search-value">
 							<select name="" required="required" id="eventLvl" v-on:change="search();">
-								<option value="">报警级别</option>
-								<option value="0">无</option>
+								<option value="">全部</option>
 								<option value="1">Ⅰ级</option>
 								<option value="2">Ⅱ级</option>
 								<option value="3">Ⅲ级</option>
@@ -69,11 +69,11 @@
 							<div class="icon icon-select-time position-right"></div>
 						</div>
 					</div>
-					<div class="search-list">
+					<div class="search-list" v-if="queryArray[0].id == '1'">
 						<div class="search-name">处理状态：</div>
 						<div class="search-value">
 							<select name="" required="required" id="processStatus" v-on:change="search();">
-								<option value="">处理状态</option>
+								<option value="">全部</option>
 								<option value="1">已处理</option>
 								<option value="0">未处理</option>
 							</select>
@@ -86,10 +86,10 @@
 				</div>
 			</div>
 			<div class="kjy-data-box">
-				<div class="decorate-list common-left-top-decorate position-left-top"></div>
-				<div class="decorate-list common-left-bottom-decorate position-left-bottom"></div>
-				<div class="decorate-list common-right-top-decorate position-right-top"></div>
-				<div class="decorate-list common-right-bottom-decorate position-right-bottom"></div>
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
 				<div class="full-box" v-if="dataList.length == 0">
 					<div class="no-data-box">
 						<div class="no-data-inner-box">
@@ -100,17 +100,77 @@
 				</div>
 				<div class="kjy-data-inner-box" v-else>
 					<div class="kjy-table">
-						<table>
+						<table v-if="queryArray[0].id == '1'">
 							<thead>
 								<tr>
 									<th>序号</th>
-									<th>设备名称</th>
+									<th>报警位置</th>
+									<th>用户编号</th>
 									<th>设备类型</th>
 									<th>报警类型</th>
-									<th>报警级别</th>
+									<th>报警等级</th>
+									<th>处理状态</th>
+									<th>报警时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</td>
+									<td>{{t.sn}}</td>
+									<td>{{t.deviceType}}</td>
+									<td>{{t.alarmTypeText}}</td>
+									<td v-bind:class="t.alarmLevelClass">{{t.alarmLevelText}}</td>
+									<td v-bind:class="t.handleStateClass">{{t.handleStateText}}</td>
+									<td>{{t.createTime}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="alarmInfo(t);">报警详情</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table v-else-if="queryArray[0].id == '2'">
+							<thead>
+								<tr>
+									<th>序号</th>
 									<th>报警位置</th>
-									<th v-if="queryArray[0] == 1">用户编码</th>
-									<th v-else>处理状态</th>
+									<th>设备名称</th>
+									<th>设备编号</th>
+									<th>报警类型</th>
+									<th>实时数据</th>
+									<th>报警时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</td>
+									<td v-bind:title="t.deviceName">{{t.deviceName}}</td>
+									<td>{{t.sn}}</td>
+									<td>{{t.alarmTypeText}}</td>
+									<td>{{t.dataDetail}}</td>
+									<td>{{t.createTime}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="alarmInfo(t);">报警详情</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table v-else-if="queryArray[0].id == '3' || queryArray[0].id == '4'">
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>报警位置</th>
+									<th>设备名称</th>
+									<th>设备类型</th>
+									<th>设备编号</th>
+									<th>报警类型</th>
 									<th>报警时间</th>
 									<th>操作</th>
 								</tr>
@@ -118,14 +178,38 @@
 							<tbody id="tbody">
 								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
 									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
-									<td v-bind:title="t.deviceName?t.deviceName:'无'">{{t.deviceName?t.deviceName:'无'}}</td>
-									<td>{{t.deviceTypeName}}</td>
-									<td>{{t.alarmType}}</td>
-									<td v-bind:class="t.eventLvlClass">{{t.eventLvlText}}</td>
 									<td v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</td>
-									<td v-if="queryArray[0] == 1">{{t.fireIndexCode?t.fireIndexCode:'无'}}</td>
-									<td v-bind:class="t.processStatusClass" v-else>{{t.processStatusText}}</td>
-									<td>{{t.alarmTime}}</td>
+									<td v-bind:title="t.deviceName">{{t.deviceName}}</td>
+									<td>{{t.deviceSubtypeText}}</td>
+									<td>{{t.sn}}</td>
+									<td>{{t.alarmTypeText}}</td>
+									<td>{{t.createTime}}</td>
+									<td>
+										<ul class="opera-box">
+											<li v-on:click="alarmInfo(t);">报警详情</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table v-else>
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>报警位置</th>
+									<th>设备名称</th>
+									<th>设备编号</th>
+									<th>报警时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td v-bind:title="t.alarmLocation?t.alarmLocation:'无'">{{t.alarmLocation?t.alarmLocation:'无'}}</td>
+									<td v-bind:title="t.deviceName">{{t.deviceName}}</td>
+									<td>{{t.sn}}</td>
+									<td>{{t.createTime}}</td>
 									<td>
 										<ul class="opera-box">
 											<li v-on:click="alarmInfo(t);">报警详情</li>
@@ -141,15 +225,7 @@
 		</div>
 	</body>
 	<script>
-		param.deviceType = [{
-			id: "",
-			name: "全部",
-			alarmSort: [{
-				id: "",
-				name: "全部",
-				typeCode: ""
-			}]
-		}];
+		param.deviceType = [];
 		param.alarmType = [];
 		param.queryArray = [];
 		loadVue(".v-dom", param);
@@ -160,21 +236,18 @@
 		})
 
 		function alarmInfo(obj) {
-			openMask("/part/alarmInfo", ["480px", "340px"], function(layerDom, layerIframe) {
+			openMask("/parts/alarmInfo", [suitRem(6.88), suitRem(5.44)], function(layerDom, layerIframe) {
 				layerIframe.setData.parentData = obj;
-				if(obj.catchImageList.length > 1) {
-					layerIframe.setSwiper();
-				}
 			});
 		}
 
-		function selectAlarmType(flag, obj) {
-			if(flag == 0) {
-				var alarmSort = obj.alarmSort;
-				setData.alarmType = alarmSort;
-				setData.queryArray = [obj.id, alarmSort[0].typeCode];
-			} else if(flag == 1) {
-				setData.queryArray.splice(1, 1, obj.typeCode);
+		function getQuaryArray(obj, type) {
+			if(type == 0) {
+				var alarmType = obj.alarmType;
+				setData.alarmType = alarmType;
+				setData.queryArray = [obj, alarmType[0]];
+			} else if(type == 1) {
+				setData.queryArray.splice(1, 1, obj);
 			}
 			search();
 		}
@@ -183,143 +256,78 @@
 			var deviceTypeList = setData.deviceType;
 			var queryArray = setData.queryArray;
 			var deviceType = queryArray[0];
+			var deviceTypeId = deviceType.id;
+			var alarmTypeList = deviceType.alarmType;
 			var alarmType = queryArray[1];
-			if(deviceType != 8 && deviceType != "") {
-				for(var i = 0; i < deviceTypeList.length; i++) {
-					if(deviceTypeList[i].id == deviceType) {
-						var alarmSort = deviceTypeList[i].alarmSort;
-						for(var j = 0; j < alarmSort.length; j++) {
-							if(alarmType == alarmSort[j].typeCode) {
-								var alarmTypeName = alarmSort[j].name;
-							}
-						}
-					}
-				}
-				var param = {
-					pageNo: pageNo,
-					page: pageNo,
-					perPage: 20,
-					deviceTypeID: deviceType,
-					alarmType: alarmTypeName,
-					startTime: resetTime($("#startTime").val(), 3),
-					endTime: resetTime($("#endTime").val(), 3),
-				}
-				sinuoRequest("GET", "/api/alarm-records", param, true, function(res) {
-					var dataList = res.data.data;
-					resetDataList(function() {
-						for(var i = 0; i < dataList.length; i++) {
-							dataList[i].animatedName = "fadeInUp";
-							dataList[i].deviceName = dataList[i].detail;
-							dataList[i].deviceTypeName = dataList[i].deviceType;
-							dataList[i].alarmLocation = dataList[i].deviceAddress;
-							dataList[i].alarmTime = dataList[i].time;
-							dataList[i].eventLvl = dataList[i].rating;
-							dataList[i].deviceLogo = "1";
-							dataList[i].processStatus = dataList[i].status;
-							dataList[i].deviceTypeId = dataList[i].deviceTypeID;
-							var fireUserCode = dataList[i].fireUserCode;
-							if(fireUserCode) {
-								fireUserCode = fireUserCode.slice(2);
-								dataList[i].deviceId = fireUserCode;
-							} else {
-								dataList[i].deviceId = dataList[i].deviceNo;
-							}
-							dataList[i].fireIndexCode = fireUserCode;
-							if(dataList[i].eventLvl == "1" || dataList[i].eventLvl == "2" || dataList[i].eventLvl == "3") {
-								dataList[i].eventLvlText = dataList[i].ratingType;
-								if(dataList[i].eventLvl == "1") {
-									dataList[i].eventLvlClass = "grade-text-color0";
-								} else if(dataList[i].eventLvl == "2") {
-									dataList[i].eventLvlClass = "grade-text-color1";
-								} else if(dataList[i].eventLvl == "3") {
-									dataList[i].eventLvlClass = "grade-text-color2";
-								}
-							} else {
-								dataList[i].eventLvlText = "无";
-								dataList[i].eventLvlClass = "";
-							}
-							if(dataList[i].processStatus == "0") {
-								dataList[i].processStatusText = "已处理";
-								dataList[i].processStatusClass = "state-text-color0";
-							} else {
-								dataList[i].processStatusText = "未处理";
-								dataList[i].processStatusClass = "";
-							}
-							dataList[i].catchImageList = dataList[i].catchImage ? dataList[i].catchImage.split(",") : [];
-						}
-						setData.dataList = dataList;
-						loadPage();
-					})
-				}, function(res) {
-					layer.msg("报警记录加载失败");
-				})
-			} else {
-				var param = {
-					pageNo: pageNo,
-					pageSize: 20,
-					deviceType: deviceType,
-					alarmType: alarmType,
-					processStatus: $("#processStatus").val(),
-					startTime: resetTime($("#startTime").val(), 0),
-					endTime: resetTime($("#endTime").val(), 0),
-					eventLvl: $("#eventLvl").val()
-				}
-				request("POST", "/alarmEvent/v1/findAlarmRecord", param, true, function(res) {
-					var dataList = res.data.dataList;
-					resetDataList(function() {
-						for(var i = 0; i < dataList.length; i++) {
-							dataList[i].animatedName = "fadeInUp";
-							if(dataList[i].eventLvl == "1") {
-								dataList[i].eventLvlText = "Ⅰ级";
-								dataList[i].eventLvlClass = "grade-text-color0";
-							} else if(dataList[i].eventLvl == "2") {
-								dataList[i].eventLvlText = "Ⅰ级";
-								dataList[i].eventLvlClass = "grade-text-color1";
-							} else if(dataList[i].eventLvl == "3") {
-								dataList[i].eventLvlText = "Ⅲ级";
-								dataList[i].eventLvlClass = "grade-text-color2";
-							} else {
-								dataList[i].eventLvlText = "无";
-								dataList[i].eventLvlClass = "";
-							}
-							if(dataList[i].processStatus == "0") {
-								dataList[i].processStatusText = "未处理";
-								dataList[i].processStatusClass = "";
-							} else if(dataList[i].processStatus == "1") {
-								dataList[i].processStatusText = "已处理";
-								dataList[i].processStatusClass = "state-text-color0";
-							}
-							dataList[i].catchImageList = dataList[i].catchImage ? dataList[i].catchImage.split(",") : [];
-						}
-						setData.dataList = dataList;
-						loadPage();
-					})
-				}, function(res) {
-					layer.msg("报警记录加载失败");
-				})
+			var param = {
+				pageNo: pageNo,
+				pageSize: 20,
+				alarmType: alarmType.id,
+				startTime: resetTime($("#startTime").val(), 0),
+				endTime: resetTime($("#endTime").val(), 0)
 			}
-		}
-
-		function loadAlarmType() {
-			var param = {};
-			request("POST", "/alarmEvent/v1/findAlarmType", param, true, function(res) {
-				var dataList = res.data;
-				var deviceType = setData.deviceType;
-				for(var i = 0; i < dataList.length; i++) {
-					var alarmSort = dataList[i].alarmSort;
-					if(alarmSort.length > 0) {
-						deviceType.push(dataList[i]);
+			if(deviceTypeId == "1") {
+				param.eventLvl = $("#eventLvl").val();
+				param.processStatus = $("#processStatus").val();
+			} else if(deviceTypeId == "3") {
+				param.deviceType = "1";
+			} else if(deviceTypeId == "4") {
+				param.deviceType = "2";
+			}
+			request("POST", deviceType.alarmRequestUrl, param, true, function(res) {
+				var dataList = res.data.dataList;
+				resetDataList(function() {
+					for(var i = 0; i < dataList.length; i++) {
+						dataList[i].animatedName = "fadeInUp";
+						dataList[i].deviceTypeId = deviceTypeId;
+						for(var j = 0; j < alarmTypeList.length; j++) {
+							if(dataList[i].alarmType == alarmTypeList[j].id) {
+								dataList[i].alarmTypeText = alarmTypeList[j].name;
+							}
+						}
+						if(deviceTypeId == "1") {
+							if(dataList[i].alarmLevel == "1") {
+								dataList[i].alarmLevelText = "Ⅰ级";
+								dataList[i].alarmLevelClass = "grade-text-color0";
+							} else if(dataList[i].alarmLevel == "2") {
+								dataList[i].alarmLevelText = "Ⅱ级";
+								dataList[i].alarmLevelClass = "grade-text-color1";
+							} else if(dataList[i].alarmLevel == "3") {
+								dataList[i].alarmLevelText = "Ⅲ级";
+								dataList[i].alarmLevelClass = "grade-text-color2";
+							}
+							if(dataList[i].handleState == "0") {
+								dataList[i].handleStateText = "未处理";
+								dataList[i].handleStateClass = "";
+							} else if(dataList[i].handleState == "1") {
+								dataList[i].handleStateText = "已处理";
+								dataList[i].handleStateClass = "state-text-color0";
+							}
+						} else if(deviceTypeId == "3" || deviceTypeId == "4") {
+							if(dataList[i].deviceSubtype == "1") {
+								dataList[i].deviceSubtypeText = "水压表";
+							} else if(dataList[i].deviceSubtype == "2") {
+								dataList[i].deviceSubtypeText = "液位表";
+							}
+						}
 					}
-				}
-				nextTick(function() {
-					selectAlarmType(0, deviceType[0]);
+					setData.dataList = dataList;
+					loadPage();
 				})
 			}, function(res) {
-				layer.msg("报警类型加载失败");
-			});
+				top.layer.msg("报警记录加载失败");
+			})
 		}
 
-		loadAlarmType();
+		getDeviceType(function(res) {
+			for(var i = 0; i < res.length; i++) {
+				if(res[i].id == "5" || res[i].id == "6") {
+					res.splice(i--, 1);
+				}
+			}
+			setData.deviceType = res;
+			getQuaryArray(res[0], 0);
+		});
 	</script>
 
 </html>

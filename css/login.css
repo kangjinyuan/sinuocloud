@@ -1,26 +1,23 @@
-.login-box{width: 100%;height: 100%;min-width: 1200px;min-height: 550px;overflow:hidden;background: url(http://img.guostory.com/sinuoCloud/login-bg.png) center center no-repeat;background-size: auto 100%;position: absolute;top: 0px;left: 0px;}
-.column-list-box{height: 100%;float: left;background-repeat: no-repeat;background-size: auto 100%;position: relative;}
-.column-list-box:nth-child(1){width: 55%;}
-.column-list-box:nth-child(2){width: 45%;}
-.illustration-bg{background-image: url(../img/login/login-illustration.png);background-position: right center;}
-.login-inner-box{width: 440px;overflow: hidden;position: absolute;top: 50%;left: 0;margin: auto auto;-webkit-transform: translateY(-54%);-moz-transform: translateY(-54%);-o-transform: translateY(-54%);-ms-transform: translateY(-54%);}
-.login-title-box{width: 100%;overflow: hidden;margin-bottom: 26px;}
-.login-title-text{width: 100%;margin-bottom: 12px;font: 26px 微软雅黑;text-align: center;color: #07a6ff;background: -webkit-linear-gradient(left, #009ff1, #00e8cf);background: -moz-linear-gradient(left, #009ff1, #00e8cf);background: -o-linear-gradient(left, #009ff1, #00e8cf);-webkit-background-clip: text;-moz-background-clip: text;-o-background-clip: text;text-fill-color: transparent;-webkit-text-fill-color: transparent;}
-.login-title-dir{width: 100%;font: 16px 微软雅黑;color: #07a6ff;text-align: center;}
+.login-box{width: 100%;height: 100%;overflow:hidden;background: url(http://img.guostory.com/sinuoCloud/login-bg.png) center center no-repeat;background-size: auto 100%;position: absolute;top: 0;left: 0;}
+.decorate-box,.login-box{float: left;}
+.decorate-box{width: 10.86rem;height: 100%;background-image: url(../img/login/login-illustration.png);background-position: right center;background-repeat: no-repeat;background-size: auto 100%;}
+.login-inner-box{width: 6.3rem;overflow: hidden;-webkit-transform: translateY(-54%);-moz-transform: translateY(-54%);-o-transform: translateY(-54%);-ms-transform: translateY(-54%);}
+.login-title-box{width: 100%;overflow: hidden;margin-bottom: .37rem;}
+.login-title-text,.login-title-dir{width: 100%;text-align: center;color: #07a6ff;font-family: 微软雅黑;}
+.login-title-text{margin-bottom: .18rem;font-size: .42rem;background: -webkit-linear-gradient(left, #009ff1, #00e8cf);background: -moz-linear-gradient(left, #009ff1, #00e8cf);background: -o-linear-gradient(left, #009ff1, #00e8cf);-webkit-background-clip: text;-moz-background-clip: text;-o-background-clip: text;text-fill-color: transparent;-webkit-text-fill-color: transparent;}
+.login-title-dir{font-size: .18rem;}
 .login-content-box{width: 100%;overflow: hidden;background-color: rgba(32, 163, 245, 0.1);background-image: url(../img/login/login-content-bg.png);background-repeat: no-repeat;background-size: 100% 100%;position: relative;}
-.login-content-inner-box{width: auto;padding: 24px 36px 26px;border: 2px solid rgba(32, 163, 245, 0.5);overflow: hidden;}
-.login-content-title-box{width: 100%;margin-bottom: 24px;font:bold 20px 微软雅黑;color: #07a6ff;text-align: center;letter-spacing: 6px;}
+.login-content-inner-box{width: auto;padding: .36rem .55rem .42rem;border: .02rem solid rgba(32, 163, 245, 0.5);overflow: hidden;}
+.login-content-title-box{width: 100%;margin-bottom: .37rem;font-weight: bold;font-size: .3rem;font-family: 微软雅黑;color: #07a6ff;text-align: center;letter-spacing: .06rem;}
 .login-list-box{width: 100%;overflow: hidden;}
-.login-list{width: 100%;margin-bottom: 18px;overflow: hidden;}
-.login-list:last-child{margin-bottom: 0px;}
-.login-list-inner-box{width: auto;height: 34px;padding-left: 42px;border:2px solid rgba(32, 163, 245, 0.5);background-color: rgba(32, 163, 245, 0.3);position: relative;}
-.login-input-box{width: 100%;height: 100%;}
-.login-inputCode-box{width: 164px;}
-.login-input-box input{width: 100%;height: 100%;caret-color: #fff;background: none;border: none;outline: none;font: 12px/35px 微软雅黑;color: #fff;}
-.login-inputCode-text-box{cursor: pointer;width: 134px;padding-left: 0px;font: 12px/34px 微软雅黑;color: #fff;text-align: center;letter-spacing: 4px;}
-.login-btn{cursor: pointer;width: 100%;height: 38px;margin: 20px auto 0px;font:12px/38px 微软雅黑;text-align:center;color:#fff;background-color: #07a6ff;}
-.copyright{width: 100%;font: 12px 微软雅黑;color: #07a6ff;text-align: center;position: absolute;bottom: 6%;left: 0;}
-.icon{width: 22px;height: 22px;position: absolute;top: 0;bottom: 0;left: 10px;margin: auto auto;background-position:center center;background-repeat: no-repeat;background-size: auto 100%;} 
-.icon-account{background-image: url(../img/icon/icon-account.png);}
-.icon-password{background-image: url(../img/icon/icon-password.png);}
-.icon-token{background-image: url(../img/icon/icon-token.png);}
+.login-list{width: 100%;margin-bottom: .26rem;overflow: hidden;}
+.login-list:last-child{margin-bottom: 0rem;}
+.login-list-inner-box{width: auto;height: .24rem;padding: .13rem .25rem;border: .03rem solid rgba(32, 163, 245, 0.5);background-color: rgba(32, 163, 245, 0.3);position: relative;}
+.icon{width: .24rem;height: 100%;float: left;background-size: 100% auto;} 
+.login-input-box{width: calc(100% - .36rem);width: -webkit-calc(100% - .36rem);width: -moz-calc(100% - .36rem);height: 100%;float: right;}
+.login-input-token-box{width: 2.44rem;}
+.login-input-box input,.login-input-token-text-box{font-size: .18rem;line-height: .24rem;font-family: 微软雅黑;color: #fff;}
+.login-input-box input{width: 100%;height: 100%;caret-color: #fff;background: none;border: none;outline: none;text-indent: 0rem;}
+.login-input-token-text-box{cursor: pointer;width: 1.42rem;text-align: center;letter-spacing: .06rem;}
+.login-btn{cursor: pointer;width: 100%;height: .56rem;margin-top: .3rem;font-size: .18rem;line-height: .56rem;font-family: 微软雅黑;text-align:center;color:#fff;background-color: #07a6ff;}
+.copyright{width: 100%;font-size: .18rem;font-family: 微软雅黑;color: #07a6ff;text-align: center;position: absolute;bottom: 6%;left: 0;}

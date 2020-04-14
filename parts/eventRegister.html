@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../layui/css/layui.css">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=46a09142d2"></script>
+		<script src="../js/common.js?v=c8bf69d921"></script>
+	</head>
+
+	<body>
+		<div class="mask-box v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-content-box">
+					<div class="mask-list">
+						<div class="mask-list-name">布防周期：</div>
+						<div class="mask-list-value">
+							<select name="" required="required" id="armingCycleNumber" class="required" v-on:change="setAlarmCycle();">
+								<option value="">请选择</option>
+								<option value="1">1次</option>
+								<option value="2">2次</option>
+								<option value="3">3次</option>
+								<option value="4">4次</option>
+								<option value="5">5次</option>
+							</select>
+						</div>
+					</div>
+					<div class="mask-row-list" v-for="t in armingCycleNumber">
+						<div class="mask-list">
+							<div class="mask-list-name">开始时间：</div>
+							<div class="mask-list-value">
+								<input type="text" name="" value="" placeholder="hh:mm:ss" class="required width-150 start-time">
+								<div class="icon icon-select-time position-right"></div>
+							</div>
+						</div>
+						<div class="mask-list">
+							<div class="mask-list-name">结束时间：</div>
+							<div class="mask-list-value">
+								<input type="text" name="" value="" placeholder="hh:mm:ss" class="required width-150 end-time">
+								<div class="icon icon-select-time position-right"></div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">监控点：</div>
+						<div class="mask-list-value">
+							<input type="text" name="" value="" id="deviceName" disabled="disabled" class="required">
+							<input type="hidden" name="" value="" id="deviceSN" class="required">
+							<input type="hidden" name="" value="" id="deviceId">
+						</div>
+						<div class="btn-box select-monitor-btn-box hide-box">
+							<div class="btn-inner-box">
+								<div class="btn" onclick="selectDevice();">选择</div>
+							</div>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">报警级别：</div>
+						<div class="mask-list-value">
+							<select name="" required="required" id="eventLevel" class="required">
+								<option value="">请选择</option>
+								<option value="0">无</option>
+								<option value="1">Ⅰ级</option>
+								<option value="2">Ⅱ级</option>
+								<option value="3">Ⅲ级</option>
+							</select>
+						</div>
+					</div>
+					<div class="mask-list">
+						<div class="mask-list-name">事件类型：</div>
+						<div class="mask-list-value">
+							<ul class="mask-select-box">
+								<li v-for="t in eventType">
+									<div v-bind:class="['icon', 'icon-check-box','position-left',t.isActive? 'icon-checked':'']" v-on:click="switchActive(t);"></div>
+									{{t.eventName}}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="save();">保存</div>
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		param.armingCycleNumber = 0;
+		param.eventType = [];
+		loadVue(".v-dom", param);
+
+		function setAlarmCycle(callback) {
+			var armingCycleNumber = $("#armingCycleNumber").val() ? $("#armingCycleNumber").val() : "0";
+			setData.armingCycleNumber = parseInt(armingCycleNumber);
+			nextTick(function() {
+				setTime(".start-time", "time", "HH:mm:ss");
+				setTime(".end-time", "time", "HH:mm:ss");
+				if(callback) {
+					callback();
+				}
+			})
+		}
+
+		function selectDevice() {
+			openMask("/parts/selectDevice", ["80%", "80%"], function(layerDom, layerIframe) {
+				var dataInfo = {
+					id: $("#deviceId").val(),
+					name: $("#deviceName").val(),
+					sn: $("#deviceSN").val()
+				}
+				layerIframe.dataInfo = dataInfo;
+				layerIframe.setData.deviceTypeId = "4";
+				layerIframe.loadData();
+			});
+		}
+
+		//编辑
+		function save() {
+			var checkI = checkInput();
+			if(checkI == true) {
+				var parentData = setData.parentData;
+				var armingCycleNumber = setData.armingCycleNumber;
+				var armingCycle = [];
+				for(var i = 0; i < armingCycleNumber; i++) {
+					var timeText = $(".start-time").eq(i).val() + "-" + $(".end-time").eq(i).val();
+					armingCycle.push(timeText);
+				}
+				var eventType = setData.eventType;
+				var eventTypeId = [];
+				for(var i = 0; i < eventType.length; i++) {
+					if(eventType[i].isActive) {
+						var obj = {
+							eventTypeId: eventType[i].eventTypeId
+						}
+						eventTypeId.push(obj);
+					}
+				}
+				if(eventTypeId.length == 0) {
+					layer.msg("请选择事件类型");
+					return false;
+				}
+				var param = {
+					armingCycle: armingCycle.join(","),
+					eventTypeId: JSON.stringify(eventTypeId),
+					eventLevel: $("#eventLevel").val()
+				}
+				if(parentData) {
+					var requestUrl = "/event/v1/modifyEvent";
+					param.createEventId = parentData.createEventId;
+				} else {
+					var requestUrl = "/event/v1/subscribeEvent";
+					param.monitorPointName = $("#deviceName").val();
+					param.monitorPointCode = $("#indexCode").val();
+				}
+				request('POST', requestUrl, param, true, function(res) {
+					closeMask(function(parent) {
+						parent.layer.msg("操作成功");
+						parent.loadData();
+					});
+				}, function(res) {
+					if(res.code == "0004") {
+						layer.msg("该监控点已绑定事件，请勿重复操作");
+					} else {
+						layer.msg('操作失败');
+					}
+				})
+			}
+		}
+
+		function loadEventType() {
+			var eventType = setData.eventType;
+			var parentData = setData.parentData;
+			var eventData = parentData.eventData;
+			for(var i = 0; i < eventType.length; i++) {
+				for(var j = 0; j < eventData.length; j++) {
+					if(eventType[i].eventTypeId == eventData[j].eventTypeId) {
+						eventType[i].isActive = true;
+					}
+				}
+			}
+		}
+	</script>
+
+</html>

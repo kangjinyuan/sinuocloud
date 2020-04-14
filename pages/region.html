@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/animate.min.css">
+		<link rel="stylesheet" href="../css/common.css?v=46f3e3365b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/requestUrl.js?v=fb870f73e4"></script>
+		<script src="../js/common.js?v=30133f77f6"></script>
+	</head>
+
+	<body>
+		<div class="kjy-box kjy-flex-box v-dom" v-cloak>
+			<div class="search-box">
+				<div class="search-row-box">
+					<div class="search-list">
+						<div class="search-name">区域名称：</div>
+						<div class="search-value">
+							<input type="text" name="" value="" id="name" placeholder="区域名称">
+						</div>
+					</div>
+					<div class="search-btn-box">
+						<div class="btn" onclick="search();">查询</div>
+						<div class="btn" onclick="reloadPage();">重置</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="btn-inner-box">
+					<div class="btn" onclick="region();">新建</div>
+				</div>
+			</div>
+			<div class="kjy-data-box">
+				<div class="decorate-list decorate-left-top position-left-top"></div>
+				<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+				<div class="decorate-list decorate-right-top position-right-top"></div>
+				<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
+				<div class="full-box" v-if="dataList.length == 0">
+					<div class="no-data-box">
+						<div class="no-data-inner-box">
+							<div class="icon icon-no-data"></div>
+							<div class="no-data-text">暂时没有区域记录哦</div>
+						</div>
+					</div>
+				</div>
+				<div class="kjy-data-inner-box" v-else>
+					<div class="kjy-table">
+						<table>
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>区域名称</th>
+									<th>上级区域</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+								<tr v-for="(t,i) in dataList" v-bind:class="['animated',t.animatedName]">
+									<td>{{((pageNo-1)*pageSize)+(i+1)}}</td>
+									<td>{{t.regionName}}</td>
+									<td>{{t.parentName?t.parentName:'无'}}</td>
+									<td>
+										<p v-if="t.parentId == '0'">禁止操作</p>
+										<ul class="opera-box" v-else>
+											<li v-on:click="region(t);">编辑</li>
+											<li v-on:click="del(t);">删除</li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="page-box"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		loadVue(".v-dom", param);
+
+		function region(obj) {
+			openMask("/parts/region", [suitRem(6.2), suitRem(3.3)], function(layerDom, layerIframe) {
+				if(obj) {
+					layerIframe.setData.parentData = obj;
+					layerDom.find("#name").val(obj.regionName);
+					layerDom.find("#regionId").val(obj.parentId);
+					layerDom.find("#regionName").val(obj.parentName);
+				}
+			});
+		}
+
+		//删除数据
+		function del(obj) {
+			openConfirm("确定删除该区域吗？", function() {
+				var param = {
+					id: obj.id
+				}
+				request('POST', '/regions/v1/deleteRegion', param, true, function(res) {
+					loadData();
+					top.layer.closeAll('dialog');
+				}, function(res) {
+					top.layer.msg("删除失败");
+				})
+			})
+		}
+
+		//		加载数据
+		function loadData() {
+			var param = {
+				pageNo: pageNo,
+				pageSize: "20",
+				name: $("#name").val()
+			};
+			request('POST', '/regions/v1/findRegionsList', param, true, function(res) {
+				var dataList = res.data.dataList;
+				resetDataList(function() {
+					for(var i = 0; i < dataList.length; i++) {
+						dataList[i].isActive = false;
+						dataList[i].animatedName = "fadeInUp";
+					}
+					setData.dataList = dataList;
+					setData.allIsActive = false;
+					loadPage();
+				})
+			}, function(res) {
+				top.layer.msg("区域记录加载失败");
+			})
+		}
+		loadData();
+	</script>
+
+</html>

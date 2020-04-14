@@ -15,8 +15,8 @@ $(function() {
 
 //登录返回的accessToken令牌
 var accessToken = window.localStorage.getItem("accessToken");
-var communityInfo = window.localStorage.getItem("communityInfo") ? JSON.parse(window.localStorage.getItem("communityInfo")) : getQueryString("communityInfo");
-var roomInfo = window.localStorage.getItem("roomInfo") ? JSON.parse(window.localStorage.getItem("roomInfo")) : getQueryString("roomInfo");
+var communityInfo = window.localStorage.getItem("communityInfo") ? JSON.parse(window.localStorage.getItem("communityInfo")) : getUrlParam("communityInfo");
+var roomInfo = window.localStorage.getItem("roomInfo") ? JSON.parse(window.localStorage.getItem("roomInfo")) : getUrlParam("roomInfo");
 
 //正则表达式
 var regular_fee = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
@@ -197,7 +197,7 @@ function loadVue(el, param) {
 //okCallback 成功回调
 //noCallback 失败回调
 function request(method, requestUrl, param, showLoading, okCallback, noCallback) {
-	var communityInfo = window.localStorage.getItem("communityInfo") ? JSON.parse(window.localStorage.getItem("communityInfo")) : getQueryString("communityInfo");
+	var communityInfo = window.localStorage.getItem("communityInfo") ? JSON.parse(window.localStorage.getItem("communityInfo")) : getUrlParam("communityInfo");
 	if(param.page) {
 		var isPage = true;
 	} else {
@@ -213,7 +213,7 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 	}
 	var timestamp = new Date().getTime();
 	if(showLoading == true) {
-		var loadding = layer.load(1, {
+		layer.load(1, {
 			shade: [0.2, '#fafafa'],
 			area: ['37px', '37px']
 		});
@@ -259,7 +259,7 @@ function request(method, requestUrl, param, showLoading, okCallback, noCallback)
 		},
 		error: function(res) {
 			if(res.status == '401' || res.status == '402' || res.status == '403' || res.status == '404' || res.status == '405' || res.status == '407' || res.status == '413' || res.status == '414' || res.status == '415' || res.status == '500' || res.status == '502' || res.status == '503' || res.status == '504' || res.status == '505') {
-				window.location.href = host + '/sinuocloud/part/err.html';
+				window.location.href = host + '/sinuocloud/parts/err.html';
 			}
 		}
 	});
@@ -381,7 +381,7 @@ function delOneData(id, confirmtext, callback) {
 }
 
 //获取地址栏参数
-function getQueryString(key) {
+function getUrlParam(key) {
 	var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
 	var result = window.location.search.substr(1).match(reg);
 	return result ? decodeURIComponent(result[2]) : null;
@@ -671,9 +671,9 @@ function thirdPartyLogin() {
 //判断三方登录
 function judeThirdPartyLogin(callback) {
 	judeClient(function() {
-		accessCode = getQueryString("code");
+		accessCode = getUrlParam("code");
 	}, function() {
-		accessCode = getQueryString("auth_code");
+		accessCode = getUrlParam("auth_code");
 	}, function() {
 		accessCode = "";
 	})
@@ -888,6 +888,6 @@ function resetSort(property, flag) {
 //调整光大H5缴费
 
 function jumpGd(telephone, code) {
-	var communityInfo = window.localStorage.getItem("communityInfo") ? JSON.parse(window.localStorage.getItem("communityInfo")) : getQueryString("communityInfo");
+	var communityInfo = window.localStorage.getItem("communityInfo") ? JSON.parse(window.localStorage.getItem("communityInfo")) : getUrlParam("communityInfo");
 	window.location.href = "https://yaoyao.cebbank.com/LifePayment/webApp/h5/router.html?transType=01&canalType=13&canal=bjsx&ItemCode=" + communityInfo.postPayCode + "&UserNo=" + telephone + "&filed1=" + code;
 }

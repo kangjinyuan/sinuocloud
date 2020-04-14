@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>思诺科技消安一体化平台</title>
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<link rel="shortcut icon" href="../img/common/logo.png" type="image/x-icon">
+		<link rel="stylesheet" href="../css/reset.css">
+		<link href="../video/video.js/dist/video-js.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="../css/common.css?v=10ba9b2e4b">
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../layui/layui.all.js"></script>
+		<script src="../js/suitWeb.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../video/video.min.js"></script>
+		<script src="../video/videojs-flash.min.js"></script>
+		<!--<script src="../js/hls.min.js"></script>-->
+		<script src="../js/requestUrl.js?v=46a09142d2"></script>
+		<script src="../js/common.js?v=c8bf69d921"></script>
+	</head>
+
+	<body>
+		<div class="mask-box mask-padding-66-50 v-dom" v-cloak>
+			<div class="mask-inner-box">
+				<div class="mask-content-box">
+					<div class="opera-list-box">
+						<div class="opera-list opera-left-box">
+							<div class="opera-list-inner-box">
+								<div class="decorate-list decorate-left-top position-left-top"></div>
+								<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+								<div class="decorate-list decorate-right-top position-right-top"></div>
+								<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
+								<div class="fold-box full-height-box">
+									<div class="fold-list-box">
+										<div class="fold-title-box">
+											<div class="fold-title-text-box selected">{{parentData.deviceName}}</div>
+										</div>
+										<div class="fold-content-box">
+											<ul>
+												<li v-bind:class="videoInfo.id == t.id?'selected':''" v-for="t in dataList" v-on:click="tabVideo(t);">{{t.name}}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="opera-list opera-right-box">
+							<div class="opera-list-inner-box">
+								<div class="opera-video-box">
+									<div class="decorate-list decorate-left-top position-left-top"></div>
+									<div class="decorate-list decorate-left-bottom position-left-bottom"></div>
+									<div class="decorate-list decorate-right-top position-right-top"></div>
+									<div class="decorate-list decorate-right-bottom position-right-bottom"></div>
+									<div class="video-box full-height-box">
+										<video id="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" autoplay="autoplay">
+											<source src='' type='rtmp/flv' />
+										</video>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="btn-box">
+					<div class="btn-inner-box">
+						<div class="btn" onclick="closeMask();">返回</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		param.videoInfo = {};
+		loadVue(".v-dom", param);
+
+		//切换监控点
+		function tabVideo(obj) {
+			setData.videoInfo = obj;
+			nextTick(function() {
+				playerVideo("videoPlayer", obj.streamAddress);
+			})
+		}
+	</script>
+
+</html>
